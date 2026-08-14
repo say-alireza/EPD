@@ -27,7 +27,7 @@ export const registrationSchema = z.object({
     .trim()
     .min(1, strings.validation.sessionIdRequired),
   acceptTerms: z.literal(true, {
-    errorMap: () => ({ message: strings.validation.acceptTermsRequired }),
+    message: strings.validation.acceptTermsRequired,
   }),
   languageLevel: z
     .enum(["beginner", "intermediate", "advanced"])

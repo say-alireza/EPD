@@ -67,7 +67,7 @@ export function RegistrationForm() {
         mobile: values.mobile,
         email: values.email,
         sessionId: values.sessionId,
-        acceptTerms: values.acceptTerms,
+        acceptTerms: true,
         languageLevel: values.languageLevel,
         firstTime: values.firstTime,
         topicSuggestion: values.topicSuggestion || undefined,
