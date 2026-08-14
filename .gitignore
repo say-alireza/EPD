@@ -1,0 +1,17 @@
+# Node / Next
+node_modules/
+.next/
+out/
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+db.sqlite3
+# Env
+.env
+.env.*
+!.env.example
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
