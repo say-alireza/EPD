@@ -1,0 +1,1 @@
+Any task that touches visual output under web/ must load epd-design-language first, then frontend-aesthetics for new surfaces or ai-slop-audit for existing ones. Do not write CSS before producing the four-line design plan. Do not claim a surface is finished without screenshots of every state listed in the verification loop.

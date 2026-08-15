@@ -32,7 +32,8 @@ export function RegistrationForm() {
 
   const methods = useForm<RegistrationFormValues>({
     resolver: zodResolver(registrationSchema),
-    mode: "onBlur",
+    mode: "onTouched",
+    reValidateMode: "onChange",
     defaultValues: {
       fullName: "",
       mobile: "",
@@ -127,6 +128,7 @@ export function RegistrationForm() {
           </Button>
         </div>
       </form>
+      
     </FormProvider>
   );
 }
