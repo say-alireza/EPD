@@ -26,8 +26,8 @@ export function MobileField() {
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-text">
-        {strings.fields.mobile.label} <span className="text-danger">*</span>
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
+        {strings.fields.mobile.label} <span className="text-brand-accent">*</span>
       </label>
       <Input
         id={fieldId}
@@ -39,11 +39,12 @@ export function MobileField() {
         {...register("mobile")}
       />
       {strings.fields.mobile.hint && (
-        <span id={hintId} className="text-xs text-text opacity-70">
+        <span id={hintId} className="text-xs text-ink-muted">
           {strings.fields.mobile.hint}
         </span>
       )}
       <FieldError id={errorId} error={error} />
     </div>
+
   );
 }

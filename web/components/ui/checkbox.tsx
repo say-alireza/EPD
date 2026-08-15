@@ -11,13 +11,14 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         type="checkbox"
         ref={ref}
         aria-invalid={error ? "true" : undefined}
-        className={`h-4 w-4 rounded border border-border bg-surface text-brand-500 focus:ring-brand-500 ${
-          error ? "border-danger" : ""
+        className={`h-4 w-4 rounded border border-border bg-surface text-brand-primary focus:ring-brand-primary ${
+          error ? "border-danger-border ring-1 ring-danger-border" : ""
         } ${className}`}
         {...props}
       />
     );
   }
 );
+
 
 Checkbox.displayName = "Checkbox";

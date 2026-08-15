@@ -18,10 +18,11 @@ export function LanguageLevelField() {
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-text">
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
         {strings.fields.languageLevel.label}
       </label>
       <Select
+
         id={fieldId}
         error={Boolean(error)}
         aria-describedby={error ? errorId : undefined}

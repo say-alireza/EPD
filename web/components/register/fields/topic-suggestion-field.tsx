@@ -18,10 +18,11 @@ export function TopicSuggestionField() {
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-text">
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
         {strings.fields.topicSuggestion.label}
       </label>
       <Textarea
+
         id={fieldId}
         rows={3}
         placeholder={strings.fields.topicSuggestion.placeholder}

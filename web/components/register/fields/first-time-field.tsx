@@ -25,11 +25,12 @@ export function FirstTimeField() {
           aria-describedby={error ? errorId : undefined}
           {...register("firstTime")}
         />
-        <label htmlFor={fieldId} className="text-sm font-medium text-text cursor-pointer">
+        <label htmlFor={fieldId} className="text-sm font-medium text-ink cursor-pointer">
           {strings.fields.firstTime.label}
         </label>
       </div>
       <FieldError id={errorId} error={error} />
     </div>
+
   );
 }

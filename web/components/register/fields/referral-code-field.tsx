@@ -18,10 +18,11 @@ export function ReferralCodeField() {
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-text">
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
         {strings.fields.referralCode.label}
       </label>
       <Input
+
         id={fieldId}
         dir="ltr"
         placeholder={strings.fields.referralCode.placeholder}

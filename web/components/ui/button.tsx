@@ -11,8 +11,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     
     const variantStyles =
       variant === "primary"
-        ? "bg-cta-500 text-bg hover:bg-cta-400 focus-visible:ring-cta-500 shadow-sm active:translate-y-[1px]"
-        : "bg-surface text-text border border-border hover:bg-surface-hover focus-visible:ring-brand-500";
+        ? "bg-brand-primary text-surface hover:opacity-90 focus-visible:ring-brand-primary active:translate-y-[1px]"
+        : "bg-surface text-ink border border-border hover:bg-surface-hover focus-visible:ring-brand-primary";
 
     return (
       <button

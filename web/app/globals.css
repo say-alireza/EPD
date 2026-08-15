@@ -1,60 +1,41 @@
 @import "tailwindcss";
 
-:root {
-  --color-bg:            #0F1B33;
-  --color-surface:       #1B2540;
-  --color-surface-hover: #232F52;
-  --color-surface-field: #141D33;
-
-  --color-heading:       #FEE2DE;
-  --color-text:          #DEDFE7;
-  --color-muted:         #8B93A6;
-
-  --color-border:        rgba(222, 223, 231, 0.16);
-  --color-border-focus:  #FBC757;
-
-  --color-brand-300:     #7FE0D3;
-  --color-brand-500:     #34CDBB;
-  --color-brand-700:     #13746D;
-
-  --color-cta-400:       #F9DA4C;
-  --color-cta-500:       #FBC757;
-
-  --color-danger-border: #FF7D6D;
-  --color-danger-text:   #FF7D6D;
-}
-
-@theme {
+@theme inline {
   --font-sans:           var(--font-vazir), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --color-bg:            var(--color-bg);
-  --color-surface:       var(--color-surface);
-  --color-surface-hover: var(--color-surface-hover);
-  --color-heading:       var(--color-heading);
-  --color-text:          var(--color-text);
-  --color-muted:         var(--color-muted);
-  --color-border:        var(--color-border);
-  --color-cta-400:       var(--color-cta-400);
-  --color-cta-500:       var(--color-cta-500);
-  --color-brand-300:     var(--color-brand-300);
-  --color-brand-500:     var(--color-brand-500);
-  --color-danger-border: var(--color-danger-border);
-  --color-danger-text:   var(--color-danger-text);
+
+  --color-ground:        #F8F9FA;
+  --color-surface:       #FFFFFF;
+  --color-surface-hover: #F1F3F5;
+  --color-surface-field: #FFFFFF;
+
+  --color-ink:           #0C1729;
+  --color-ink-muted:     #5A6474;
+  --color-border:        #DEDFE7;
+  --color-border-focus:  #1B2540;
+
+  --color-brand-primary: #1B2540;
+  --color-brand-accent:  #FA5041;
+  --color-brand-gold:    #FBC757;
+  --color-brand-teal:    #34CDBB;
+
+  --color-danger-border: #FA5041;
+  --color-danger-text:   #FA5041;
 }
 
 @layer base {
   html {
-    color-scheme: dark;
-    background-color: var(--color-bg);
+    color-scheme: light;
+    background-color: var(--color-ground);
   }
   body {
-    background-color: var(--color-bg);
-    color: var(--color-text);
+    background-color: var(--color-ground);
+    color: var(--color-ink);
     font-family: var(--font-sans);
     line-height: 1.75;
     min-height: 100vh;
   }
   h1, h2, h3 {
-    color: var(--color-heading);
+    color: var(--color-ink);
     line-height: 1.35;
   }
 }
@@ -63,16 +44,15 @@
   .epd-card {
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
   }
 
   .epd-field {
     inline-size: 100%;
     background-color: var(--color-surface-field);
     border: 1px solid var(--color-border);
-    border-radius: 10px;
-    color: var(--color-text);
+    border-radius: 8px;
+    color: var(--color-ink);
     padding-inline: 16px;
     padding-block: 12px;
     font-size: 0.95rem;
@@ -89,3 +69,4 @@
     border-color: var(--color-danger-border);
   }
 }
+

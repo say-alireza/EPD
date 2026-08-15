@@ -18,10 +18,11 @@ export function EmailField() {
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-text">
-        {strings.fields.email.label} <span className="text-danger">*</span>
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
+        {strings.fields.email.label} <span className="text-brand-accent">*</span>
       </label>
       <Input
+
         id={fieldId}
         type="email"
         dir="ltr"

@@ -97,7 +97,7 @@ export function RegistrationForm() {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit, onError)} noValidate className="space-y-6">
         {submitError && (
-          <div role="alert" className="p-3 border border-danger text-danger bg-surface rounded-md text-sm">
+          <div role="alert" className="p-4 border border-danger-border text-danger-text bg-surface rounded-lg text-sm">
             {submitError}
           </div>
         )}
@@ -109,8 +109,8 @@ export function RegistrationForm() {
           <SessionField sessions={sessions} isLoading={isLoadingSessions} error={sessionError} />
         </div>
 
-        <fieldset className="border border-border p-4 rounded-md space-y-4">
-          <legend className="px-2 text-sm font-medium text-text">
+        <fieldset className="border border-border p-4 rounded-lg space-y-4">
+          <legend className="px-2 text-sm font-semibold text-ink">
             {strings.form.optionalSectionTitle}
           </legend>
           <LanguageLevelField />
@@ -128,7 +128,7 @@ export function RegistrationForm() {
           </Button>
         </div>
       </form>
-      
     </FormProvider>
   );
+
 }

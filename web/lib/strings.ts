@@ -1,6 +1,7 @@
 export const strings = {
   form: {
     title: "فرم ثبت‌نام",
+    subtitle: "برای حضور در نشست بعدی، لطفاً اطلاعات زیر را با دقت تکمیل کنید.",
     optionalSectionTitle: "اطلاعات تکمیلی (اختیاری)",
     submit: "تکمیل ثبت‌نام و پرداخت",
     submitting: "در حال انتقال به درگاه…",

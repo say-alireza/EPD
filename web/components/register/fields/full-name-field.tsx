@@ -18,10 +18,11 @@ export function FullNameField() {
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-text">
-        {strings.fields.fullName.label} <span className="text-danger">*</span>
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
+        {strings.fields.fullName.label} <span className="text-brand-accent">*</span>
       </label>
       <Input
+
         id={fieldId}
         placeholder={strings.fields.fullName.placeholder}
         error={Boolean(error)}

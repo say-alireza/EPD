@@ -25,8 +25,8 @@ export function SessionField({ sessions, isLoading, error: fetchError }: Session
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-text">
-        {strings.fields.sessionId.label} <span className="text-danger">*</span>
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
+        {strings.fields.sessionId.label} <span className="text-brand-accent">*</span>
       </label>
       <Select
         id={fieldId}
@@ -53,11 +53,12 @@ export function SessionField({ sessions, isLoading, error: fetchError }: Session
         })}
       </Select>
       {sessions.length === 0 && !isLoading && !fetchError && (
-        <p className="text-xs text-text opacity-70">
+        <p className="text-xs text-ink-muted">
           {strings.form.noSessionsAvailable}
         </p>
       )}
       <FieldError id={errorId} error={error || undefined} />
     </div>
+
   );
 }

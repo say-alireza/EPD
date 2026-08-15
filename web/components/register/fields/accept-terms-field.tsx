@@ -25,11 +25,12 @@ export function AcceptTermsField() {
           aria-describedby={error ? errorId : undefined}
           {...register("acceptTerms")}
         />
-        <label htmlFor={fieldId} className="text-sm font-medium text-text cursor-pointer leading-tight">
-          {strings.fields.acceptTerms.label} <span className="text-danger">*</span>
+        <label htmlFor={fieldId} className="text-sm font-medium text-ink cursor-pointer leading-tight">
+          {strings.fields.acceptTerms.label} <span className="text-brand-accent">*</span>
         </label>
       </div>
       <FieldError id={errorId} error={error} />
     </div>
+
   );
 }
