@@ -84,8 +84,8 @@ export const strings = {
       register: "ثبت‌نام نشست",
     },
     hero: {
-      headline: "جایی برای مکالمه واقعی، بدون قضاوت و با آدم‌هایی مثل خودت.",
-      factLine: "مشهد · پنجشنبه‌ها ساعت ۱۰ تا ۱۲ (Free Discussion) و سه‌شنبه‌های گیم و شبکه‌سازی",
+      headline: " EPD - مکانی برای  مکالمه واقعی ",
+      factLine: "مشهد · پنجشنبه‌ها ساعت ۱۰ تا ۱۲ (Free Discussion) ",
       cta: "ثبت‌نام جلسه‌ی این هفته",
       spotsRemaining: "صندلی خالی باقی‌مانده",
       details: {

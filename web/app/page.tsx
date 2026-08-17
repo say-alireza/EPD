@@ -191,7 +191,7 @@ export default function HomePage() {
         </section>
 
         {/* 4. What actually happens in a session — four short blocks, no marketing fluff */}
-        <section className="flex flex-col gap-8 text-start">
+        {/* <section className="flex flex-col gap-8 text-start">
           <div className="flex flex-col gap-2">
             <span className="text-xs font-bold text-brand-teal tracking-wider uppercase">
               {whatHappens.eyebrow}
@@ -222,7 +222,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* 5. Weekly photo gallery — clean compact badge with session tag */}
         <section className="flex flex-col gap-8 text-start">
