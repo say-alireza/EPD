@@ -1,0 +1,30 @@
+[
+  {
+    "id": "poster-67",
+    "sessionNumber": 67,
+    "topicEn": "Remote Work Culture & Productivity",
+    "dateFa": "پنجشنبه ۲۳ مرداد ۱۴۰۵",
+    "image": "/media/posters/session-67.svg"
+  },
+  {
+    "id": "poster-66",
+    "sessionNumber": 66,
+    "topicEn": "Public Speaking Without Fear",
+    "dateFa": "پنجشنبه ۱۶ مرداد ۱۴۰۵",
+    "image": "/media/posters/session-66.svg"
+  },
+  {
+    "id": "poster-65",
+    "sessionNumber": 65,
+    "topicEn": "Future of Sustainable Cities",
+    "dateFa": "پنجشنبه ۹ مرداد ۱۴۰۵",
+    "image": "/media/posters/session-65.svg"
+  },
+  {
+    "id": "poster-64",
+    "sessionNumber": 64,
+    "topicEn": "Psychology of Everyday Habits",
+    "dateFa": "پنجشنبه ۲ مرداد ۱۴۰۵",
+    "image": "/media/posters/session-64.svg"
+  }
+]

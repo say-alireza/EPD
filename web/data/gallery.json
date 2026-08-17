@@ -1,0 +1,38 @@
+[
+  {
+    "id": "gallery-1",
+    "image": "/media/gallery/session-67-01.svg",
+    "captionFa": "بحث و تبادل نظر پیرامون فناوری‌های نوظهور",
+    "sessionNumber": 67
+  },
+  {
+    "id": "gallery-2",
+    "image": "/media/gallery/session-67-02.svg",
+    "captionFa": "تمرین مکالمه آزاد در گروه‌های دونفره",
+    "sessionNumber": 67
+  },
+  {
+    "id": "gallery-3",
+    "image": "/media/gallery/session-66-01.svg",
+    "captionFa": "ارائه کوتاه اعضا درباره چالش‌های شغلی",
+    "sessionNumber": 66
+  },
+  {
+    "id": "gallery-4",
+    "image": "/media/gallery/session-66-02.svg",
+    "captionFa": "هم‌اندیشی و نقد ایده‌ها در دورهمی هفتگی",
+    "sessionNumber": 66
+  },
+  {
+    "id": "gallery-5",
+    "image": "/media/gallery/session-65-01.svg",
+    "captionFa": "فضای تعاملی و تمرین صحبت روان انگلیسی",
+    "sessionNumber": 65
+  },
+  {
+    "id": "gallery-6",
+    "image": "/media/gallery/session-65-02.svg",
+    "captionFa": "پایان نشست و شبکه‌سازی دوستانه",
+    "sessionNumber": 65
+  }
+]
