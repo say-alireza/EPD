@@ -1,38 +1,112 @@
 [
   {
-    "id": "gallery-1",
-    "image": "/media/gallery/session-67-01.svg",
-    "captionFa": "بحث و تبادل نظر پیرامون فناوری‌های نوظهور",
-    "sessionNumber": 67
+    "id": "gallery-pop-culture-01",
+    "sessionNumber": 12,
+    "image": "/media/gallery/gallery-pop-culture-01.jpg"
   },
   {
-    "id": "gallery-2",
-    "image": "/media/gallery/session-67-02.svg",
-    "captionFa": "تمرین مکالمه آزاد در گروه‌های دونفره",
-    "sessionNumber": 67
+    "id": "gallery-pop-culture-02",
+    "sessionNumber": 12,
+    "image": "/media/gallery/gallery-pop-culture-02.jpg"
   },
   {
-    "id": "gallery-3",
-    "image": "/media/gallery/session-66-01.svg",
-    "captionFa": "ارائه کوتاه اعضا درباره چالش‌های شغلی",
-    "sessionNumber": 66
+    "id": "gallery-childhood-01",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-childhood-01.jpg"
   },
   {
-    "id": "gallery-4",
-    "image": "/media/gallery/session-66-02.svg",
-    "captionFa": "هم‌اندیشی و نقد ایده‌ها در دورهمی هفتگی",
-    "sessionNumber": 66
+    "id": "gallery-childhood-02",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-childhood-02.jpg"
   },
   {
-    "id": "gallery-5",
-    "image": "/media/gallery/session-65-01.svg",
-    "captionFa": "فضای تعاملی و تمرین صحبت روان انگلیسی",
-    "sessionNumber": 65
+    "id": "gallery-superstitions-01",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-superstitions-01.jpg"
   },
   {
-    "id": "gallery-6",
-    "image": "/media/gallery/session-65-02.svg",
-    "captionFa": "پایان نشست و شبکه‌سازی دوستانه",
-    "sessionNumber": 65
+    "id": "gallery-superstitions-02",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-superstitions-02.jpg"
+  },
+  {
+    "id": "gallery-perfect-day-01",
+    "sessionNumber": 7,
+    "image": "/media/gallery/gallery-perfect-day-01.jpg"
+  },
+  {
+    "id": "gallery-perfect-day-02",
+    "sessionNumber": 7,
+    "image": "/media/gallery/gallery-perfect-day-02.jpg"
+  },
+  {
+    "id": "gallery-borrowed-opinions-01",
+    "sessionNumber": 5,
+    "image": "/media/gallery/gallery-borrowed-opinions-01.jpg"
+  },
+  {
+    "id": "gallery-people-everywhere-01",
+    "sessionNumber": 4,
+    "image": "/media/gallery/gallery-people-everywhere-01.jpg"
+  },
+  {
+    "id": "gallery-football-cult-01",
+    "sessionNumber": 3,
+    "image": "/media/gallery/gallery-football-cult-01.jpg"
+  },
+  {
+    "id": "gallery-dare-to-begin-01",
+    "sessionNumber": 1,
+    "image": "/media/gallery/gallery-dare-to-begin-01.jpg"
+  },
+  {
+    "id": "gallery-epd9-01",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-01.jpg"
+  },
+  {
+    "id": "gallery-epd9-02",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-02.jpg"
+  },
+  {
+    "id": "gallery-epd9-03",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-03.jpg"
+  },
+  {
+    "id": "gallery-epd9-04",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-04.jpg"
+  },
+  {
+    "id": "gallery-epd10-01",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-01.jpg"
+  },
+  {
+    "id": "gallery-epd10-02",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-02.jpg"
+  },
+  {
+    "id": "gallery-epd10-03",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-03.jpg"
+  },
+  {
+    "id": "gallery-epd10-04",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-04.jpg"
+  },
+  {
+    "id": "gallery-epd11-01",
+    "sessionNumber": 11,
+    "image": "/media/gallery/gallery-epd11-01.jpg"
+  },
+  {
+    "id": "gallery-epd11-02",
+    "sessionNumber": 11,
+    "image": "/media/gallery/gallery-epd11-02.jpg"
   }
 ]

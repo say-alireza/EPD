@@ -1,30 +1,86 @@
 [
   {
-    "id": "poster-67",
-    "sessionNumber": 67,
-    "topicEn": "Remote Work Culture & Productivity",
-    "dateFa": "پنجشنبه ۲۳ مرداد ۱۴۰۵",
-    "image": "/media/posters/session-67.svg"
+    "id": "poster-12",
+    "sessionNumber": 12,
+    "topicEn": "Pop Culture",
+    "dateFa": "پنج‌شنبه ۲۲ مرداد ۱۴۰۵",
+    "image": "/media/posters/session-pop-culture.jpg"
   },
   {
-    "id": "poster-66",
-    "sessionNumber": 66,
-    "topicEn": "Public Speaking Without Fear",
-    "dateFa": "پنجشنبه ۱۶ مرداد ۱۴۰۵",
-    "image": "/media/posters/session-66.svg"
+    "id": "poster-11",
+    "sessionNumber": 11,
+    "topicEn": "EPD Quest for Victory",
+    "dateFa": "سه‌شنبه ۲۰ مرداد ۱۴۰۵",
+    "image": "/media/posters/session-game-night.jpg"
   },
   {
-    "id": "poster-65",
-    "sessionNumber": 65,
-    "topicEn": "Future of Sustainable Cities",
-    "dateFa": "پنجشنبه ۹ مرداد ۱۴۰۵",
-    "image": "/media/posters/session-65.svg"
+    "id": "poster-10",
+    "sessionNumber": 10,
+    "topicEn": "Childhood Memories",
+    "dateFa": "پنج‌شنبه ۱۵ مرداد ۱۴۰۵",
+    "image": "/media/posters/session-childhood-memories.jpg"
   },
   {
-    "id": "poster-64",
-    "sessionNumber": 64,
-    "topicEn": "Psychology of Everyday Habits",
-    "dateFa": "پنجشنبه ۲ مرداد ۱۴۰۵",
-    "image": "/media/posters/session-64.svg"
+    "id": "poster-9",
+    "sessionNumber": 9,
+    "topicEn": "Superstitions",
+    "dateFa": "پنج‌شنبه ۸ مرداد ۱۴۰۵",
+    "image": "/media/posters/session-superstitions.jpg"
+  },
+  {
+    "id": "poster-8",
+    "sessionNumber": 8,
+    "topicEn": "Green Flag",
+    "dateFa": "پنج‌شنبه ۱ مرداد ۱۴۰۵",
+    "image": "/media/posters/session-green-flag.jpg"
+  },
+  {
+    "id": "poster-7",
+    "sessionNumber": 7,
+    "topicEn": "The Perfect Day",
+    "dateFa": "پنج‌شنبه ۲۵ تیر ۱۴۰۵",
+    "image": "/media/posters/session-perfect-day.jpg"
+  },
+  {
+    "id": "poster-6",
+    "sessionNumber": 6,
+    "topicEn": "The Brand Called You",
+    "dateFa": "چهارشنبه ۱۷ تیر ۱۴۰۵",
+    "image": "/media/posters/session-brand-called-you.jpg"
+  },
+  {
+    "id": "poster-5",
+    "sessionNumber": 5,
+    "topicEn": "Borrowed Opinions",
+    "dateFa": "پنج‌شنبه ۱۱ تیر ۱۴۰۵",
+    "image": "/media/posters/session-borrowed-opinions.jpg"
+  },
+  {
+    "id": "poster-4",
+    "sessionNumber": 4,
+    "topicEn": "People Everywhere",
+    "dateFa": "سه‌شنبه ۲ تیر ۱۴۰۵",
+    "image": "/media/posters/session-people-everywhere.jpg"
+  },
+  {
+    "id": "poster-3",
+    "sessionNumber": 3,
+    "topicEn": "Football, the Cult",
+    "dateFa": "پنج‌شنبه ۲۸ خرداد ۱۴۰۵",
+    "image": "/media/posters/session-football-cult.jpg"
+  },
+  {
+    "id": "poster-2",
+    "sessionNumber": 2,
+    "topicEn": "Fame Game",
+    "dateFa": "پنج‌شنبه ۲۱ خرداد ۱۴۰۵",
+    "image": "/media/posters/session-fame-game.jpg"
+  },
+  {
+    "id": "poster-1",
+    "sessionNumber": 1,
+    "topicEn": "Dare to Begin",
+    "dateFa": "پنج‌شنبه ۱۴ خرداد ۱۴۰۵",
+    "image": "/media/posters/session-dare-to-begin.jpg"
   }
 ]

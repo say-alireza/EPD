@@ -64,7 +64,7 @@ export default function HomePage() {
             </Link>
             <div className="inline-flex items-center gap-2 ps-1 text-sm font-normal text-ink">
               <span className="w-2.5 h-2.5 rounded-full bg-brand-teal shrink-0" />
-              <span>{hero.spotsRemaining}</span>
+              <span>{nextSessionData.remainingSeats} صندلی خالی باقی‌مانده</span>
             </div>
           </div>
 
@@ -105,7 +105,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 3. Next session poster — large, with its date and topic beside it */}
+        {/* 3. Next session poster — large or manifest card */}
         <section className="bg-surface border border-border rounded-2xl p-6 sm:p-10 flex flex-col lg:flex-row gap-8 items-stretch">
           <div className="lg:w-1/2 flex flex-col justify-between gap-6 text-start">
             <div className="flex flex-col gap-4">
@@ -158,15 +158,35 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="lg:w-1/2 flex items-center justify-center bg-ground border border-brand-primary rounded-xl p-4 overflow-hidden">
-            <Image
-              src={assetPath(nextSessionData.posterImage)}
-              alt={nextSessionData.topicEn}
-              width={600}
-              height={800}
-              className="w-full max-w-sm h-auto object-contain rounded-lg"
-              priority
-            />
+          <div className="lg:w-1/2 flex items-center justify-center bg-ground border border-dashed border-brand-primary rounded-xl p-8 overflow-hidden min-h-[320px]">
+            {nextSessionData.posterImage ? (
+              <Image
+                src={assetPath(nextSessionData.posterImage)}
+                alt={nextSessionData.topicEn}
+                width={600}
+                height={800}
+                className="w-full max-w-sm h-auto object-contain rounded-lg shadow-sm"
+                priority
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center gap-4 py-8 max-w-sm">
+                <div className="w-12 h-12 rounded-full bg-brand-gold/20 text-brand-gold flex items-center justify-center font-bold text-lg">
+                  🎨
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-extrabold text-ink">
+                    {hero.poster.emptyTitle}
+                  </h3>
+                  <p className="text-xs text-ink-muted leading-relaxed">
+                    {hero.poster.emptySubtitle}
+                  </p>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-semibold text-brand-primary">
+                  <span className="w-2 h-2 rounded-full bg-brand-teal" />
+                  <span>ثبت‌نام برای ظرفیت محدود فعال است</span>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
@@ -204,7 +224,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 5. Weekly photo gallery — responsive grid, first six items, link to /gallery */}
+        {/* 5. Weekly photo gallery — clean compact badge with session tag */}
         <section className="flex flex-col gap-8 text-start">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
@@ -214,9 +234,6 @@ export default function HomePage() {
               <h2 className="text-2xl sm:text-3xl font-extrabold text-ink">
                 {gallery.title}
               </h2>
-              <p className="text-sm text-ink-muted">
-                {gallery.subtitle}
-              </p>
             </div>
             <Link
               href="/gallery"
@@ -231,22 +248,19 @@ export default function HomePage() {
               {galleryItems.map((item) => (
                 <article
                   key={item.id}
-                  className="bg-surface border border-border rounded-xl overflow-hidden flex flex-col group"
+                  className="bg-surface border border-border rounded-xl overflow-hidden flex flex-col group shadow-xs hover:border-brand-primary transition-all duration-200"
                 >
-                  <div className="relative w-full aspect-video bg-ground overflow-hidden">
+                  <div className="relative w-full aspect-[4/3] bg-ground overflow-hidden">
                     <Image
                       src={assetPath(item.image)}
-                      alt={item.captionFa}
+                      alt={`جلسه ${item.sessionNumber}`}
                       width={600}
-                      height={400}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                      height={450}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                  </div>
-                  <div className="p-4 flex items-center justify-between text-xs border-t border-border">
-                    <span className="text-ink font-medium">{item.captionFa}</span>
-                    <span className="text-ink-muted shrink-0 ms-2">
+                    <div className="absolute bottom-2 start-2 bg-ink/80 text-surface px-2.5 py-1 rounded text-[11px] font-bold">
                       جلسه {item.sessionNumber}
-                    </span>
+                    </div>
                   </div>
                 </article>
               ))}
@@ -284,7 +298,7 @@ export default function HomePage() {
             {postersData.map((poster) => (
               <div
                 key={poster.id}
-                className="bg-surface border border-border rounded-xl p-3 flex flex-col gap-3 group"
+                className="bg-surface border border-border rounded-xl p-3 flex flex-col gap-3 group hover:border-brand-primary transition-all duration-200"
               >
                 <div className="relative w-full aspect-[3/4] bg-ground rounded-lg overflow-hidden border border-border">
                   <Image
@@ -292,7 +306,7 @@ export default function HomePage() {
                     alt={poster.topicEn}
                     width={600}
                     height={800}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <div className="flex flex-col gap-1 text-start">
@@ -384,7 +398,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-2 text-xs">
               <span className="font-bold text-ink">{footer.socialTitle}</span>
               <a
-                href="https://t.me/epdclub"
+                href="https://t.me/EPDSupport"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-ink-muted hover:text-ink transition-colors"

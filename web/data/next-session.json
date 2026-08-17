@@ -1,14 +1,14 @@
 {
-  "id": "session-68",
-  "number": 68,
-  "dateIso": "2026-08-20T18:00:00+03:30",
-  "timeFa": "۱۸:۰۰ تا ۲۰:۰۰",
-  "timeEn": "18:00 – 20:00",
-  "venueFa": "مشهد، بلوار سجاد",
-  "venueEn": "Mashhad · Sajjad Blvd",
+  "id": "session-upcoming",
+  "number": 13,
+  "dateIso": "2026-08-27T10:00:00+03:30",
+  "timeFa": "۱۰:۰۰ تا ۱۲:۰۰",
+  "timeEn": "10:00 – 12:00",
+  "venueFa": "مشهد، بلوار احمدآباد، کافه کتاب آفتاب",
+  "venueEn": "Mashhad · Aftab Book Cafe",
   "levelFa": "متوسط و پیشرفته (B1+)",
-  "remainingSeats": 4,
-  "topicEn": "Artificial Intelligence in Daily Workflows",
-  "topicFa": "فرصت‌ها، چالش‌ها و تجربه‌های زیسته در محیط‌های کاری مدرن",
-  "posterImage": "/media/posters/session-68.svg"
+  "remainingSeats": 6,
+  "topicEn": "Upcoming Session Topic",
+  "topicFa": "موضوع و محورهای گفت‌وگوی این هفته به زودی اعلام خواهد شد",
+  "posterImage": null
 }
