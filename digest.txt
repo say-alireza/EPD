@@ -48,6 +48,11 @@ Directory structure:
     │   │   ├── globals.css
     │   │   ├── layout.tsx
     │   │   ├── page.tsx
+    │   │   ├── api/
+    │   │   │   ├── register/
+    │   │   │   │   └── route.ts
+    │   │   │   └── sessions/
+    │   │   │       └── route.ts
     │   │   ├── gallery/
     │   │   │   └── page.tsx
     │   │   ├── lab/
@@ -100,8 +105,21 @@ Directory structure:
     │   │   ├── schema.ts
     │   │   ├── strings.ts
     │   │   └── types.ts
-    │   └── public/
-    │       └── .nojekyll
+    │   ├── public/
+    │   │   └── .nojekyll
+    │   └── .wrangler/
+    │       └── state/
+    │           └── v3/
+    │               ├── cache/
+    │               │   └── miniflare-CacheObject/
+    │               │       ├── metadata.sqlite-shm
+    │               │       └── metadata.sqlite-wal
+    │               └── d1/
+    │                   └── miniflare-D1DatabaseObject/
+    │                       ├── be8fc967107d562340aa6bc47a19a0b8dc2ace74791bc8a07f763688e48e9db7.sqlite-shm
+    │                       ├── be8fc967107d562340aa6bc47a19a0b8dc2ace74791bc8a07f763688e48e9db7.sqlite-wal
+    │                       ├── metadata.sqlite-shm
+    │                       └── metadata.sqlite-wal
     └── .github/
         └── workflows/
             └── deploy.yml
@@ -695,7 +713,6 @@ import type { NextConfig } from "next";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const nextConfig: NextConfig = {
-  output: "export",
   trailingSlash: true,
   basePath,
   images: {
@@ -916,6 +933,101 @@ export default function RootLayout({
 FILE: web/app/page.tsx
 ================================================
 Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x81 in position 8803: character maps to <undefined>
+
+
+================================================
+FILE: web/app/api/register/route.ts
+================================================
+import { NextResponse } from "next/server";
+
+export const runtime = "edge";
+
+const GOOGLE_SHEET_URL =
+  "https://script.google.com/macros/s/AKfycbw7MRtf50_Qitg-brmrQjkSd4GKvkBKoHNNiT5prw3SuzactMOMjCOX0BQQPsi2tK6H0A/exec";
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { fullName, email, mobile, sessionId } = body || {};
+
+    if (!fullName || !email || !mobile || !sessionId) {
+      return NextResponse.json(
+        { error: "لطفاً تمام فیلدهای الزامی را پر کنید." },
+        { status: 400 }
+      );
+    }
+
+    // ۱. ذخیره‌سازی در دیتابیس Cloudflare D1
+    try {
+      // تایپ‌اسکریپت را متوجه می‌سازیم که DB شیء دیتابیس D1 است
+      const DB = (process.env as unknown as { DB: any }).DB;
+      if (DB) {
+        await DB.prepare(
+          "INSERT INTO registrations (full_name, email, mobile, session_id) VALUES (?, ?, ?, ?)"
+        )
+          .bind(fullName, email, mobile, sessionId)
+          .run();
+      }
+    } catch (dbError) {
+      console.error("D1 Database Insert Error:", dbError);
+    }
+
+    // ۲. ارسال اتوماتیک و هم‌زمان به Google Sheet
+    fetch(GOOGLE_SHEET_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullName, email, mobile, sessionId }),
+    }).catch((sheetError) =>
+      console.error("Google Sheet Sync Error:", sheetError)
+    );
+
+    return NextResponse.json(
+      {
+        message: "اطلاعات با موفقیت دریافت و ثبت شد.",
+        data: { fullName, email, mobile, sessionId },
+      },
+      { status: 200 }
+    );
+  } catch {
+    return NextResponse.json(
+      { error: "داده‌های ارسالی نامعتبر است." },
+      { status: 400 }
+    );
+  }
+}
+
+
+================================================
+FILE: web/app/api/sessions/route.ts
+================================================
+import { NextResponse } from "next/server";
+export const runtime = "edge";
+export async function GET() {
+  try {
+    // لیست سانس‌های فعال (فعلاً به‌صورت هاردکد شده تا بعداً به دیتابیس وصل شود)
+    const sessions = [
+      {
+        id: "session-1",
+        title: "سانس اول: پنج‌شنبه ساعت ۱۶ تا ۱۸",
+        capacity: 15,
+        isFull: false,
+      },
+      {
+        id: "session-2",
+        title: "سانس دوم: پنج‌شنبه ساعت ۱۸:۳۰ تا ۲۰:۳۰",
+        capacity: 15,
+        isFull: false,
+      },
+    ];
+
+    return NextResponse.json(sessions, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "خطایی در دریافت لیست سانس‌ها رخ داد." },
+      { status: 500 }
+    );
+  }
+}
 
 
 ================================================
@@ -1163,141 +1275,7 @@ export default function TermsPage() {
 ================================================
 FILE: web/components/register/registration-form.tsx
 ================================================
-"use client";
-
-import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { registrationSchema, RegistrationFormValues } from "@/lib/schema";
-import { createRegistration, getSessions } from "@/lib/api";
-import { Session } from "@/lib/types";
-import { strings } from "@/lib/strings";
-import { Button } from "@/components/ui/button";
-import {
-  FullNameField,
-  MobileField,
-  EmailField,
-  SessionField,
-  LanguageLevelField,
-  FirstTimeField,
-  TopicSuggestionField,
-  HeardFromField,
-  SocialHandleField,
-  ReferralCodeField,
-  AcceptTermsField,
-} from "./fields";
-
-export function RegistrationForm() {
-  const router = useRouter();
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [isLoadingSessions, setIsLoadingSessions] = useState(true);
-  const [sessionError, setSessionError] = useState<string | null>(null);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-
-  const methods = useForm<RegistrationFormValues>({
-    resolver: zodResolver(registrationSchema),
-    mode: "onTouched",
-    reValidateMode: "onChange",
-    defaultValues: {
-      fullName: "",
-      mobile: "",
-      email: "",
-      sessionId: "",
-      topicSuggestion: "",
-      referralCode: "",
-      socialHandle: "",
-      firstTime: false,
-    },
-  });
-
-  const { handleSubmit, formState: { isSubmitting } } = methods;
-
-  useEffect(() => {
-    getSessions()
-      .then((data) => {
-        setSessions(data);
-        setIsLoadingSessions(false);
-      })
-      .catch(() => {
-        setSessionError(strings.form.fetchSessionsError);
-        setIsLoadingSessions(false);
-      });
-  }, []);
-
-  const onSubmit = async (values: RegistrationFormValues) => {
-    setSubmitError(null);
-    try {
-      const response = await createRegistration({
-        fullName: values.fullName,
-        mobile: values.mobile,
-        email: values.email,
-        sessionId: values.sessionId,
-        acceptTerms: true,
-        languageLevel: values.languageLevel,
-        firstTime: values.firstTime,
-        topicSuggestion: values.topicSuggestion || undefined,
-        referralCode: values.referralCode || undefined,
-        heardFrom: values.heardFrom,
-        socialHandle: values.socialHandle || undefined,
-      });
-
-      if (response.paymentUrl) {
-        window.location.assign(response.paymentUrl);
-      } else {
-        router.push("/register/success");
-      }
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : strings.form.generalError;
-      setSubmitError(message);
-    }
-  };
-
-  const onError = () => {
-    const firstInvalid = document.querySelector<HTMLElement>("[aria-invalid='true']");
-    firstInvalid?.focus();
-  };
-
-  return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit, onError)} noValidate className="space-y-6">
-        {submitError && (
-          <div role="alert" className="p-4 border border-danger-border text-danger-text bg-surface rounded-lg text-sm">
-            {submitError}
-          </div>
-        )}
-
-        <div className="space-y-4">
-          <FullNameField />
-          <MobileField />
-          <EmailField />
-          <SessionField sessions={sessions} isLoading={isLoadingSessions} error={sessionError} />
-        </div>
-
-        <fieldset className="border border-border p-4 rounded-lg space-y-4">
-          <legend className="px-2 text-sm font-semibold text-ink">
-            {strings.form.optionalSectionTitle}
-          </legend>
-          <LanguageLevelField />
-          <FirstTimeField />
-          <TopicSuggestionField />
-          <HeardFromField />
-          <SocialHandleField />
-          <ReferralCodeField />
-        </fieldset>
-
-        <div className="space-y-4">
-          <AcceptTermsField />
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? strings.form.submitting : strings.form.submit}
-          </Button>
-        </div>
-      </form>
-    </FormProvider>
-  );
-
-}
-
+Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x81 in position 1439: character maps to <undefined>
 
 
 ================================================
@@ -2653,6 +2631,42 @@ export interface RegistrationResponse {
 FILE: web/public/.nojekyll
 ================================================
 [Empty file]
+
+
+================================================
+FILE: web/.wrangler/state/v3/cache/miniflare-CacheObject/metadata.sqlite-shm
+================================================
+[Binary file]
+
+
+================================================
+FILE: web/.wrangler/state/v3/cache/miniflare-CacheObject/metadata.sqlite-wal
+================================================
+[Binary file]
+
+
+================================================
+FILE: web/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/be8fc967107d562340aa6bc47a19a0b8dc2ace74791bc8a07f763688e48e9db7.sqlite-shm
+================================================
+[Binary file]
+
+
+================================================
+FILE: web/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/be8fc967107d562340aa6bc47a19a0b8dc2ace74791bc8a07f763688e48e9db7.sqlite-wal
+================================================
+[Binary file]
+
+
+================================================
+FILE: web/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/metadata.sqlite-shm
+================================================
+[Binary file]
+
+
+================================================
+FILE: web/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/metadata.sqlite-wal
+================================================
+[Binary file]
 
 
 ================================================
