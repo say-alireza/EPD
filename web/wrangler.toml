@@ -1,7 +1,0 @@
-name = "epd-web"
-compatibility_date = "2026-08-20"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "epd-db-local"
-database_id = "local-db-id"
