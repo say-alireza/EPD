@@ -5,7 +5,6 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { registrationSchema, RegistrationFormValues } from "@/lib/schema";
-import { createRegistration, getSessions } from "@/lib/api";
 import { Session } from "@/lib/types";
 import { strings } from "@/lib/strings";
 import { Button } from "@/components/ui/button";
@@ -48,8 +47,13 @@ export function RegistrationForm() {
 
   const { handleSubmit, formState: { isSubmitting } } = methods;
 
+  // دریافت لیست سانس‌ها از API داخلی Next.js
   useEffect(() => {
-    getSessions()
+    fetch("/api/sessions")
+      .then(async (res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
       .then((data) => {
         setSessions(data);
         setIsLoadingSessions(false);
@@ -60,25 +64,36 @@ export function RegistrationForm() {
       });
   }, []);
 
+  // ارسال فرم به API داخلی ثبت‌نام
   const onSubmit = async (values: RegistrationFormValues) => {
     setSubmitError(null);
     try {
-      const response = await createRegistration({
-        fullName: values.fullName,
-        mobile: values.mobile,
-        email: values.email,
-        sessionId: values.sessionId,
-        acceptTerms: true,
-        languageLevel: values.languageLevel,
-        firstTime: values.firstTime,
-        topicSuggestion: values.topicSuggestion || undefined,
-        referralCode: values.referralCode || undefined,
-        heardFrom: values.heardFrom,
-        socialHandle: values.socialHandle || undefined,
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: values.fullName,
+          mobile: values.mobile,
+          email: values.email,
+          sessionId: values.sessionId,
+          acceptTerms: true,
+          languageLevel: values.languageLevel,
+          firstTime: values.firstTime,
+          topicSuggestion: values.topicSuggestion || undefined,
+          referralCode: values.referralCode || undefined,
+          heardFrom: values.heardFrom,
+          socialHandle: values.socialHandle || undefined,
+        }),
       });
 
-      if (response.paymentUrl) {
-        window.location.assign(response.paymentUrl);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || strings.form.generalError);
+      }
+
+      if (data.paymentUrl) {
+        window.location.assign(data.paymentUrl);
       } else {
         router.push("/register/success");
       }
@@ -118,7 +133,7 @@ export function RegistrationForm() {
           <TopicSuggestionField />
           <HeardFromField />
           <SocialHandleField />
-          <ReferralCodeField />
+          {/* <ReferralCodeField /> */}
         </fieldset>
 
         <div className="space-y-4">
@@ -130,5 +145,4 @@ export function RegistrationForm() {
       </form>
     </FormProvider>
   );
-
 }

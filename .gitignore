@@ -15,3 +15,7 @@ db.sqlite3
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Screenshots and raw telegram imports
+web/screenshots/
+web/public/files from telegram/

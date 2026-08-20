@@ -48,6 +48,8 @@ Directory structure:
     │   │   ├── globals.css
     │   │   ├── layout.tsx
     │   │   ├── page.tsx
+    │   │   ├── gallery/
+    │   │   │   └── page.tsx
     │   │   ├── lab/
     │   │   │   └── designs/
     │   │   │       ├── hero-a/
@@ -56,7 +58,13 @@ Directory structure:
     │   │   │       │   └── page.tsx
     │   │   │       └── hero-c/
     │   │   │           └── page.tsx
-    │   │   └── register/
+    │   │   ├── posters/
+    │   │   │   └── page.tsx
+    │   │   ├── register/
+    │   │   │   ├── page.tsx
+    │   │   │   └── success/
+    │   │   │       └── page.tsx
+    │   │   └── terms/
     │   │       └── page.tsx
     │   ├── components/
     │   │   ├── register/
@@ -82,6 +90,10 @@ Directory structure:
     │   │       ├── logo.tsx
     │   │       ├── select.tsx
     │   │       └── textarea.tsx
+    │   ├── data/
+    │   │   ├── gallery.json
+    │   │   ├── next-session.json
+    │   │   └── posters.json
     │   ├── lib/
     │   │   ├── api.ts
     │   │   ├── asset.ts
@@ -212,13 +224,7 @@ I reviewed react hooks XD
 ================================================
 FILE: package.json
 ================================================
-{
-  "dependencies": {
-    "@hookform/resolvers": "^5.8.0",
-    "react-hook-form": "^7.85.0",
-    "zod": "^4.4.3"
-  }
-}
+{}
 
 
 
@@ -686,22 +692,18 @@ FILE: web/next.config.ts
 ================================================
 import type { NextConfig } from "next";
 
-const isProd = process.env.NODE_ENV === "production";
-const repoName = "EPD"; // Exact GitHub repo case
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
-  basePath: isProd ? `/${repoName}` : "",
-  assetPrefix: isProd ? `/${repoName}/` : "",
+  basePath,
   images: {
     unoptimized: true,
   },
 };
 
 export default nextConfig;
-
-
 
 
 
@@ -722,7 +724,9 @@ FILE: web/package.json
     "@hookform/resolvers": "^5.8.0",
     "next": "16.3.1",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-hook-form": "^7.85.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -911,72 +915,47 @@ export default function RootLayout({
 ================================================
 FILE: web/app/page.tsx
 ================================================
-import Image from "next/image";
+Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x81 in position 8803: character maps to <undefined>
 
-export default function Home() {
+
+================================================
+FILE: web/app/gallery/page.tsx
+================================================
+import { strings } from "@/lib/strings";
+import Link from "next/link";
+import { EpdLogo } from "@/components/ui/logo";
+
+export default function GalleryPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+    <div className="min-h-screen bg-ground text-ink p-6 sm:p-12 flex flex-col justify-between max-w-5xl mx-auto">
+      <header className="flex items-center justify-between border-b border-border pb-6">
+        <Link href="/" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal">
+          <EpdLogo className="h-10 w-auto" />
+        </Link>
+        <Link
+          href="/"
+          className="text-xs font-bold text-ink-muted hover:text-ink transition-colors"
+        >
+          بازگشت به صفحه اصلی
+        </Link>
+      </header>
+
+      <main className="my-16 space-y-6 text-start">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-ink">
+          {strings.landing.gallery.title}
+        </h1>
+        <p className="text-base text-ink-muted leading-relaxed">
+          {strings.landing.gallery.subtitle}
+        </p>
+        <div className="p-8 bg-surface border border-dashed border-border rounded-xl text-center text-sm text-ink-muted">
+          آرشیو کامل تصاویر هفتگی به زودی بارگذاری خواهد شد.
         </div>
       </main>
+
+      <footer className="border-t border-border pt-6 text-xs text-ink-muted flex items-center justify-between">
+        <span>EPD English Discussion Club</span>
+        <span>{strings.landing.footer.allRights}</span>
+      </footer>
     </div>
   );
 }
@@ -999,6 +978,50 @@ Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x81 in posi
 FILE: web/app/lab/designs/hero-c/page.tsx
 ================================================
 Error reading file with 'cp1252': 'charmap' codec can't decode byte 0x81 in position 7895: character maps to <undefined>
+
+
+================================================
+FILE: web/app/posters/page.tsx
+================================================
+import { strings } from "@/lib/strings";
+import Link from "next/link";
+import { EpdLogo } from "@/components/ui/logo";
+
+export default function PostersPage() {
+  return (
+    <div className="min-h-screen bg-ground text-ink p-6 sm:p-12 flex flex-col justify-between max-w-5xl mx-auto">
+      <header className="flex items-center justify-between border-b border-border pb-6">
+        <Link href="/" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal">
+          <EpdLogo className="h-10 w-auto" />
+        </Link>
+        <Link
+          href="/"
+          className="text-xs font-bold text-ink-muted hover:text-ink transition-colors"
+        >
+          بازگشت به صفحه اصلی
+        </Link>
+      </header>
+
+      <main className="my-16 space-y-6 text-start">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-ink">
+          {strings.landing.pastPosters.title}
+        </h1>
+        <p className="text-base text-ink-muted leading-relaxed">
+          {strings.landing.pastPosters.subtitle}
+        </p>
+        <div className="p-8 bg-surface border border-dashed border-border rounded-xl text-center text-sm text-ink-muted">
+          آرشیو کامل پوسترهای دوره‌های قبل به زودی بارگذاری خواهد شد.
+        </div>
+      </main>
+
+      <footer className="border-t border-border pt-6 text-xs text-ink-muted flex items-center justify-between">
+        <span>EPD English Discussion Club</span>
+        <span>{strings.landing.footer.allRights}</span>
+      </footer>
+    </div>
+  );
+}
+
 
 
 ================================================
@@ -1039,6 +1062,101 @@ export default function RegisterPage() {
   );
 }
 
+
+
+
+================================================
+FILE: web/app/register/success/page.tsx
+================================================
+import { strings } from "@/lib/strings";
+import Link from "next/link";
+import { EpdLogo } from "@/components/ui/logo";
+
+export default function RegisterSuccessPage() {
+  return (
+    <div className="min-h-screen bg-ground text-ink p-6 sm:p-12 flex flex-col justify-between max-w-5xl mx-auto">
+      <header className="flex items-center justify-between border-b border-border pb-6">
+        <Link href="/" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal">
+          <EpdLogo className="h-10 w-auto" />
+        </Link>
+      </header>
+
+      <main className="my-16 space-y-6 text-start max-w-md mx-auto bg-surface border border-border p-8 rounded-xl">
+        <div className="w-12 h-12 rounded-full bg-brand-teal/20 text-brand-teal flex items-center justify-center font-bold text-xl mb-4">
+          ✓
+        </div>
+        <h1 className="text-2xl font-extrabold text-ink">
+          ثبت‌نام شما با موفقیت ثبت شد
+        </h1>
+        <p className="text-sm text-ink-muted leading-relaxed">
+          اطلاعات نشست و لوکیشن دقیق از طریق پیامک برای شما ارسال خواهد شد.
+        </p>
+        <div className="pt-4">
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center w-full px-6 py-3 bg-brand-primary text-surface font-extrabold text-sm rounded-lg hover:opacity-90 transition-opacity"
+          >
+            بازگشت به صفحه اصلی
+          </Link>
+        </div>
+      </main>
+
+      <footer className="border-t border-border pt-6 text-xs text-ink-muted flex items-center justify-between">
+        <span>EPD English Discussion Club</span>
+        <span>{strings.landing.footer.allRights}</span>
+      </footer>
+    </div>
+  );
+}
+
+
+
+================================================
+FILE: web/app/terms/page.tsx
+================================================
+import { strings } from "@/lib/strings";
+import Link from "next/link";
+import { EpdLogo } from "@/components/ui/logo";
+
+export default function TermsPage() {
+  return (
+    <div className="min-h-screen bg-ground text-ink p-6 sm:p-12 flex flex-col justify-between max-w-5xl mx-auto">
+      <header className="flex items-center justify-between border-b border-border pb-6">
+        <Link href="/" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal">
+          <EpdLogo className="h-10 w-auto" />
+        </Link>
+        <Link
+          href="/"
+          className="text-xs font-bold text-ink-muted hover:text-ink transition-colors"
+        >
+          بازگشت به صفحه اصلی
+        </Link>
+      </header>
+
+      <main className="my-16 space-y-6 text-start">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-ink">
+          {strings.landing.footer.terms}
+        </h1>
+        <div className="space-y-4 text-sm text-ink-muted leading-relaxed">
+          <p>
+            ۱. حضور در جلسات مستلزم ثبت‌نام قبلی از طریق وب‌سایت است.
+          </p>
+          <p>
+            ۲. زبان رسمی تمام طول جلسه انگلیسی بوده و صحبت به زبان فارسی مجاز نیست.
+          </p>
+          <p>
+            ۳. لغو ثبت‌نام و عودت وجه تا ۲۴ ساعت قبل از برگزاری امکان‌پذیر است.
+          </p>
+        </div>
+      </main>
+
+      <footer className="border-t border-border pt-6 text-xs text-ink-muted flex items-center justify-between">
+        <span>EPD English Discussion Club</span>
+        <span>{strings.landing.footer.allRights}</span>
+      </footer>
+    </div>
+  );
+}
 
 
 
@@ -2128,6 +2246,236 @@ Textarea.displayName = "Textarea";
 
 
 ================================================
+FILE: web/data/gallery.json
+================================================
+[
+  {
+    "id": "gallery-pop-culture-01",
+    "sessionNumber": 12,
+    "image": "/media/gallery/gallery-pop-culture-01.jpg"
+  },
+  {
+    "id": "gallery-pop-culture-02",
+    "sessionNumber": 12,
+    "image": "/media/gallery/gallery-pop-culture-02.jpg"
+  },
+  {
+    "id": "gallery-childhood-01",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-childhood-01.jpg"
+  },
+  {
+    "id": "gallery-childhood-02",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-childhood-02.jpg"
+  },
+  {
+    "id": "gallery-superstitions-01",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-superstitions-01.jpg"
+  },
+  {
+    "id": "gallery-superstitions-02",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-superstitions-02.jpg"
+  },
+  {
+    "id": "gallery-perfect-day-01",
+    "sessionNumber": 7,
+    "image": "/media/gallery/gallery-perfect-day-01.jpg"
+  },
+  {
+    "id": "gallery-perfect-day-02",
+    "sessionNumber": 7,
+    "image": "/media/gallery/gallery-perfect-day-02.jpg"
+  },
+  {
+    "id": "gallery-borrowed-opinions-01",
+    "sessionNumber": 5,
+    "image": "/media/gallery/gallery-borrowed-opinions-01.jpg"
+  },
+  {
+    "id": "gallery-people-everywhere-01",
+    "sessionNumber": 4,
+    "image": "/media/gallery/gallery-people-everywhere-01.jpg"
+  },
+  {
+    "id": "gallery-football-cult-01",
+    "sessionNumber": 3,
+    "image": "/media/gallery/gallery-football-cult-01.jpg"
+  },
+  {
+    "id": "gallery-dare-to-begin-01",
+    "sessionNumber": 1,
+    "image": "/media/gallery/gallery-dare-to-begin-01.jpg"
+  },
+  {
+    "id": "gallery-epd9-01",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-01.jpg"
+  },
+  {
+    "id": "gallery-epd9-02",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-02.jpg"
+  },
+  {
+    "id": "gallery-epd9-03",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-03.jpg"
+  },
+  {
+    "id": "gallery-epd9-04",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-04.jpg"
+  },
+  {
+    "id": "gallery-epd10-01",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-01.jpg"
+  },
+  {
+    "id": "gallery-epd10-02",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-02.jpg"
+  },
+  {
+    "id": "gallery-epd10-03",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-03.jpg"
+  },
+  {
+    "id": "gallery-epd10-04",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-04.jpg"
+  },
+  {
+    "id": "gallery-epd11-01",
+    "sessionNumber": 11,
+    "image": "/media/gallery/gallery-epd11-01.jpg"
+  },
+  {
+    "id": "gallery-epd11-02",
+    "sessionNumber": 11,
+    "image": "/media/gallery/gallery-epd11-02.jpg"
+  }
+]
+
+
+
+================================================
+FILE: web/data/next-session.json
+================================================
+{
+  "id": "session-upcoming",
+  "number": 13,
+  "dateIso": "2026-08-27T10:00:00+03:30",
+  "timeFa": "۱۰:۰۰ تا ۱۲:۰۰",
+  "timeEn": "10:00 – 12:00",
+  "venueFa": "مشهد، بلوار احمدآباد، کافه کتاب آفتاب",
+  "venueEn": "Mashhad · Aftab Book Cafe",
+  "levelFa": "متوسط و پیشرفته (B1+)",
+  "remainingSeats": 6,
+  "topicEn": "Upcoming Session Topic",
+  "topicFa": "موضوع و محورهای گفت‌وگوی این هفته به زودی اعلام خواهد شد",
+  "posterImage": null
+}
+
+
+
+================================================
+FILE: web/data/posters.json
+================================================
+[
+  {
+    "id": "poster-12",
+    "sessionNumber": 12,
+    "topicEn": "Pop Culture",
+    "dateFa": "Ù¾Ù†Ø¬â€ŒØ´Ù†Ø¨Ù‡ Û²Û² Ù…Ø±Ø¯Ø§Ø¯ Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-pop-culture.jpg"
+  },
+  {
+    "id": "poster-11",
+    "sessionNumber": 11,
+    "topicEn": "EPD Quest for Victory",
+    "dateFa": "Ø³Ù‡â€ŒØ´Ù†Ø¨Ù‡ Û²Û° Ù…Ø±Ø¯Ø§Ø¯ Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-game-night.jpg"
+  },
+  {
+    "id": "poster-10",
+    "sessionNumber": 10,
+    "topicEn": "Childhood Memories",
+    "dateFa": "Ù¾Ù†Ø¬â€ŒØ´Ù†Ø¨Ù‡ Û±Ûµ Ù…Ø±Ø¯Ø§Ø¯ Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-childhood-memories.jpg"
+  },
+  {
+    "id": "poster-9",
+    "sessionNumber": 9,
+    "topicEn": "Superstitions",
+    "dateFa": "Ù¾Ù†Ø¬â€ŒØ´Ù†Ø¨Ù‡ Û¸ Ù…Ø±Ø¯Ø§Ø¯ Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-superstitions.jpg"
+  },
+  {
+    "id": "poster-8",
+    "sessionNumber": 8,
+    "topicEn": "Green Flag",
+    "dateFa": "Ù¾Ù†Ø¬â€ŒØ´Ù†Ø¨Ù‡ Û± Ù…Ø±Ø¯Ø§Ø¯ Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-green-flag.jpg"
+  },
+  {
+    "id": "poster-7",
+    "sessionNumber": 7,
+    "topicEn": "The Perfect Day",
+    "dateFa": "Ù¾Ù†Ø¬â€ŒØ´Ù†Ø¨Ù‡ Û²Ûµ ØªÛŒØ± Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-perfect-day.jpg"
+  },
+  {
+    "id": "poster-6",
+    "sessionNumber": 6,
+    "topicEn": "The Brand Called You",
+    "dateFa": "Ú†Ù‡Ø§Ø±Ø´Ù†Ø¨Ù‡ Û±Û· ØªÛŒØ± Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-brand-called-you.jpg"
+  },
+  {
+    "id": "poster-5",
+    "sessionNumber": 5,
+    "topicEn": "Borrowed Opinions",
+    "dateFa": "Ù¾Ù†Ø¬â€ŒØ´Ù†Ø¨Ù‡ Û±Û± ØªÛŒØ± Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-borrowed-opinions.jpg"
+  },
+  {
+    "id": "poster-4",
+    "sessionNumber": 4,
+    "topicEn": "People Everywhere",
+    "dateFa": "Ø³Ù‡â€ŒØ´Ù†Ø¨Ù‡ Û² ØªÛŒØ± Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-people-everywhere.jpg"
+  },
+  {
+    "id": "poster-3",
+    "sessionNumber": 3,
+    "topicEn": "Football, the Cult",
+    "dateFa": "Ù¾Ù†Ø¬â€ŒØ´Ù†Ø¨Ù‡ Û²Û¸ Ø®Ø±Ø¯Ø§Ø¯ Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-football-cult.jpg"
+  },
+  {
+    "id": "poster-2",
+    "sessionNumber": 2,
+    "topicEn": "Fame Game",
+    "dateFa": "Ù¾Ù†Ø¬â€ŒØ´Ù†Ø¨Ù‡ Û²Û± Ø®Ø±Ø¯Ø§Ø¯ Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-fame-game.jpg"
+  },
+  {
+    "id": "poster-1",
+    "sessionNumber": 1,
+    "topicEn": "Dare to Begin",
+    "dateFa": "Ù¾Ù†Ø¬â€ŒØ´Ù†Ø¨Ù‡ Û±Û´ Ø®Ø±Ø¯Ø§Ø¯ Û±Û´Û°Ûµ",
+    "image": "/media/posters/session-dare-to-begin.jpg"
+  }
+]
+
+
+
+================================================
 FILE: web/lib/api.ts
 ================================================
 import { RegistrationPayload, RegistrationResponse, Session } from "./types";
@@ -2177,14 +2525,12 @@ export async function createRegistration(payload: RegistrationPayload): Promise<
 ================================================
 FILE: web/lib/asset.ts
 ================================================
-const isProd = process.env.NODE_ENV === "production";
-const repoName = "EPD";
-const basePath = isProd ? `/${repoName}` : "";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 /**
- * Prefix static asset path with basePath in production for GitHub Pages compatibility.
+ * Prefix static asset path with NEXT_PUBLIC_BASE_PATH.
  * Usage:
- *   assetPath("/images/poster.jpg") => "/EPD/images/poster.jpg" in prod, "/images/poster.jpg" in dev.
+ *   assetPath("/images/poster.jpg") => "/EPD/images/poster.jpg" or "/images/poster.jpg" depending on env var.
  */
 export function assetPath(path: string): string {
   if (!path) return "";
@@ -2341,6 +2687,7 @@ jobs:
           node-version: "20"
 
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v5
 
       - name: Install dependencies
@@ -2349,6 +2696,8 @@ jobs:
 
       - name: Build with Next.js
         working-directory: ./web
+        env:
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: npm run build
 
       - name: Upload artifact

@@ -57,7 +57,7 @@ export const strings = {
       },
     },
     socialHandle: {
-      label: "شناسه کاربری (اینستاگرام یا تلگرام)",
+      label: "شناسه کاربری (تلگرام)",
       placeholder: "@username",
     },
     referralCode: {
