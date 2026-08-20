@@ -19,8 +19,8 @@ export async function POST(request: Request) {
 
     // ۱. ذخیره‌سازی در دیتابیس Cloudflare D1
     try {
-      // @ts-ignore
-      const DB = process.env.DB;
+      // تایپ‌اسکریپت را متوجه می‌سازیم که DB شیء دیتابیس D1 است
+      const DB = (process.env as unknown as { DB: any }).DB;
       if (DB) {
         await DB.prepare(
           "INSERT INTO registrations (full_name, email, mobile, session_id) VALUES (?, ?, ?, ?)"
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       console.error("D1 Database Insert Error:", dbError);
     }
 
-    // ۲. ارسال اتوماتیک و هم‌زمان به Google Sheet (بدون معطل کردن پاسخ کاربر)
+    // ۲. ارسال اتوماتیک و هم‌زمان به Google Sheet
     fetch(GOOGLE_SHEET_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
