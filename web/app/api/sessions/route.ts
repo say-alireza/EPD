@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-
+export const runtime = "edge";
 export async function GET() {
   try {
     // لیست سانس‌های فعال (فعلاً به‌صورت هاردکد شده تا بعداً به دیتابیس وصل شود)
