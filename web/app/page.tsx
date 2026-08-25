@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
+import { Typewriter } from "@/components/ui/typewriter";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
 import nextSessionData from "@/data/next-session.json";
@@ -18,7 +19,7 @@ function getFormattedJalaliDate(isoString: string): string {
 }
 
 export default function HomePage() {
-  const { hero, nextSessionPoster, whatHappens, gallery, pastPosters, faq, footer } =
+  const { hero, nextSessionPoster, gallery, pastPosters, faq, footer } =
     strings.landing;
 
   const formattedDate = getFormattedJalaliDate(nextSessionData.dateIso);
@@ -26,13 +27,13 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-ground text-ink flex flex-col selection:bg-brand-teal selection:text-ink">
-      {/* 1. Header — 36px lockup at start edge, one CTA link */}
+      {/* 1. Header — 48px (h-12) lockup at start edge, one CTA link */}
       <header className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between border-b border-border">
         <Link
           href="/"
           className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal"
         >
-          <EpdLogo className="h-9 sm:h-10 w-auto" variant="lockup" />
+          <EpdLogo className="h-12 w-auto" variant="lockup" />
         </Link>
         <Link
           href="/register"
@@ -43,188 +44,112 @@ export default function HomePage() {
       </header>
 
       <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-24">
-        {/* 2. Hero — Oversized Typography (Variant B) with Data Matrix (Variant C) */}
-        <section className="flex flex-col gap-8 text-start">
-          <div className="flex flex-col gap-4">
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink leading-tight tracking-tight">
-              {hero.headline}
-            </h1>
-            <p className="text-base sm:text-lg font-normal text-ink-muted leading-relaxed max-w-3xl">
-              {hero.factLine}
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            {/* Coral CTA #1 */}
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center px-8 py-4 bg-brand-accent text-surface font-extrabold text-base transition-opacity hover:opacity-90 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded-lg shadow-sm"
-            >
-              {hero.cta}
-            </Link>
-            <div className="inline-flex items-center gap-2 ps-1 text-sm font-normal text-ink">
-              <span className="w-2.5 h-2.5 rounded-full bg-brand-teal shrink-0" />
-              <span>{nextSessionData.remainingSeats} صندلی خالی باقی‌مانده</span>
+        {/* 2. Hero — Redesigned Two-Column Layout */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center text-start">
+          {/* Right Column (lg:col-span-7) */}
+          <div className="lg:col-span-7 flex flex-col items-start gap-6">
+            {/* Capacity badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-accent/10 text-brand-accent text-xs sm:text-sm font-bold">
+              <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse" />
+              <span>{nextSessionData.remainingSeats ? `${nextSessionData.remainingSeats.toLocaleString("fa-IR")} صندلی باقیمانده...` : "۶ صندلی باقیمانده..."}</span>
             </div>
-          </div>
 
-          {/* Facts matrix (Variant C session facts) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6 bg-surface border border-border rounded-xl">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-normal text-ink-muted">
-                {hero.details.locationLabel}
-              </span>
-              <p className="text-sm font-bold text-ink">
-                {nextSessionData.venueFa}
+            {/* Main heading with Typewriter */}
+            <div className="space-y-4 w-full">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink leading-tight tracking-tight min-h-[3.5rem] sm:min-h-[4.5rem]">
+                <Typewriter
+                  words={[
+                    "An excuse for speaking",
+                    "An excuse for connecting",
+                    "An excuse for learning",
+                    "مکانی برای مکالمه واقعی",
+                  ]}
+                />
+              </h1>
+              <p className="text-base sm:text-lg font-normal text-ink-muted leading-relaxed max-w-xl">
+                {hero.factLine}
               </p>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-normal text-ink-muted">
-                {hero.details.timeLabel}
-              </span>
-              <p className="text-sm font-bold text-ink">
-                {formattedDate} · <span dir="ltr">{nextSessionData.timeFa}</span>
-              </p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-normal text-ink-muted">
-                {hero.details.levelLabel}
-              </span>
-              <p className="text-sm font-bold text-ink">
-                {nextSessionData.levelFa}
-              </p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-normal text-ink-muted">
-                {hero.details.capacityLabel}
-              </span>
-              <p className="text-sm font-bold text-ink">
-                {nextSessionData.remainingSeats} صندلی خالی
-              </p>
-            </div>
-          </div>
-        </section>
 
-        {/* 3. Next session poster — large or manifest card */}
-        <section className="bg-surface border border-border rounded-2xl p-6 sm:p-10 flex flex-col lg:flex-row gap-8 items-stretch">
-          <div className="lg:w-1/2 flex flex-col justify-between gap-6 text-start">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <span className="px-2.5 py-1 bg-brand-gold text-ink text-xs font-extrabold rounded">
-                  جلسه {nextSessionData.number}
-                </span>
-                <span className="text-xs font-medium text-ink-muted">
-                  {nextSessionPoster.eyebrow}
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-ink">
-                {nextSessionPoster.title}
-              </h2>
-              <div className="space-y-3 pt-2">
-                <div>
-                  <span className="text-xs text-ink-muted block mb-1">
-                    {nextSessionPoster.topicEnLabel}
-                  </span>
-                  <p className="text-lg sm:text-xl font-bold text-ink font-sans" dir="ltr">
-                    {nextSessionData.topicEn}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs text-ink-muted block mb-1">
-                    {nextSessionPoster.topicFaLabel}
-                  </span>
-                  <p className="text-sm sm:text-base text-ink leading-relaxed">
-                    {nextSessionData.topicFa}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-border pt-4 text-xs">
-              <div>
-                <span className="text-ink-muted block">{nextSessionPoster.dateLabel}</span>
-                <span className="font-bold text-ink">{formattedDate}</span>
-              </div>
-              <div>
-                <span className="text-ink-muted block">{nextSessionPoster.timeLabel}</span>
-                <span className="font-bold text-ink" dir="ltr">
-                  {nextSessionData.timeFa}
-                </span>
-              </div>
-              <div className="sm:col-span-2">
-                <span className="text-ink-muted block">{nextSessionPoster.venueLabel}</span>
-                <span className="font-bold text-ink">{nextSessionData.venueFa}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:w-1/2 flex items-center justify-center bg-ground border border-dashed border-brand-primary rounded-xl p-8 overflow-hidden min-h-[320px]">
-            {nextSessionData.posterImage ? (
-              <Image
-                src={assetPath(nextSessionData.posterImage)}
-                alt={nextSessionData.topicEn}
-                width={600}
-                height={800}
-                className="w-full max-w-sm h-auto object-contain rounded-lg shadow-sm"
-                priority
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center text-center gap-4 py-8 max-w-sm">
-                <div className="w-12 h-12 rounded-full bg-brand-gold/20 text-brand-gold flex items-center justify-center font-bold text-lg">
-                  🎨
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-lg font-extrabold text-ink">
-                    {hero.poster.emptyTitle}
-                  </h3>
-                  <p className="text-xs text-ink-muted leading-relaxed">
-                    {hero.poster.emptySubtitle}
-                  </p>
-                </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-semibold text-brand-primary">
-                  <span className="w-2 h-2 rounded-full bg-brand-teal" />
-                  <span>ثبت‌نام برای ظرفیت محدود فعال است</span>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* 4. What actually happens in a session — four short blocks, no marketing fluff */}
-        {/* <section className="flex flex-col gap-8 text-start">
-          <div className="flex flex-col gap-2">
-            <span className="text-xs font-bold text-brand-teal tracking-wider uppercase">
-              {whatHappens.eyebrow}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-ink">
-              {whatHappens.title}
-            </h2>
-            <p className="text-sm sm:text-base text-ink-muted max-w-2xl">
-              {whatHappens.subtitle}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {whatHappens.blocks.map((block) => (
-              <div
-                key={block.number}
-                className="bg-surface border border-border rounded-xl p-6 flex flex-col justify-between gap-4"
+            {/* Primary CTA registration button */}
+            <div className="pt-2">
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center px-8 py-4 bg-brand-accent text-surface font-extrabold text-base transition-opacity hover:opacity-90 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded-lg shadow-sm"
               >
-                <span className="text-xl font-extrabold text-brand-primary">
-                  {block.number}
-                </span>
-                <div className="space-y-2">
-                  <h3 className="text-base font-bold text-ink">{block.title}</h3>
-                  <p className="text-xs sm:text-sm text-ink-muted leading-relaxed">
-                    {block.description}
-                  </p>
+                {hero.cta}
+              </Link>
+            </div>
+          </div>
+
+          {/* Left Column (lg:col-span-5) — Upcoming Session Details */}
+          <div className="lg:col-span-5 w-full">
+            <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="px-2.5 py-1 bg-brand-gold text-ink text-xs font-extrabold rounded">
+                    جلسه {nextSessionData.number}
+                  </span>
+                  <span className="text-xs font-medium text-ink-muted">
+                    {nextSessionPoster.eyebrow}
+                  </span>
+                </div>
+                <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-teal">
+                  <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
+                  <span>ثبت‌نام فعال</span>
                 </div>
               </div>
-            ))}
-          </div>
-        </section> */}
 
-        {/* 5. Weekly photo gallery — clean compact badge with session tag */}
+              {/* Poster placeholder box with dashed borders */}
+              <div className="w-full bg-ground border border-dashed border-brand-primary/40 rounded-xl p-6 flex flex-col items-center justify-center text-center gap-3 overflow-hidden min-h-[220px]">
+                {nextSessionData.posterImage ? (
+                  <Image
+                    src={assetPath(nextSessionData.posterImage)}
+                    alt={nextSessionData.topicEn}
+                    width={400}
+                    height={500}
+                    className="w-full max-w-xs h-auto object-contain rounded-lg shadow-xs"
+                    priority
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-center gap-3 py-4">
+                    <div className="w-12 h-12 rounded-full bg-brand-gold/20 text-brand-gold flex items-center justify-center font-bold text-lg">
+                      🎨
+                    </div>
+                    <div className="space-y-1.5">
+                      <h3 className="text-base font-extrabold text-ink">
+                        {hero.poster.emptyTitle}
+                      </h3>
+                      <p className="text-xs text-ink-muted leading-relaxed max-w-xs">
+                        {hero.poster.emptySubtitle}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Time and location details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-border pt-4 text-xs">
+                <div>
+                  <span className="text-ink-muted block">{nextSessionPoster.dateLabel}</span>
+                  <span className="font-bold text-ink">{formattedDate}</span>
+                </div>
+                <div>
+                  <span className="text-ink-muted block">{nextSessionPoster.timeLabel}</span>
+                  <span className="font-bold text-ink" dir="ltr">
+                    {nextSessionData.timeFa}
+                  </span>
+                </div>
+                <div className="sm:col-span-2">
+                  <span className="text-ink-muted block">{nextSessionPoster.venueLabel}</span>
+                  <span className="font-bold text-ink">{nextSessionData.venueFa}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. Weekly photo gallery — clean compact badge with session tag */}
         <section className="flex flex-col gap-8 text-start">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
@@ -272,7 +197,7 @@ export default function HomePage() {
           )}
         </section>
 
-        {/* 6. Past posters — compact strip, link to /posters */}
+        {/* 4. Past posters — compact strip, link to /posters */}
         <section className="flex flex-col gap-8 text-start">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
@@ -323,7 +248,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 7. FAQ — six questions as native <details> elements */}
+        {/* 5. FAQ — six questions as native <details> elements */}
         <section className="flex flex-col gap-8 text-start max-w-4xl mx-auto w-full">
           <div className="flex flex-col gap-2">
             <span className="text-xs font-bold text-brand-teal tracking-wider uppercase">
@@ -358,7 +283,7 @@ export default function HomePage() {
         </section>
       </main>
 
-      {/* 8. Footer — address, contact channels, social links, link to /terms */}
+      {/* 6. Footer — address, contact channels, social links, link to /terms */}
       <footer className="w-full bg-surface border-t border-border mt-16 py-12">
         <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12 text-start">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

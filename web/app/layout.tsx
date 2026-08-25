@@ -11,8 +11,10 @@ const vazir = Vazirmatn({
 export const metadata: Metadata = {
   title: "ثبت‌نام نشست‌های EPD",
   description: "سامانه ثبت‌نام نشست‌های گفتگو و توسعه EPD",
+  other: {
+    enamad: "59698252",
+  },
 };
-
 export default function RootLayout({
   children,
 }: {
