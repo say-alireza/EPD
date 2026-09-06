@@ -4,9 +4,15 @@ import {
   updateUpcomingSession,
   getSlots,
   updateSlot,
+  addSlot,
+  deleteSlot,
   getRegistrations,
+  getPosters,
   addPoster,
+  deletePoster,
+  getGallery,
   addGalleryItem,
+  deleteGalleryItem,
   getBotState,
   setBotState,
 } from "./db";
@@ -37,9 +43,9 @@ function getMainMenuKeyboard() {
     .text("مشخصات نشست جاری")
     .row()
     .text("مدیریت سانسها و ظرفیت")
-    .text("آپلود پوستر")
+    .text("مدیریت و آپلود پوستر")
     .row()
-    .text("آپلود عکس گالری")
+    .text("مدیریت و آپلود گالری")
     .text("راهنما")
     .resized()
     .persistent();
@@ -92,7 +98,7 @@ bot.hears("بازگشت به منوی اصلی", async (ctx) => {
 });
 
 // ----------------------------------------------------
-// MAIN MENU HEARS (REPLY KEYBOARD TRIGGERS)
+// MAIN MENU HEARS
 // ----------------------------------------------------
 
 // 1. Registrations List
@@ -155,7 +161,7 @@ bot.hears("مشخصات نشست جاری", async (ctx) => {
   await ctx.reply(text, { reply_markup: kb });
 });
 
-// 3. Manage Slots & Capacity
+// 3. Manage Slots & Capacity (Add, Delete, Toggle)
 bot.hears("مدیریت سانسها و ظرفیت", async (ctx) => {
   const userId = ctx.from?.id;
   if (!isAdmin(userId)) return;
@@ -169,34 +175,64 @@ bot.hears("مدیریت سانسها و ظرفیت", async (ctx) => {
     const status = s.isFull ? "[تکمیل ظرفیت]" : `[${s.remainingSeats} صندلی خالی]`;
     text += `• ${s.title}\n  وضعیت: ${status} (ظرفیت کل: ${s.capacity})\n\n`;
     kb.text(
-      s.isFull ? `باز کردن: ${s.id}` : `بستن: ${s.id}`,
+      s.isFull ? `باز کردن: ${s.title.substring(0, 18)}` : `بستن: ${s.title.substring(0, 18)}`,
       `toggle_slot_${s.id}`
-    ).row();
+    )
+      .text(`حذف`, `delete_slot_${s.id}`)
+      .row();
   });
+
+  kb.text("افزودن سانس جدید", "action_add_slot").row();
 
   await ctx.reply(text, { reply_markup: kb });
 });
 
-// 4. Upload Poster
-bot.hears("آپلود پوستر", async (ctx) => {
+// 4. Posters Management (Upload & Delete)
+bot.hears(["مدیریت و آپلود پوستر", "آپلود پوستر"], async (ctx) => {
   const userId = ctx.from?.id;
-  if (!isAdmin(userId) || !userId) return;
+  if (!isAdmin(userId)) return;
 
-  setBotState(userId, { step: "awaiting_poster_photo", data: {} });
-  await ctx.reply("تصویر پوستر نشست را به صورت عکس (Photo) ارسال کنید:", {
-    reply_markup: getCancelKeyboard(),
+  const posters = await getPosters();
+  let text = `مدیریت پوسترها (تعداد کل: ${posters.length})\n\n`;
+  const recent = posters.slice(0, 5);
+
+  recent.forEach((p, idx) => {
+    text += `${idx + 1}. جلسه ${p.sessionNumber}: ${p.topicEn} (${p.dateFa})\n`;
   });
+
+  const kb = new InlineKeyboard()
+    .text("آپلود پوستر نشست جدید", "action_upload_poster")
+    .row();
+
+  if (posters.length > 0) {
+    kb.text("حذف آخرین پوستر", `delete_poster_${posters[0].id}`).row();
+  }
+
+  await ctx.reply(text, { reply_markup: kb });
 });
 
-// 5. Upload Gallery
-bot.hears("آپلود عکس گالری", async (ctx) => {
+// 5. Gallery Management (Upload & Delete)
+bot.hears(["مدیریت و آپلود گالری", "آپلود عکس گالری"], async (ctx) => {
   const userId = ctx.from?.id;
-  if (!isAdmin(userId) || !userId) return;
+  if (!isAdmin(userId)) return;
 
-  setBotState(userId, { step: "awaiting_gallery_photo", data: {} });
-  await ctx.reply("عکس دورهمی جلسه را ارسال کنید:", {
-    reply_markup: getCancelKeyboard(),
+  const gallery = await getGallery();
+  let text = `مدیریت تصاویر گالری (تعداد کل عکسها: ${gallery.length})\n\n`;
+  const recent = gallery.slice(0, 5);
+
+  recent.forEach((g, idx) => {
+    text += `${idx + 1}. عکس مربوط به جلسه ${g.sessionNumber}\n`;
   });
+
+  const kb = new InlineKeyboard()
+    .text("آپلود عکس جدید گالری", "action_upload_gallery")
+    .row();
+
+  if (gallery.length > 0) {
+    kb.text("حذف آخرین عکس اضافه شده", `delete_gallery_${gallery[0].id}`).row();
+  }
+
+  await ctx.reply(text, { reply_markup: kb });
 });
 
 // 6. Help
@@ -207,15 +243,15 @@ bot.hears("راهنما", async (ctx) => {
   const text =
     "راهنمای پنل مدیریت EPD:\n\n" +
     "- برای لغو هر فرآیند، دکمه «لغو عملیات» یا دستور /cancel را بزنید.\n" +
-    "- با آپلود پوستر، تصویر مستقیماً در صفحه اصلی و آرشیو پوسترها قرار میگیرد.\n" +
-    "- با آپلود عکس گالری، تصویر به بخش تصاویر جلسات اضافه خواهد شد.\n" +
-    "- تغییر ظرفیت سانسها بلافاصله در فرم ثبتنام اعمال میشود.";
+    "- با افزودن یا حذف سانس، لیست بلافاصله در فرم ثبتنام سایت آپدیت میشود.\n" +
+    "- با آپلود پوستر، اطلاعات جلسه جدید روی صفحه اصلی و آرشیو مینشیند.\n" +
+    "- با آپلود عکس گالری، تصویر همراه با برچسب شماره جلسه به گالری اضافه میشود.";
 
   await ctx.reply(text, { reply_markup: getMainMenuKeyboard() });
 });
 
 // ----------------------------------------------------
-// INLINE CALLBACKS
+// INLINE CALLBACKS & ACTIONS
 // ----------------------------------------------------
 
 bot.callbackQuery("inline_refresh_registrations", async (ctx) => {
@@ -246,6 +282,7 @@ bot.callbackQuery("inline_refresh_registrations", async (ctx) => {
   await ctx.editMessageText(text, { reply_markup: refreshKb });
 });
 
+// Slot Toggle
 bot.callbackQuery(/^toggle_slot_(.+)$/, async (ctx) => {
   await ctx.answerCallbackQuery("وضعیت سانس تغییر کرد");
   const slotId = ctx.match[1];
@@ -268,12 +305,95 @@ bot.callbackQuery(/^toggle_slot_(.+)$/, async (ctx) => {
     const status = s.isFull ? "[تکمیل ظرفیت]" : `[${s.remainingSeats} صندلی خالی]`;
     text += `• ${s.title}\n  وضعیت: ${status} (ظرفیت کل: ${s.capacity})\n\n`;
     kb.text(
-      s.isFull ? `باز کردن: ${s.id}` : `بستن: ${s.id}`,
+      s.isFull ? `باز کردن: ${s.title.substring(0, 18)}` : `بستن: ${s.title.substring(0, 18)}`,
       `toggle_slot_${s.id}`
-    ).row();
+    )
+      .text(`حذف`, `delete_slot_${s.id}`)
+      .row();
   });
 
+  kb.text("افزودن سانس جدید", "action_add_slot").row();
   await ctx.editMessageText(text, { reply_markup: kb });
+});
+
+// Slot Delete
+bot.callbackQuery(/^delete_slot_(.+)$/, async (ctx) => {
+  const slotId = ctx.match[1];
+  await deleteSlot(slotId);
+  await ctx.answerCallbackQuery("سانس با موفقیت حذف شد");
+
+  const updatedSlots = await getSlots();
+  let text = "مدیریت سانسها و ظرفیت صندلیها (سانس حذف شد):\n\n";
+  const kb = new InlineKeyboard();
+
+  updatedSlots.forEach((s) => {
+    const status = s.isFull ? "[تکمیل ظرفیت]" : `[${s.remainingSeats} صندلی خالی]`;
+    text += `• ${s.title}\n  وضعیت: ${status} (ظرفیت کل: ${s.capacity})\n\n`;
+    kb.text(
+      s.isFull ? `باز کردن: ${s.title.substring(0, 18)}` : `بستن: ${s.title.substring(0, 18)}`,
+      `toggle_slot_${s.id}`
+    )
+      .text(`حذف`, `delete_slot_${s.id}`)
+      .row();
+  });
+
+  kb.text("افزودن سانس جدید", "action_add_slot").row();
+  await ctx.editMessageText(text, { reply_markup: kb });
+});
+
+// Add Slot prompt
+bot.callbackQuery("action_add_slot", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  setBotState(userId, { step: "awaiting_new_slot_title", data: {} });
+  await ctx.reply("عنوان سانس جدید را وارد کنید (مثال: سانس اول: پنجشنبه ساعت ۱۶ تا ۱۸):", {
+    reply_markup: getCancelKeyboard(),
+  });
+});
+
+// Poster Delete
+bot.callbackQuery(/^delete_poster_(.+)$/, async (ctx) => {
+  const posterId = ctx.match[1];
+  await deletePoster(posterId);
+  await ctx.answerCallbackQuery("پوستر با موفقیت حذف شد");
+  await ctx.reply("پوستر مورد نظر از آرشیو سایت حذف شد.", {
+    reply_markup: getMainMenuKeyboard(),
+  });
+});
+
+// Gallery Delete
+bot.callbackQuery(/^delete_gallery_(.+)$/, async (ctx) => {
+  const galleryId = ctx.match[1];
+  await deleteGalleryItem(galleryId);
+  await ctx.answerCallbackQuery("عکس با موفقیت حذف شد");
+  await ctx.reply("تصویر مورد نظر از گالری سایت حذف شد.", {
+    reply_markup: getMainMenuKeyboard(),
+  });
+});
+
+// Upload triggers via inline
+bot.callbackQuery("action_upload_poster", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  setBotState(userId, { step: "awaiting_poster_photo", data: {} });
+  await ctx.reply("تصویر پوستر نشست را به صورت عکس ارسال کنید:", {
+    reply_markup: getCancelKeyboard(),
+  });
+});
+
+bot.callbackQuery("action_upload_gallery", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  setBotState(userId, { step: "awaiting_gallery_photo", data: {} });
+  await ctx.reply("عکس دورهمی جلسه را ارسال کنید:", {
+    reply_markup: getCancelKeyboard(),
+  });
 });
 
 // Edit prompts via inline
@@ -327,7 +447,7 @@ bot.callbackQuery("edit_session_venue", async (ctx) => {
 
 bot.on("message:text", async (ctx) => {
   const userId = ctx.from?.id;
-  if (!isAdmin(userId)) return;
+  if (!isAdmin(userId) || !userId) return;
 
   const state = getBotState(userId);
   if (!state) return;
@@ -340,6 +460,44 @@ bot.on("message:text", async (ctx) => {
   }
 
   switch (state.step) {
+    // Adding Slot
+    case "awaiting_new_slot_title": {
+      setBotState(userId, {
+        step: "awaiting_new_slot_capacity",
+        data: { title: text },
+      });
+      await ctx.reply("ظرفیت کل این سانس را به عدد وارد کنید (مثال: 15):", {
+        reply_markup: getCancelKeyboard(),
+      });
+      break;
+    }
+
+    case "awaiting_new_slot_capacity": {
+      const cap = parseInt(text, 10);
+      if (isNaN(cap) || cap <= 0) {
+        await ctx.reply("لطفاً یک عدد معتبر بزرگتر از صفر وارد کنید:");
+        return;
+      }
+
+      const slotTitle = String(state.data.title);
+      const slotId = "slot-" + Date.now().toString(36);
+
+      await addSlot({
+        id: slotId,
+        title: slotTitle,
+        capacity: cap,
+        remainingSeats: cap,
+        isFull: false,
+      });
+
+      setBotState(userId, null);
+      await ctx.reply(`سانس جدید «${slotTitle}» با ظرفیت ${cap} نفر با موفقیت اضافه شد.`, {
+        reply_markup: getMainMenuKeyboard(),
+      });
+      break;
+    }
+
+    // Session edit
     case "awaiting_session_number": {
       const num = parseInt(text, 10);
       if (isNaN(num)) {
@@ -401,36 +559,11 @@ bot.on("message:text", async (ctx) => {
       break;
     }
 
-    case "awaiting_poster_topic": {
-      const { fileUrl, sessionNumber, dateFa } = state.data;
-      const topicEn = text;
-
-      const posterId = `poster-${sessionNumber}-${Date.now()}`;
-      await addPoster({
-        id: posterId,
-        sessionNumber: Number(sessionNumber),
-        topicEn,
-        dateFa: String(dateFa || "پنجشنبه جاری"),
-        image: String(fileUrl),
-      });
-
-      await updateUpcomingSession({
-        number: Number(sessionNumber),
-        topicEn,
-        posterImage: String(fileUrl),
-      });
-
-      setBotState(userId, null);
-      await ctx.reply("پوستر نشست با موفقیت ثبت شد و روی سایت قرار گرفت.", {
-        reply_markup: getMainMenuKeyboard(),
-      });
-      break;
-    }
-
+    // Poster upload flow
     case "awaiting_poster_session_number": {
       const sessionNumber = parseInt(text, 10);
       if (isNaN(sessionNumber)) {
-        await ctx.reply("لطفاً شماره جلسه را به عدد ارسال کنید:");
+        await ctx.reply("لطفاً شماره جلسه را به عدد ارسال کنید (مثال: 14):");
         return;
       }
 
@@ -438,16 +571,56 @@ bot.on("message:text", async (ctx) => {
         step: "awaiting_poster_topic",
         data: { ...state.data, sessionNumber },
       });
-      await ctx.reply("عنوان انگلیسی موضوع این پوستر را ارسال کنید (مثال: The Power of Habit):", {
+      await ctx.reply("عنوان انگلیسی موضوع نشست را ارسال کنید (مثال: The Power of Habit):", {
         reply_markup: getCancelKeyboard(),
       });
       break;
     }
 
+    case "awaiting_poster_topic": {
+      setBotState(userId, {
+        step: "awaiting_poster_date_fa",
+        data: { ...state.data, topicEn: text },
+      });
+      await ctx.reply("تاریخ برگزاری را به فارسی ارسال کنید (مثال: پنجشنبه ۲ شهریور):", {
+        reply_markup: getCancelKeyboard(),
+      });
+      break;
+    }
+
+    case "awaiting_poster_date_fa": {
+      const { fileUrl, sessionNumber, topicEn } = state.data;
+      const dateFa = text;
+
+      const posterId = `poster-${sessionNumber}-${Date.now()}`;
+      await addPoster({
+        id: posterId,
+        sessionNumber: Number(sessionNumber),
+        topicEn: String(topicEn),
+        dateFa,
+        image: String(fileUrl),
+      });
+
+      // Also update upcoming session hero
+      await updateUpcomingSession({
+        number: Number(sessionNumber),
+        topicEn: String(topicEn),
+        posterImage: String(fileUrl),
+      });
+
+      setBotState(userId, null);
+      await ctx.reply(
+        `پوستر نشست ${sessionNumber} با موضوع «${topicEn}» ثبت شد و روی صفحه اصلی و آرشیو پوسترها قرار گرفت.`,
+        { reply_markup: getMainMenuKeyboard() }
+      );
+      break;
+    }
+
+    // Gallery upload flow
     case "awaiting_gallery_session_number": {
       const sessionNumber = parseInt(text, 10);
       if (isNaN(sessionNumber)) {
-        await ctx.reply("لطفاً شماره جلسه را به عدد ارسال کنید:");
+        await ctx.reply("لطفاً شماره جلسه را به عدد ارسال کنید (مثال: 13):");
         return;
       }
 
@@ -460,7 +633,7 @@ bot.on("message:text", async (ctx) => {
       });
 
       setBotState(userId, null);
-      await ctx.reply("عکس با موفقیت به گالری تصاویر وبسایت اضافه شد.", {
+      await ctx.reply(`عکس با موفقیت به گالری تصاویر نشست ${sessionNumber} اضافه شد.`, {
         reply_markup: getMainMenuKeyboard(),
       });
       break;
@@ -474,7 +647,7 @@ bot.on("message:text", async (ctx) => {
 
 bot.on("message:photo", async (ctx) => {
   const userId = ctx.from?.id;
-  if (!isAdmin(userId)) return;
+  if (!isAdmin(userId) || !userId) return;
 
   const state = getBotState(userId);
   if (!state) {

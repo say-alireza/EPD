@@ -215,6 +215,22 @@ export async function addSlot(slot: Session): Promise<Session> {
   return slot;
 }
 
+export async function deleteSlot(slotId: string): Promise<boolean> {
+  const index = memorySlots.findIndex((s) => s.id === slotId);
+  if (index !== -1) {
+    memorySlots.splice(index, 1);
+  }
+  const d1 = getD1();
+  if (d1) {
+    try {
+      await d1.prepare("DELETE FROM slots WHERE id = ?").bind(slotId).run();
+    } catch (e) {
+      console.error("D1 deleteSlot error:", e);
+    }
+  }
+  return index !== -1;
+}
+
 // ---------------------------------------------
 // REGISTRATIONS
 // ---------------------------------------------
@@ -343,6 +359,22 @@ export async function addPoster(poster: PosterItem): Promise<PosterItem> {
   return poster;
 }
 
+export async function deletePoster(posterId: string): Promise<boolean> {
+  const index = memoryPosters.findIndex((p) => p.id === posterId);
+  if (index !== -1) {
+    memoryPosters.splice(index, 1);
+  }
+  const d1 = getD1();
+  if (d1) {
+    try {
+      await d1.prepare("DELETE FROM posters WHERE id = ?").bind(posterId).run();
+    } catch (e) {
+      console.error("D1 deletePoster error:", e);
+    }
+  }
+  return index !== -1;
+}
+
 export async function getGallery(): Promise<GalleryItem[]> {
   const d1 = getD1();
   if (d1) {
@@ -376,6 +408,22 @@ export async function addGalleryItem(item: GalleryItem): Promise<GalleryItem> {
     }
   }
   return item;
+}
+
+export async function deleteGalleryItem(galleryId: string): Promise<boolean> {
+  const index = memoryGallery.findIndex((g) => g.id === galleryId);
+  if (index !== -1) {
+    memoryGallery.splice(index, 1);
+  }
+  const d1 = getD1();
+  if (d1) {
+    try {
+      await d1.prepare("DELETE FROM gallery WHERE id = ?").bind(galleryId).run();
+    } catch (e) {
+      console.error("D1 deleteGalleryItem error:", e);
+    }
+  }
+  return index !== -1;
 }
 
 // ---------------------------------------------
