@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
-import { Typewriter } from "@/components/ui/typewriter";
 import { Enamad } from "@/components/ui/enamad";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
@@ -45,47 +44,65 @@ export default function HomePage() {
       </header>
 
       <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-24">
-        {/* 2. Hero — Redesigned Two-Column Layout */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center text-start">
+        {/* 2. Hero — Option 2: Human-Centered, High-Impact Design */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-start">
           {/* Right Column (lg:col-span-7) */}
           <div className="lg:col-span-7 flex flex-col items-start gap-6">
-            {/* Capacity badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-accent/10 text-brand-accent text-xs sm:text-sm font-bold">
+            {/* Community & Experience Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-xs sm:text-sm font-bold">
               <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse" />
-              <span>{nextSessionData.remainingSeats ? `${nextSessionData.remainingSeats.toLocaleString("fa-IR")} صندلی باقیمانده...` : "۶ صندلی باقیمانده..."}</span>
+              <span>{hero.badge}</span>
             </div>
 
-            {/* Main heading with Typewriter */}
-            <div className="space-y-4 w-full">
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink leading-tight tracking-tight min-h-[3.5rem] sm:min-h-[4.5rem]">
-                <Typewriter
-                  words={[
-                    "An excuse for speaking",
-                    "An excuse for connecting",
-                    "An excuse for learning",
-                    "مکانی برای مکالمه واقعی",
-                  ]}
-                />
+            {/* Main Headline */}
+            <div className="space-y-3 w-full">
+              <span className="block font-mono font-extrabold text-brand-accent text-base sm:text-lg tracking-wider uppercase" dir="ltr">
+                {hero.sloganEn}
+              </span>
+              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-ink leading-tight tracking-tight">
+                {hero.headlineFa}
               </h1>
-              <p className="text-base sm:text-lg font-normal text-ink-muted leading-relaxed max-w-xl">
-                {hero.factLine}
+              <p className="text-base sm:text-lg font-normal text-ink-muted leading-relaxed max-w-xl pt-2">
+                {hero.subtitle}
               </p>
             </div>
 
-            {/* Primary CTA registration button */}
-            <div className="pt-2">
+            {/* Feature Badges */}
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-ink shadow-2xs">
+                <span>🗣️</span>
+                <span>{hero.tags.discussion}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-ink shadow-2xs">
+                <span>🎲</span>
+                <span>{hero.tags.games}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-ink shadow-2xs">
+                <span>☕</span>
+                <span>{hero.tags.experience}</span>
+              </span>
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-3 w-full sm:w-auto">
               <Link
                 href="/register"
-                className="inline-flex items-center justify-center px-8 py-4 bg-brand-accent text-surface font-extrabold text-base transition-opacity hover:opacity-90 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded-lg shadow-sm"
+                className="inline-flex items-center justify-center px-8 py-4 bg-brand-accent text-surface font-extrabold text-base transition-all hover:opacity-90 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded-xl shadow-xs"
               >
                 {hero.cta}
+              </Link>
+              <Link
+                href="/gallery"
+                className="inline-flex items-center justify-center px-6 py-4 bg-surface text-ink font-bold text-sm border border-border hover:border-brand-primary transition-all rounded-xl shadow-xs"
+              >
+                {hero.secondaryCta}
               </Link>
             </div>
           </div>
 
           {/* Left Column (lg:col-span-5) — Upcoming Session Details */}
           <div className="lg:col-span-5 w-full">
-            <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8 flex flex-col gap-6 shadow-sm">
+            <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8 flex flex-col gap-6 shadow-sm hover:border-brand-primary transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <span className="px-2.5 py-1 bg-brand-gold text-ink text-xs font-extrabold rounded">
@@ -97,12 +114,14 @@ export default function HomePage() {
                 </div>
                 <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-teal">
                   <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
-                  <span>ثبت‌نام فعال</span>
+                  <span>
+                    {nextSessionData.remainingSeats ? `${nextSessionData.remainingSeats.toLocaleString("fa-IR")} صندلی باقیمانده` : "ثبتنام فعال"}
+                  </span>
                 </div>
               </div>
 
               {/* Poster placeholder box with dashed borders */}
-              <div className="w-full bg-ground border border-dashed border-brand-primary/40 rounded-xl p-6 flex flex-col items-center justify-center text-center gap-3 overflow-hidden min-h-[220px]">
+              <div className="w-full bg-ground border border-dashed border-brand-primary/40 rounded-xl p-4 flex flex-col items-center justify-center text-center gap-3 overflow-hidden min-h-[220px]">
                 {nextSessionData.posterImage ? (
                   <Image
                     src={assetPath(nextSessionData.posterImage)}
