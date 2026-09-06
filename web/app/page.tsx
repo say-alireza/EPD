@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
 import { Typewriter } from "@/components/ui/typewriter";
+import { Enamad } from "@/components/ui/enamad";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
 import nextSessionData from "@/data/next-session.json";
@@ -320,24 +321,33 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="flex flex-col gap-2 text-xs">
-              <span className="font-bold text-ink">{footer.socialTitle}</span>
-              <a
-                href="https://t.me/EPDSupport"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-ink-muted hover:text-ink transition-colors"
-              >
-                {footer.telegram}
-              </a>
-              <a
-                href="https://instagram.com/epdclub"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-ink-muted hover:text-ink transition-colors"
-              >
-                {footer.instagram}
-              </a>
+            <div className="flex flex-col gap-4 text-xs">
+              <div className="flex flex-col gap-2">
+                <span className="font-bold text-ink">{footer.socialTitle}</span>
+                <a
+                  href="https://t.me/EPDSupport"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-ink-muted hover:text-ink transition-colors"
+                >
+                  {footer.telegram}
+                </a>
+                <a
+                  href="https://instagram.com/epdclub"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-ink-muted hover:text-ink transition-colors"
+                >
+                  {footer.instagram}
+                </a>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2">
+                <span className="font-bold text-ink">{footer.trustTitle}</span>
+                <div className="flex items-start">
+                  <Enamad />
+                </div>
+              </div>
             </div>
           </div>
 

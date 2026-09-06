@@ -202,6 +202,7 @@ export const strings = {
       telegram: "کانال تلگرام EPD",
       instagram: "صفحه اینستاگرام EPD",
       terms: "قوانین و شرایط حضور",
+      trustTitle: "نماد اعتماد الکترونیکی",
       allRights: "تمامی حقوق برای باشگاه انگلیسی EPD محفوظ است.",
     },
   },
