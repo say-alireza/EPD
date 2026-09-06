@@ -67,19 +67,16 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Feature Badges */}
-            <div className="flex flex-wrap gap-2.5 pt-1">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-ink shadow-2xs">
-                <span>🗣️</span>
-                <span>{hero.tags.discussion}</span>
+            {/* Feature Badges — Clean Typography, No Emoji Slop */}
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-bold text-ink">
+                {hero.tags.discussion}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-ink shadow-2xs">
-                <span>🎲</span>
-                <span>{hero.tags.games}</span>
+              <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-bold text-ink">
+                {hero.tags.games}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-semibold text-ink shadow-2xs">
-                <span>☕</span>
-                <span>{hero.tags.experience}</span>
+              <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-bold text-ink">
+                {hero.tags.experience}
               </span>
             </div>
 
