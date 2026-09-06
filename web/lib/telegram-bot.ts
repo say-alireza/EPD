@@ -1,4 +1,4 @@
-import { Bot, InlineKeyboard } from "grammy";
+import { Bot, InlineKeyboard, Keyboard } from "grammy";
 import {
   getUpcomingSession,
   updateUpcomingSession,
@@ -27,16 +27,26 @@ function isAdmin(userId?: number): boolean {
   return ADMIN_IDS.length === 0 || ADMIN_IDS.includes(userId);
 }
 
+// ----------------------------------------------------
+// KEYBOARDS
+// ----------------------------------------------------
+
 function getMainMenuKeyboard() {
-  return new InlineKeyboard()
-    .text("لیست ثبتنامها", "menu_registrations")
-    .text("نشست جاری", "menu_session")
+  return new Keyboard()
+    .text("لیست ثبتنامها")
+    .text("مشخصات نشست جاری")
     .row()
-    .text("مدیریت سانسها و ظرفیت", "menu_slots")
-    .text("آپلود پوستر", "menu_upload_poster")
+    .text("مدیریت سانسها و ظرفیت")
+    .text("آپلود پوستر")
     .row()
-    .text("آپلود عکس گالری", "menu_upload_gallery")
-    .text("راهنما", "menu_help");
+    .text("آپلود عکس گالری")
+    .text("راهنما")
+    .resized()
+    .persistent();
+}
+
+function getCancelKeyboard() {
+  return new Keyboard().text("لغو عملیات").resized().persistent();
 }
 
 // ----------------------------------------------------
@@ -52,7 +62,7 @@ bot.command("start", async (ctx) => {
 
   setBotState(userId!, null);
   await ctx.reply(
-    "پنل مدیریت باشگاه EPD\n\nبرای دسترسی به بخشهای مختلف از کلیدهای زیر استفاده کنید:",
+    "پنل مدیریت باشگاه EPD\n\nبرای دسترسی به بخشهای مختلف از دکمههای کیبورد زیر استفاده کنید:",
     { reply_markup: getMainMenuKeyboard() }
   );
 });
@@ -65,28 +75,37 @@ bot.command("cancel", async (ctx) => {
   });
 });
 
-// ----------------------------------------------------
-// INLINE ACTIONS
-// ----------------------------------------------------
-
-bot.callbackQuery("menu_main", async (ctx) => {
-  await ctx.answerCallbackQuery();
-  await ctx.editMessageText(
-    "پنل مدیریت باشگاه EPD\n\nبخش مورد نظر را انتخاب کنید:",
-    { reply_markup: getMainMenuKeyboard() }
-  );
+bot.hears("لغو عملیات", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (userId) setBotState(userId, null);
+  await ctx.reply("عملیات جاری لغو شد.", {
+    reply_markup: getMainMenuKeyboard(),
+  });
 });
 
+bot.hears("بازگشت به منوی اصلی", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (userId) setBotState(userId, null);
+  await ctx.reply("منوی اصلی مدیریت EPD:", {
+    reply_markup: getMainMenuKeyboard(),
+  });
+});
+
+// ----------------------------------------------------
+// MAIN MENU HEARS (REPLY KEYBOARD TRIGGERS)
+// ----------------------------------------------------
+
 // 1. Registrations List
-bot.callbackQuery("menu_registrations", async (ctx) => {
-  await ctx.answerCallbackQuery();
+bot.hears("لیست ثبتنامها", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!isAdmin(userId)) return;
+
   const regs = await getRegistrations();
   const slots = await getSlots();
 
   if (regs.length === 0) {
-    const kb = new InlineKeyboard().text("بازگشت", "menu_main");
-    await ctx.editMessageText("هنوز ثبتنامی در سیستم ثبت نشده است.", {
-      reply_markup: kb,
+    await ctx.reply("هنوز ثبتنامی در سیستم ثبت نشده است.", {
+      reply_markup: getMainMenuKeyboard(),
     });
     return;
   }
@@ -105,17 +124,15 @@ bot.callbackQuery("menu_registrations", async (ctx) => {
     text += `   تاریخ: ${new Date(r.createdAt).toLocaleDateString("fa-IR")}\n\n`;
   });
 
-  const kb = new InlineKeyboard()
-    .text("بهروزرسانی لیست", "menu_registrations")
-    .row()
-    .text("بازگشت به منو", "menu_main");
-
-  await ctx.editMessageText(text, { reply_markup: kb });
+  const refreshKb = new InlineKeyboard().text("بهروزرسانی گزارش", "inline_refresh_registrations");
+  await ctx.reply(text, { reply_markup: refreshKb });
 });
 
 // 2. Current Session Details
-bot.callbackQuery("menu_session", async (ctx) => {
-  await ctx.answerCallbackQuery();
+bot.hears("مشخصات نشست جاری", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!isAdmin(userId)) return;
+
   const session = await getUpcomingSession();
 
   let text = "مشخصات نشست جاری EPD:\n\n";
@@ -133,19 +150,19 @@ bot.callbackQuery("menu_session", async (ctx) => {
     .text("ویرایش موضوع", "edit_session_topic")
     .row()
     .text("ویرایش صندلی باقیمانده", "edit_session_seats")
-    .text("ویرایش مکان", "edit_session_venue")
-    .row()
-    .text("بازگشت", "menu_main");
+    .text("ویرایش مکان", "edit_session_venue");
 
-  await ctx.editMessageText(text, { reply_markup: kb });
+  await ctx.reply(text, { reply_markup: kb });
 });
 
 // 3. Manage Slots & Capacity
-bot.callbackQuery("menu_slots", async (ctx) => {
-  await ctx.answerCallbackQuery();
+bot.hears("مدیریت سانسها و ظرفیت", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!isAdmin(userId)) return;
+
   const slots = await getSlots();
 
-  let text = "مدیریت سانسها و ظرفیت:\n\n";
+  let text = "مدیریت سانسها و ظرفیت صندلیها:\n\n";
   const kb = new InlineKeyboard();
 
   slots.forEach((s) => {
@@ -157,12 +174,80 @@ bot.callbackQuery("menu_slots", async (ctx) => {
     ).row();
   });
 
-  kb.text("بازگشت به منو", "menu_main");
-  await ctx.editMessageText(text, { reply_markup: kb });
+  await ctx.reply(text, { reply_markup: kb });
+});
+
+// 4. Upload Poster
+bot.hears("آپلود پوستر", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!isAdmin(userId) || !userId) return;
+
+  setBotState(userId, { step: "awaiting_poster_photo", data: {} });
+  await ctx.reply("تصویر پوستر نشست را به صورت عکس (Photo) ارسال کنید:", {
+    reply_markup: getCancelKeyboard(),
+  });
+});
+
+// 5. Upload Gallery
+bot.hears("آپلود عکس گالری", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!isAdmin(userId) || !userId) return;
+
+  setBotState(userId, { step: "awaiting_gallery_photo", data: {} });
+  await ctx.reply("عکس دورهمی جلسه را ارسال کنید:", {
+    reply_markup: getCancelKeyboard(),
+  });
+});
+
+// 6. Help
+bot.hears("راهنما", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!isAdmin(userId)) return;
+
+  const text =
+    "راهنمای پنل مدیریت EPD:\n\n" +
+    "- برای لغو هر فرآیند، دکمه «لغو عملیات» یا دستور /cancel را بزنید.\n" +
+    "- با آپلود پوستر، تصویر مستقیماً در صفحه اصلی و آرشیو پوسترها قرار میگیرد.\n" +
+    "- با آپلود عکس گالری، تصویر به بخش تصاویر جلسات اضافه خواهد شد.\n" +
+    "- تغییر ظرفیت سانسها بلافاصله در فرم ثبتنام اعمال میشود.";
+
+  await ctx.reply(text, { reply_markup: getMainMenuKeyboard() });
+});
+
+// ----------------------------------------------------
+// INLINE CALLBACKS
+// ----------------------------------------------------
+
+bot.callbackQuery("inline_refresh_registrations", async (ctx) => {
+  await ctx.answerCallbackQuery("بهروزرسانی شد");
+  const regs = await getRegistrations();
+  const slots = await getSlots();
+
+  if (regs.length === 0) {
+    await ctx.editMessageText("هنوز ثبتنامی در سیستم ثبت نشده است.");
+    return;
+  }
+
+  let text = `گزارش ثبتنامها (تعداد کل: ${regs.length})\n\n`;
+  const recent = regs.slice(0, 15);
+
+  recent.forEach((r, idx) => {
+    const slot = slots.find((s) => s.id === r.sessionId);
+    const slotName = slot ? slot.title.split(":")[0] : r.sessionId;
+    text += `${idx + 1}. ${r.fullName}\n`;
+    text += `   شماره تماس: ${r.mobile}\n`;
+    text += `   ایمیل: ${r.email}\n`;
+    text += `   سانس: ${slotName}\n`;
+    if (r.languageLevel) text += `   سطح زبان: ${r.languageLevel}\n`;
+    text += `   تاریخ: ${new Date(r.createdAt).toLocaleDateString("fa-IR")}\n\n`;
+  });
+
+  const refreshKb = new InlineKeyboard().text("بهروزرسانی گزارش", "inline_refresh_registrations");
+  await ctx.editMessageText(text, { reply_markup: refreshKb });
 });
 
 bot.callbackQuery(/^toggle_slot_(.+)$/, async (ctx) => {
-  await ctx.answerCallbackQuery();
+  await ctx.answerCallbackQuery("وضعیت سانس تغییر کرد");
   const slotId = ctx.match[1];
   const slots = await getSlots();
   const target = slots.find((s) => s.id === slotId);
@@ -175,9 +260,8 @@ bot.callbackQuery(/^toggle_slot_(.+)$/, async (ctx) => {
     });
   }
 
-  // Refresh slots view
   const updatedSlots = await getSlots();
-  let text = "مدیریت سانسها و ظرفیت (بهروزرسانی شد):\n\n";
+  let text = "مدیریت سانسها و ظرفیت صندلیها (بهروزرسانی شد):\n\n";
   const kb = new InlineKeyboard();
 
   updatedSlots.forEach((s) => {
@@ -189,18 +273,19 @@ bot.callbackQuery(/^toggle_slot_(.+)$/, async (ctx) => {
     ).row();
   });
 
-  kb.text("بازگشت به منو", "menu_main");
   await ctx.editMessageText(text, { reply_markup: kb });
 });
 
-// 4. Session edit prompts
+// Edit prompts via inline
 bot.callbackQuery("edit_session_number", async (ctx) => {
   await ctx.answerCallbackQuery();
   const userId = ctx.from?.id;
   if (!userId) return;
 
   setBotState(userId, { step: "awaiting_session_number", data: {} });
-  await ctx.reply("شماره جدید نشست را ارسال کنید (مثال: 14):");
+  await ctx.reply("شماره جدید نشست را ارسال کنید (مثال: 14):", {
+    reply_markup: getCancelKeyboard(),
+  });
 });
 
 bot.callbackQuery("edit_session_topic", async (ctx) => {
@@ -209,7 +294,9 @@ bot.callbackQuery("edit_session_topic", async (ctx) => {
   if (!userId) return;
 
   setBotState(userId, { step: "awaiting_session_topic_en", data: {} });
-  await ctx.reply("موضوع انگلیسی نشست را وارد کنید (مثال: Digital Minimalism):");
+  await ctx.reply("موضوع انگلیسی نشست را وارد کنید (مثال: Digital Minimalism):", {
+    reply_markup: getCancelKeyboard(),
+  });
 });
 
 bot.callbackQuery("edit_session_seats", async (ctx) => {
@@ -218,7 +305,9 @@ bot.callbackQuery("edit_session_seats", async (ctx) => {
   if (!userId) return;
 
   setBotState(userId, { step: "awaiting_session_seats", data: {} });
-  await ctx.reply("تعداد صندلیهای باقیمانده را به صورت عدد ارسال کنید (مثال: 8):");
+  await ctx.reply("تعداد صندلیهای باقیمانده را به صورت عدد ارسال کنید (مثال: 8):", {
+    reply_markup: getCancelKeyboard(),
+  });
 });
 
 bot.callbackQuery("edit_session_venue", async (ctx) => {
@@ -227,41 +316,9 @@ bot.callbackQuery("edit_session_venue", async (ctx) => {
   if (!userId) return;
 
   setBotState(userId, { step: "awaiting_session_venue", data: {} });
-  await ctx.reply("آدرس محل برگزاری را ارسال کنید:");
-});
-
-// 5. Upload Poster Prompt
-bot.callbackQuery("menu_upload_poster", async (ctx) => {
-  await ctx.answerCallbackQuery();
-  const userId = ctx.from?.id;
-  if (!userId) return;
-
-  setBotState(userId, { step: "awaiting_poster_photo", data: {} });
-  await ctx.reply("تصویر پوستر نشست را به صورت عکس ارسال کنید:");
-});
-
-// 6. Upload Gallery Prompt
-bot.callbackQuery("menu_upload_gallery", async (ctx) => {
-  await ctx.answerCallbackQuery();
-  const userId = ctx.from?.id;
-  if (!userId) return;
-
-  setBotState(userId, { step: "awaiting_gallery_photo", data: {} });
-  await ctx.reply("عکس دورهمی جلسه را ارسال کنید:");
-});
-
-// 7. Help
-bot.callbackQuery("menu_help", async (ctx) => {
-  await ctx.answerCallbackQuery();
-  const text =
-    "راهنمای پنل مدیریت EPD:\n\n" +
-    "- برای لغو هر فرآیند، دستور /cancel را ارسال کنید.\n" +
-    "- با آپلود پوستر، تصویر مستقیماً در صفحه اصلی و آرشیو پوسترها قرار میگیرد.\n" +
-    "- با آپلود عکس گالری، تصویر به بخش تصاویر جلسات اضافه خواهد شد.\n" +
-    "- تغییر ظرفیت سانسها بلافاصله در فرم ثبتنام اعمال میشود.";
-
-  const kb = new InlineKeyboard().text("بازگشت", "menu_main");
-  await ctx.editMessageText(text, { reply_markup: kb });
+  await ctx.reply("آدرس محل برگزاری را ارسال کنید:", {
+    reply_markup: getCancelKeyboard(),
+  });
 });
 
 // ----------------------------------------------------
@@ -276,12 +333,17 @@ bot.on("message:text", async (ctx) => {
   if (!state) return;
 
   const text = ctx.message.text.trim();
+  if (text === "لغو عملیات" || text === "/cancel") {
+    setBotState(userId, null);
+    await ctx.reply("عملیات لغو شد.", { reply_markup: getMainMenuKeyboard() });
+    return;
+  }
 
   switch (state.step) {
     case "awaiting_session_number": {
       const num = parseInt(text, 10);
       if (isNaN(num)) {
-        await ctx.reply("لطفاً یک عدد معتبر ارسال کنید.");
+        await ctx.reply("لطفاً یک عدد معتبر ارسال کنید یا «لغو عملیات» را بزنید.");
         return;
       }
       await updateUpcomingSession({ number: num });
@@ -297,7 +359,9 @@ bot.on("message:text", async (ctx) => {
         step: "awaiting_session_topic_fa",
         data: { topicEn: text },
       });
-      await ctx.reply("توضیح یا موضوع فارسی نشست را وارد کنید:");
+      await ctx.reply("توضیح یا موضوع فارسی نشست را وارد کنید:", {
+        reply_markup: getCancelKeyboard(),
+      });
       break;
     }
 
@@ -317,7 +381,7 @@ bot.on("message:text", async (ctx) => {
     case "awaiting_session_seats": {
       const seats = parseInt(text, 10);
       if (isNaN(seats)) {
-        await ctx.reply("لطفاً یک عدد معتبر ارسال کنید.");
+        await ctx.reply("لطفاً یک عدد معتبر ارسال کنید یا «لغو عملیات» را بزنید.");
         return;
       }
       await updateUpcomingSession({ remainingSeats: seats });
@@ -350,7 +414,6 @@ bot.on("message:text", async (ctx) => {
         image: String(fileUrl),
       });
 
-      // Also set as current session poster
       await updateUpcomingSession({
         number: Number(sessionNumber),
         topicEn,
@@ -375,7 +438,9 @@ bot.on("message:text", async (ctx) => {
         step: "awaiting_poster_topic",
         data: { ...state.data, sessionNumber },
       });
-      await ctx.reply("عنوان انگلیسی موضوع این پوستر را ارسال کنید (مثال: The Power of Habit):");
+      await ctx.reply("عنوان انگلیسی موضوع این پوستر را ارسال کنید (مثال: The Power of Habit):", {
+        reply_markup: getCancelKeyboard(),
+      });
       break;
     }
 
@@ -413,16 +478,14 @@ bot.on("message:photo", async (ctx) => {
 
   const state = getBotState(userId);
   if (!state) {
-    await ctx.reply("لطفاً ابتدا از منو مشخص کنید این تصویر پوستر نشست است یا عکس گالری:", {
-      reply_markup: new InlineKeyboard()
-        .text("پوستر نشست", "menu_upload_poster")
-        .text("عکس گالری", "menu_upload_gallery"),
+    await ctx.reply("لطفاً ابتدا از دکمههای کیبورد مشخص کنید این تصویر پوستر است یا عکس گالری.", {
+      reply_markup: getMainMenuKeyboard(),
     });
     return;
   }
 
   const photos = ctx.message.photo;
-  const bestPhoto = photos[photos.length - 1]; // Highest resolution photo
+  const bestPhoto = photos[photos.length - 1];
 
   try {
     const file = await ctx.api.getFile(bestPhoto.file_id);
@@ -433,17 +496,23 @@ bot.on("message:photo", async (ctx) => {
         step: "awaiting_poster_session_number",
         data: { fileUrl },
       });
-      await ctx.reply("تصویر دریافت شد. شماره نشست این پوستر را وارد کنید (مثال: 14):");
+      await ctx.reply("تصویر دریافت شد. شماره نشست این پوستر را وارد کنید (مثال: 14):", {
+        reply_markup: getCancelKeyboard(),
+      });
     } else if (state.step === "awaiting_gallery_photo") {
       setBotState(userId, {
         step: "awaiting_gallery_session_number",
         data: { fileUrl },
       });
-      await ctx.reply("عکس دریافت شد. این عکس مربوط به کدام شماره جلسه است؟ (مثال: 13):");
+      await ctx.reply("عکس دریافت شد. این عکس مربوط به کدام شماره جلسه است؟ (مثال: 13):", {
+        reply_markup: getCancelKeyboard(),
+      });
     }
   } catch (error) {
     console.error("Telegram getFile error:", error);
-    await ctx.reply("خطایی در دریافت تصویر رخ داد. لطفاً مجدداً تلاش کنید.");
+    await ctx.reply("خطایی در دریافت تصویر رخ داد. لطفاً مجدداً تلاش کنید.", {
+      reply_markup: getMainMenuKeyboard(),
+    });
   }
 });
 
