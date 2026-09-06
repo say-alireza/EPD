@@ -18,7 +18,6 @@ import {
   TopicSuggestionField,
   HeardFromField,
   SocialHandleField,
-  ReferralCodeField,
   AcceptTermsField,
 } from "./fields";
 

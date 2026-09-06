@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { addRegistration, getSlots } from "@/lib/db";
+import { notifyAdminsNewRegistration } from "@/lib/telegram-bot";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 const GOOGLE_SHEET_URL =
   "https://script.google.com/macros/s/AKfycbw7MRtf50_Qitg-brmrQjkSd4GKvkBKoHNNiT5prw3SuzactMOMjCOX0BQQPsi2tK6H0A/exec";
@@ -8,7 +10,18 @@ const GOOGLE_SHEET_URL =
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { fullName, email, mobile, sessionId } = body || {};
+    const {
+      fullName,
+      email,
+      mobile,
+      sessionId,
+      languageLevel,
+      firstTime,
+      topicSuggestion,
+      referralCode,
+      heardFrom,
+      socialHandle,
+    } = body || {};
 
     if (!fullName || !email || !mobile || !sessionId) {
       return NextResponse.json(
@@ -17,22 +30,38 @@ export async function POST(request: Request) {
       );
     }
 
-    // ۱. ذخیره‌سازی در دیتابیس Cloudflare D1
-    try {
-      // تایپ‌اسکریپت را متوجه می‌سازیم که DB شیء دیتابیس D1 است
-      const DB = (process.env as unknown as { DB: any }).DB;
-      if (DB) {
-        await DB.prepare(
-          "INSERT INTO registrations (full_name, email, mobile, session_id) VALUES (?, ?, ?, ?)"
-        )
-          .bind(fullName, email, mobile, sessionId)
-          .run();
-      }
-    } catch (dbError) {
-      console.error("D1 Database Insert Error:", dbError);
-    }
+    // ۱. ثبت در دیتابیس D1 و کَش سیستم
+    const record = await addRegistration({
+      fullName,
+      email,
+      mobile,
+      sessionId,
+      languageLevel,
+      firstTime: Boolean(firstTime),
+      topicSuggestion,
+      referralCode,
+      heardFrom,
+      socialHandle,
+    });
 
-    // ۲. ارسال اتوماتیک و هم‌زمان به Google Sheet
+    // ۲. دریافت عنوان سانس جهت ارسال در نوتیفیکیشن
+    const slots = await getSlots();
+    const slot = slots.find((s) => s.id === sessionId);
+    const sessionTitle = slot ? slot.title : sessionId;
+
+    // ۳. ارسال آنی نوتیفیکیشن تلگرام به ادمینها
+    notifyAdminsNewRegistration({
+      fullName,
+      mobile,
+      email,
+      sessionTitle,
+      languageLevel,
+      topicSuggestion,
+    }).catch((telegramError) =>
+      console.error("Telegram Notification Error:", telegramError)
+    );
+
+    // ۴. همگامسازی همزمان با Google Sheet
     fetch(GOOGLE_SHEET_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -44,13 +73,14 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: "اطلاعات با موفقیت دریافت و ثبت شد.",
-        data: { fullName, email, mobile, sessionId },
+        data: record,
       },
       { status: 200 }
     );
-  } catch {
+  } catch (err) {
+    console.error("POST /api/register error:", err);
     return NextResponse.json(
-      { error: "داده‌های ارسالی نامعتبر است." },
+      { error: "دادههای ارسالی نامعتبر است." },
       { status: 400 }
     );
   }

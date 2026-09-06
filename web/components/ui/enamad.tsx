@@ -9,7 +9,6 @@ export function Enamad({ className = "" }: EnamadProps) {
     <div
       className={`inline-flex items-center justify-center p-2.5 bg-surface border border-border rounded-xl shadow-xs hover:border-brand-primary transition-all duration-200 ${className}`}
     >
-      {/* eslint-disable-next-line react/jsx-no-target-blank */}
       <a
         referrerPolicy="origin"
         target="_blank"

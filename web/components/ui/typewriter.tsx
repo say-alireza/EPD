@@ -45,8 +45,11 @@ export function Typewriter({
         }, deletingSpeed);
         return () => clearTimeout(timer);
       } else {
-        setIsDeleting(false);
-        setCurrentWordIndex((prev) => (prev + 1) % words.length);
+        const timer = setTimeout(() => {
+          setIsDeleting(false);
+          setCurrentWordIndex((prev) => (prev + 1) % words.length);
+        }, typingSpeed);
+        return () => clearTimeout(timer);
       }
     }
   }, [currentText, isDeleting, currentWordIndex, words, typingSpeed, deletingSpeed, delayBetweenWords]);
