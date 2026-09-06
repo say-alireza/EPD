@@ -27,7 +27,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-ground text-ink flex flex-col selection:bg-brand-teal selection:text-ink">
-      {/* 1. Header — 48px (h-12) lockup at start edge, one CTA link */}
+      {/* 1. Header — logo, social links & primary CTA */}
       <header className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between border-b border-border">
         <Link
           href="/"
@@ -35,12 +35,32 @@ export default function HomePage() {
         >
           <EpdLogo className="h-12 w-auto" variant="lockup" />
         </Link>
-        <Link
-          href="/register"
-          className="text-xs sm:text-sm font-bold text-ink hover:text-brand-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal px-3 py-1.5 border border-border rounded-lg hover:border-brand-primary"
-        >
-          {strings.landing.nav.register}
-        </Link>
+        <div className="flex items-center gap-3">
+          <a
+            href="https://t.me/EPDSupport"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs sm:text-sm font-bold text-ink-muted hover:text-ink transition-colors px-3 py-1.5 border border-border rounded-lg hover:border-brand-primary"
+            title="کانال تلگرام EPD"
+          >
+            کانال تلگرام
+          </a>
+          <a
+            href="https://instagram.com/epdclub"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs sm:text-sm font-bold text-ink-muted hover:text-ink transition-colors px-3 py-1.5 border border-border rounded-lg hover:border-brand-primary hidden sm:inline-flex"
+            title="صفحه اینستاگرام EPD"
+          >
+            اینستاگرام
+          </a>
+          <Link
+            href="/register"
+            className="text-xs sm:text-sm font-extrabold text-surface bg-brand-primary hover:bg-brand-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal px-4 py-1.5 rounded-lg shadow-2xs"
+          >
+            {strings.landing.nav.register}
+          </Link>
+        </div>
       </header>
 
       <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-24">
@@ -95,6 +115,19 @@ export default function HomePage() {
                 {hero.secondaryCta}
               </Link>
             </div>
+
+            {/* Telegram Channel Announcement Note */}
+            <div className="pt-1">
+              <a
+                href="https://t.me/EPDSupport"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 text-xs font-medium text-ink-muted hover:text-ink transition-colors bg-surface border border-border px-3.5 py-2 rounded-lg shadow-2xs hover:border-brand-primary"
+              >
+                <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
+                <span>اطلاعرسانی کافه، موضوعات و ایونتهای هفتگی در کانال تلگرام EPD</span>
+              </a>
+            </div>
           </div>
 
           {/* Left Column (lg:col-span-5) — Upcoming Session Details */}
@@ -130,9 +163,9 @@ export default function HomePage() {
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center text-center gap-3 py-4">
-                    <div className="w-12 h-12 rounded-full bg-brand-gold/20 text-brand-gold flex items-center justify-center font-bold text-lg">
-                      🎨
-                    </div>
+                    <span className="px-3 py-1 bg-brand-gold/20 text-ink text-xs font-bold rounded-lg">
+                      EPD Weekly Poster
+                    </span>
                     <div className="space-y-1.5">
                       <h3 className="text-base font-extrabold text-ink">
                         {hero.poster.emptyTitle}
