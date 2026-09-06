@@ -46,7 +46,7 @@ function getMainMenuKeyboard() {
 bot.command("start", async (ctx) => {
   const userId = ctx.from?.id;
   if (!isAdmin(userId)) {
-    await ctx.reply("دسترسی غیرمجاز. شناسه کاربری شما در لیست مدیران ثبت نشده است.");
+    await ctx.reply(`دسترسی غیرمجاز. شناسه عددی تلگرام شما (${userId}) در لیست مدیران تعریف نشده است.`);
     return;
   }
 

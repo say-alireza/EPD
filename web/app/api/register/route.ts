@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { addRegistration, getSlots } from "@/lib/db";
 import { notifyAdminsNewRegistration } from "@/lib/telegram-bot";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 const GOOGLE_SHEET_URL =
   "https://script.google.com/macros/s/AKfycbw7MRtf50_Qitg-brmrQjkSd4GKvkBKoHNNiT5prw3SuzactMOMjCOX0BQQPsi2tK6H0A/exec";

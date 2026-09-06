@@ -196,7 +196,7 @@ export const strings = {
       addressValue: "مشهد، بلوار سجاد",
       contactLabel: "راه‌های ارتباطی:",
       phone: "۰۹۱۲۳۴۵۶۷۸۹",
-      email: "info@epdclub.ir",
+      email: "info@epdcommunity.ir",
       linksTitle: "دسترسی سریع",
       socialTitle: "شبکه‌های اجتماعی",
       telegram: "کانال تلگرام EPD",

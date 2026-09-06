@@ -1,7 +1,7 @@
 import { webhookCallback } from "grammy";
 import { bot } from "@/lib/telegram-bot";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 const handleWebhook = webhookCallback(bot, "std/http");
 
