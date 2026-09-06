@@ -11,8 +11,8 @@ import {
   setBotState,
 } from "./db";
 
-// Primary Telegram Bot Token
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8689411583:AAFHRyTr4LD6xZjDqAkKaouOejtMjiT8C-s";
+// Primary Telegram Bot Token (Read securely from environment variables)
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "placeholder_token_for_build";
 
 // Admin User IDs (defaulting to Alireza and configured admins)
 const ADMIN_IDS = (process.env.TELEGRAM_ADMIN_IDS || "96092687")
