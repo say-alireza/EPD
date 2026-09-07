@@ -87,17 +87,13 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Feature Badges — Clean Typography, No Emoji Slop */}
-            <div className="flex flex-wrap gap-2 pt-1">
-              <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-bold text-ink">
-                {hero.tags.discussion}
-              </span>
-              <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-bold text-ink">
-                {hero.tags.games}
-              </span>
-              <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-bold text-ink">
-                {hero.tags.experience}
-              </span>
+            {/* Feature Labels — flat text, no border/hover to avoid button-like affordance */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs font-medium text-ink-muted">
+              <span>{hero.tags.discussion}</span>
+              <span className="text-border" aria-hidden="true">/</span>
+              <span>{hero.tags.games}</span>
+              <span className="text-border" aria-hidden="true">/</span>
+              <span>{hero.tags.experience}</span>
             </div>
 
             {/* CTAs */}

@@ -17,20 +17,25 @@ import {
   setBotState,
 } from "./db";
 
-// Primary Telegram Bot Token (Read securely from environment variables)
+// Primary Telegram Bot Token (Read from environment variables)
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "placeholder_token_for_build";
 
-// Admin User IDs (defaulting to Alireza and configured admins)
-const ADMIN_IDS = (process.env.TELEGRAM_ADMIN_IDS || "96092687")
-  .split(",")
-  .map((id) => parseInt(id.trim(), 10))
-  .filter((id) => !isNaN(id));
+// Admin User IDs — read lazily at every check so Cloudflare Pages
+// runtime env values are always picked up (top-level const would
+// capture the build-time value and never update).
+function getAdminIds(): number[] {
+  return (process.env.TELEGRAM_ADMIN_IDS || "96092687")
+    .split(",")
+    .map((id) => parseInt(id.trim(), 10))
+    .filter((id) => !isNaN(id));
+}
 
 export const bot = new Bot(BOT_TOKEN);
 
 function isAdmin(userId?: number): boolean {
   if (!userId) return false;
-  return ADMIN_IDS.length === 0 || ADMIN_IDS.includes(userId);
+  const adminIds = getAdminIds();
+  return adminIds.length === 0 || adminIds.includes(userId);
 }
 
 // ----------------------------------------------------
@@ -711,7 +716,7 @@ export async function notifyAdminsNewRegistration(registration: {
     (registration.topicSuggestion ? `موضوع پیشنهادی: ${registration.topicSuggestion}\n` : "") +
     `زمان ثبت: ${new Date().toLocaleTimeString("fa-IR")}`;
 
-  for (const adminId of ADMIN_IDS) {
+  for (const adminId of getAdminIds()) {
     try {
       await bot.api.sendMessage(adminId, text);
     } catch (err) {
