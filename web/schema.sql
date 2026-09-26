@@ -57,3 +57,9 @@ CREATE TABLE IF NOT EXISTS gallery (
   image_url TEXT,
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS bot_state (
+  user_id INTEGER PRIMARY KEY,
+  state_json TEXT,
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);

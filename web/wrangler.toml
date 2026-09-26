@@ -1,0 +1,9 @@
+name = "epd-web"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".next"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "epd-db"
+database_id = "9be8ec70-39f6-4330-b560-4f204b8b4d3a"

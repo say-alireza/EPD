@@ -61,11 +61,36 @@ interface D1DatabaseLike {
   prepare(query: string): D1PreparedStatementLike;
 }
 
+interface GlobalWithD1 {
+  DB?: D1DatabaseLike;
+  epd_db?: D1DatabaseLike;
+  __env__?: {
+    DB?: D1DatabaseLike;
+    epd_db?: D1DatabaseLike;
+  };
+}
+
 function getD1(): D1DatabaseLike | null {
   try {
-    const env = process.env as unknown as { DB?: D1DatabaseLike };
+    const g = globalThis as unknown as GlobalWithD1;
+    if (g.DB && typeof g.DB.prepare === "function") {
+      return g.DB;
+    }
+    if (g.epd_db && typeof g.epd_db.prepare === "function") {
+      return g.epd_db;
+    }
+    const env = process.env as unknown as { DB?: D1DatabaseLike; epd_db?: D1DatabaseLike };
     if (env && env.DB && typeof env.DB.prepare === "function") {
       return env.DB;
+    }
+    if (env && env.epd_db && typeof env.epd_db.prepare === "function") {
+      return env.epd_db;
+    }
+    if (g.__env__?.DB && typeof g.__env__.DB.prepare === "function") {
+      return g.__env__.DB;
+    }
+    if (g.__env__?.epd_db && typeof g.__env__.epd_db.prepare === "function") {
+      return g.__env__.epd_db;
     }
   } catch {
     // fallback
@@ -111,32 +136,41 @@ export async function updateUpcomingSession(data: Partial<UpcomingSession>): Pro
   const d1 = getD1();
   if (d1) {
     try {
+      const current = await getUpcomingSession();
+      const s = { ...current, ...data };
       await d1
         .prepare(
-          `INSERT INTO sessions (id, session_number, topic_en, topic_fa, date_iso, time_fa, venue_fa, remaining_seats, poster_image, is_active)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+          `INSERT INTO sessions (id, session_number, topic_en, topic_fa, date_iso, time_fa, time_en, venue_fa, venue_en, level_fa, remaining_seats, poster_image, is_active)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
            ON CONFLICT(id) DO UPDATE SET
              session_number=excluded.session_number,
              topic_en=excluded.topic_en,
              topic_fa=excluded.topic_fa,
              date_iso=excluded.date_iso,
              time_fa=excluded.time_fa,
+             time_en=excluded.time_en,
              venue_fa=excluded.venue_fa,
+             venue_en=excluded.venue_en,
+             level_fa=excluded.level_fa,
              remaining_seats=excluded.remaining_seats,
              poster_image=excluded.poster_image`
         )
         .bind(
-          memoryUpcomingSession.id,
-          memoryUpcomingSession.number,
-          memoryUpcomingSession.topicEn,
-          memoryUpcomingSession.topicFa,
-          memoryUpcomingSession.dateIso,
-          memoryUpcomingSession.timeFa,
-          memoryUpcomingSession.venueFa,
-          memoryUpcomingSession.remainingSeats,
-          memoryUpcomingSession.posterImage || null
+          s.id,
+          s.number,
+          s.topicEn,
+          s.topicFa,
+          s.dateIso,
+          s.timeFa,
+          s.timeEn || null,
+          s.venueFa,
+          s.venueEn || null,
+          s.levelFa,
+          s.remainingSeats,
+          s.posterImage || null
         )
         .run();
+      return s;
     } catch (e) {
       console.error("D1 updateUpcomingSession error:", e);
     }
@@ -177,8 +211,10 @@ export async function updateSlot(
   const d1 = getD1();
   if (d1) {
     try {
-      const s = memorySlots[index];
-      if (s) {
+      const slots = await getSlots();
+      const existing = slots.find((s) => s.id === slotId);
+      if (existing) {
+        const merged: Session = { ...existing, ...updates };
         await d1
           .prepare(
             `INSERT INTO slots (id, title, capacity, remaining_seats, is_full)
@@ -189,8 +225,9 @@ export async function updateSlot(
                remaining_seats=excluded.remaining_seats,
                is_full=excluded.is_full`
           )
-          .bind(s.id, s.title, s.capacity, s.remainingSeats, s.isFull ? 1 : 0)
+          .bind(merged.id, merged.title, merged.capacity, merged.remainingSeats, merged.isFull ? 1 : 0)
           .run();
+        return merged;
       }
     } catch (e) {
       console.error("D1 updateSlot error:", e);
@@ -309,6 +346,19 @@ export async function addRegistration(
           record.heardFrom || null,
           record.socialHandle || null,
           record.createdAt
+        )
+        .run();
+
+      await d1
+        .prepare(
+          `UPDATE slots SET remaining_seats = MAX(0, remaining_seats - 1), is_full = CASE WHEN remaining_seats <= 1 THEN 1 ELSE is_full END WHERE id = ?`
+        )
+        .bind(record.sessionId)
+        .run();
+
+      await d1
+        .prepare(
+          `UPDATE sessions SET remaining_seats = MAX(0, remaining_seats - 1) WHERE is_active = 1`
         )
         .run();
     } catch (e) {
