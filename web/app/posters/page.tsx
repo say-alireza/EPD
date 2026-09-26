@@ -3,15 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
 import { assetPath } from "@/lib/asset";
-import { getPosters } from "@/lib/db";
+import postersData from "@/data/posters.json";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const runtime = "edge";
-
-export default async function PostersPage() {
+export default function PostersPage() {
   const { pastPosters } = strings.landing;
-  const postersData = await getPosters();
 
   return (
     <div className="min-h-screen bg-ground text-ink flex flex-col justify-between selection:bg-brand-teal selection:text-ink">

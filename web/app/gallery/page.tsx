@@ -3,15 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
 import { assetPath } from "@/lib/asset";
-import { getGallery } from "@/lib/db";
+import galleryData from "@/data/gallery.json";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const runtime = "edge";
-
-export default async function GalleryPage() {
+export default function GalleryPage() {
   const { gallery } = strings.landing;
-  const galleryData = await getGallery();
 
   return (
     <div className="min-h-screen bg-ground text-ink flex flex-col justify-between selection:bg-brand-teal selection:text-ink">

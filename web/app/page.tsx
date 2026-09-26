@@ -4,39 +4,26 @@ import { EpdLogo } from "@/components/ui/logo";
 import { Enamad } from "@/components/ui/enamad";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
-import { getUpcomingSession, getGallery, getPosters } from "@/lib/db";
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const runtime = "edge";
+import nextSessionData from "@/data/next-session.json";
+import galleryData from "@/data/gallery.json";
+import postersData from "@/data/posters.json";
 
 function getFormattedJalaliDate(isoString: string): string {
-  try {
-    const date = new Date(isoString);
-    if (isNaN(date.getTime())) return isoString;
-    return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(date);
-  } catch {
-    return isoString;
-  }
+  const date = new Date(isoString);
+  return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
 }
 
-export default async function HomePage() {
+export default function HomePage() {
   const { hero, nextSessionPoster, gallery, pastPosters, faq, footer } =
     strings.landing;
 
-  const [nextSessionData, fullGallery, postersData] = await Promise.all([
-    getUpcomingSession(),
-    getGallery(),
-    getPosters(),
-  ]);
-
   const formattedDate = getFormattedJalaliDate(nextSessionData.dateIso);
-  const galleryItems = fullGallery.slice(0, 6);
+  const galleryItems = galleryData.slice(0, 6);
 
   return (
     <div className="min-h-screen bg-ground text-ink flex flex-col selection:bg-brand-teal selection:text-ink">
