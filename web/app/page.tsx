@@ -4,25 +4,15 @@ import { EpdLogo } from "@/components/ui/logo";
 import { Enamad } from "@/components/ui/enamad";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
+import { UpcomingSessionCard } from "@/components/landing/upcoming-session-card";
 import nextSessionData from "@/data/next-session.json";
 import galleryData from "@/data/gallery.json";
 import postersData from "@/data/posters.json";
-
-function getFormattedJalaliDate(isoString: string): string {
-  const date = new Date(isoString);
-  return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-}
 
 export default function HomePage() {
   const { hero, nextSessionPoster, gallery, pastPosters, faq, footer } =
     strings.landing;
 
-  const formattedDate = getFormattedJalaliDate(nextSessionData.dateIso);
   const galleryItems = galleryData.slice(0, 6);
 
   return (
@@ -128,70 +118,15 @@ export default function HomePage() {
 
           {/* Left Column (lg:col-span-5) — Upcoming Session Details */}
           <div className="lg:col-span-5 w-full">
-            <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8 flex flex-col gap-6 shadow-sm hover:border-brand-primary transition-colors">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <span className="px-2.5 py-1 bg-brand-gold text-ink text-xs font-extrabold rounded">
-                    جلسه {nextSessionData.number}
-                  </span>
-                  <span className="text-xs font-medium text-ink-muted">
-                    {nextSessionPoster.eyebrow}
-                  </span>
-                </div>
-                <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-teal">
-                  <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
-                  <span>
-                    {nextSessionData.remainingSeats ? `${nextSessionData.remainingSeats.toLocaleString("fa-IR")} صندلی باقیمانده` : "ثبتنام فعال"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Poster placeholder box with dashed borders */}
-              <div className="w-full bg-ground border border-dashed border-brand-primary/40 rounded-xl p-4 flex flex-col items-center justify-center text-center gap-3 overflow-hidden min-h-[220px]">
-                {nextSessionData.posterImage ? (
-                  <Image
-                    src={assetPath(nextSessionData.posterImage)}
-                    alt={nextSessionData.topicEn}
-                    width={400}
-                    height={500}
-                    className="w-full max-w-xs h-auto object-contain rounded-lg shadow-xs"
-                    priority
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-center gap-3 py-4">
-                    <span className="px-3 py-1 bg-brand-gold/20 text-ink text-xs font-bold rounded-lg">
-                      EPD Weekly Poster
-                    </span>
-                    <div className="space-y-1.5">
-                      <h3 className="text-base font-extrabold text-ink">
-                        {hero.poster.emptyTitle}
-                      </h3>
-                      <p className="text-xs text-ink-muted leading-relaxed max-w-xs">
-                        {hero.poster.emptySubtitle}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Time and location details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-border pt-4 text-xs">
-                <div>
-                  <span className="text-ink-muted block">{nextSessionPoster.dateLabel}</span>
-                  <span className="font-bold text-ink">{formattedDate}</span>
-                </div>
-                <div>
-                  <span className="text-ink-muted block">{nextSessionPoster.timeLabel}</span>
-                  <span className="font-bold text-ink" dir="ltr">
-                    {nextSessionData.timeFa}
-                  </span>
-                </div>
-                <div className="sm:col-span-2">
-                  <span className="text-ink-muted block">{nextSessionPoster.venueLabel}</span>
-                  <span className="font-bold text-ink">{nextSessionData.venueFa}</span>
-                </div>
-              </div>
-            </div>
+            <UpcomingSessionCard
+              initialData={nextSessionData}
+              eyebrow={nextSessionPoster.eyebrow}
+              dateLabel={nextSessionPoster.dateLabel}
+              timeLabel={nextSessionPoster.timeLabel}
+              venueLabel={nextSessionPoster.venueLabel}
+              emptyTitle={hero.poster.emptyTitle}
+              emptySubtitle={hero.poster.emptySubtitle}
+            />
           </div>
         </section>
 
