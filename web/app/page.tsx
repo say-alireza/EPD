@@ -36,7 +36,7 @@ export default function HomePage() {
             کانال تلگرام
           </a>
           <a
-            href="https://instagram.com/epdclub"
+            href="https://www.instagram.com/epdcommunity?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw=="
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs sm:text-sm font-bold text-ink-muted hover:text-ink transition-colors px-3 py-1.5 border border-border rounded-lg hover:border-brand-primary hidden sm:inline-flex"
@@ -313,7 +313,7 @@ export default function HomePage() {
                   {footer.telegram}
                 </a>
                 <a
-                  href="https://instagram.com/epdclub"
+                  href="https://www.instagram.com/epdcommunity?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw=="
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-ink-muted hover:text-ink transition-colors"

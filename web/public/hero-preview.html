@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EPD Community - Redesigned Hero</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ground: '#F8F9FA',
+            surface: '#FFFFFF',
+            ink: '#0C1729',
+            'ink-muted': '#5A6474',
+            border: '#DEDFE7',
+            brand: {
+              primary: '#1B2540',
+              accent: '#FA5041',
+              gold: '#FBC757',
+              teal: '#34CDBB'
+            }
+          },
+          fontFamily: {
+            sans: ['Vazirmatn', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F8F9FA;
+      color: #0C1729;
+      font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .photo-shadow {
+      box-shadow: 0 16px 36px -12px rgba(27, 37, 64, 0.12), 0 0 0 1px rgba(222, 223, 231, 0.8);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-brand-teal selection:text-ink">
+
+  <!-- Header -->
+  <header class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between border-b border-border">
+    <div class="flex items-center gap-4">
+      <!-- Exact EPD Logo -->
+      <a href="/" class="flex items-center">
+        <svg viewBox="0 0 440 150" fill="none" class="h-11 w-auto" role="img" aria-label="EPD Club">
+          <path d="M 60 20 H 380 A 30 30 0 0 1 410 50 V 100 A 30 30 0 0 1 380 130 H 345" stroke="#1B2540" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M 235 130 H 60 A 30 30 0 0 1 30 100 V 50 A 30 30 0 0 1 60 20" stroke="#1B2540" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="265" cy="130" r="7" fill="#FBC757" />
+          <circle cx="290" cy="130" r="7" fill="#FA5041" />
+          <circle cx="315" cy="130" r="7" fill="#34CDBB" />
+          <!-- E -->
+          <path d="M 90 48 V 102 M 90 48 H 122 M 129 48 H 145 M 90 75 H 132 M 90 102 H 145" stroke="#1B2540" stroke-width="9" stroke-linecap="round"/>
+          <!-- P -->
+          <path d="M 180 48 V 102 M 180 48 H 215 C 230 48 235 58 235 68 C 235 78 230 88 215 88 H 180" stroke="#1B2540" stroke-width="9" stroke-linecap="round"/>
+          <!-- D -->
+          <path d="M 270 48 V 102 M 270 48 H 295 C 322 48 322 102 295 102 H 270" stroke="#1B2540" stroke-width="9" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <span class="hidden md:inline-block text-xs font-semibold text-ink-muted border-r border-border pr-3">
+        باشگاه مکالمه آزاد انگلیسی مشهد
+      </span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <a href="https://t.me/EPDSupport" target="_blank" class="hidden sm:inline-flex items-center gap-2 text-xs font-bold text-ink-muted hover:text-ink px-3 py-1.5 rounded-lg border border-border hover:border-brand-primary transition-colors">
+        <span>کانال تلگرام</span>
+      </a>
+      <a href="https://www.instagram.com/epdcommunity?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" class="hidden md:inline-flex items-center gap-2 text-xs font-bold text-ink-muted hover:text-ink px-3 py-1.5 rounded-lg border border-border hover:border-brand-primary transition-colors">
+        <span>اینستاگرام</span>
+      </a>
+      <a href="#register" class="inline-flex items-center justify-center text-xs sm:text-sm font-extrabold text-surface bg-brand-primary hover:bg-brand-accent transition-colors px-4 py-2 rounded-lg shadow-2xs">
+        ثبتنام نشست
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16 flex-1 flex flex-col justify-center">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      
+      <!-- Right Column: Narrative & Action (7 cols) -->
+      <div class="lg:col-span-7 flex flex-col items-start gap-6">
+        
+        <!-- Live Community Badge -->
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-surface border border-border text-ink text-xs font-bold shadow-2xs">
+          <span class="w-2.5 h-2.5 rounded-full bg-brand-accent animate-pulse"></span>
+          <span>بیش از ۲۰۰ نشست موفق</span>
+          <span class="text-border">|</span>
+          <span class="text-ink-muted font-medium">مشهد · هر پنجشنبه ۱۰:۰۰ الی ۱۲:۰۰</span>
+        </div>
+
+        <!-- Headline & Tagline -->
+        <div class="space-y-3">
+          <div class="text-xs font-black tracking-widest text-[#E03E30] font-mono" dir="ltr">
+            AN EXCUSE FOR SPEAKING
+          </div>
+          <h1 class="text-3xl sm:text-5xl lg:text-5xl font-black text-ink leading-[1.3] tracking-tight">
+            جایی برای انگلیسی صحبت کردن،<br>
+            <span class="text-brand-accent relative inline-block">
+              نه امتحان پس دادن!
+              <svg class="absolute -bottom-2 right-0 w-full text-brand-gold h-2.5" viewBox="0 0 200 9" fill="none" preserveAspectRatio="none">
+                <path d="M2.5 6.5C50 2.5 150 2.5 197.5 6.5" stroke="#FBC757" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+            </span>
+          </h1>
+          <p class="text-base sm:text-lg font-normal text-ink-muted leading-relaxed max-w-xl pt-1">
+            دورهمی هفتگی مکالمه آزاد در بهترین کافههای مشهد؛ گفتگو درباره موضوعات روز، بازیهای گروهی جذاب و شبکهسازی دوستانه بدون نگرانی از اشتباه گرامری.
+          </p>
+        </div>
+
+        <!-- Feature Pills (Clean, elevated micro-cards) -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-bold text-ink shadow-2xs">
+            <span class="w-2 h-2 rounded-full bg-brand-teal"></span>
+            مکالمه بدون قضاوت و روان
+          </div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-bold text-ink shadow-2xs">
+            <span class="w-2 h-2 rounded-full bg-brand-gold"></span>
+            بازیها و چالشهای تعاملی
+          </div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-bold text-ink shadow-2xs">
+            <span class="w-2 h-2 rounded-full bg-brand-accent"></span>
+            کافههای منتخب و دنج مشهد
+          </div>
+        </div>
+
+        <!-- Action CTAs -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1 w-full sm:w-auto">
+          <a href="#register" class="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 bg-brand-accent hover:bg-[#E03E30] text-surface font-black text-sm sm:text-base rounded-xl transition-all shadow-sm shadow-brand-accent/20 active:translate-y-px">
+            <span>ثبتنام در نشست این هفته</span>
+            <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </a>
+          <a href="#gallery" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-surface hover:bg-surface-hover text-ink font-bold text-sm rounded-xl border border-border transition-all shadow-2xs">
+            <span>تصاویر دورهمیها</span>
+          </a>
+        </div>
+
+        <!-- Social Proof Bar -->
+        <div class="flex items-center gap-3 pt-1">
+          <div class="flex -space-x-2 space-x-reverse overflow-hidden">
+            <div class="inline-block h-8 w-8 rounded-full ring-2 ring-surface bg-brand-primary text-surface flex items-center justify-center text-[10px] font-bold">AR</div>
+            <div class="inline-block h-8 w-8 rounded-full ring-2 ring-surface bg-brand-accent text-surface flex items-center justify-center text-[10px] font-bold">SM</div>
+            <div class="inline-block h-8 w-8 rounded-full ring-2 ring-surface bg-brand-teal text-ink flex items-center justify-center text-[10px] font-bold">ZA</div>
+            <div class="inline-block h-8 w-8 rounded-full ring-2 ring-surface bg-brand-gold text-ink flex items-center justify-center text-[10px] font-extrabold">+۳۵۰</div>
+          </div>
+          <div class="text-xs text-ink-muted">
+            <span class="font-bold text-ink">بیش از ۳۵۰ عضو فعال</span> در مشهد هر هفته همراه ما هستند
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Left Column: Visual Atmosphere & Ticket Card (5 cols) -->
+      <div class="lg:col-span-5 relative w-full">
+        <!-- Main Real Photo Card with Organic Depth -->
+        <div class="rounded-2xl overflow-hidden photo-shadow bg-surface border border-border p-2.5">
+          <div class="relative h-72 sm:h-76 w-full rounded-xl overflow-hidden">
+            <img 
+              src="media/gallery/gallery-people-everywhere-01.jpg" 
+              alt="EPD Cafe Session" 
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            
+            <!-- In-Photo Tag -->
+            <div class="absolute top-3 right-3 px-3 py-1 rounded-md bg-black/60 backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1.5 border border-white/10">
+              <span class="w-2 h-2 rounded-full bg-brand-teal"></span>
+              دورهمی واقعی در کافه
+            </div>
+
+            <div class="absolute bottom-3 right-3 left-3 text-white">
+              <div class="text-xs font-medium text-white/80">فضای دوستانه و صمیمی</div>
+              <div class="text-sm font-bold">بدون حس غریبی، از دقیقه اول همه با هم صحبت میکنند</div>
+            </div>
+          </div>
+
+          <!-- Bottom Session Ticket Section -->
+          <div class="p-4 sm:p-5 flex flex-col gap-3.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 bg-brand-gold text-ink text-xs font-black rounded">
+                  جلسه ۷۴
+                </span>
+                <span class="text-xs font-bold text-ink">نشست پنجشنبه این هفته</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs font-bold text-brand-teal bg-brand-teal/10 px-2.5 py-1 rounded-full border border-brand-teal/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-teal animate-pulse"></span>
+                <span>۴ صندلی باقیمانده</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs bg-ground p-3 rounded-xl border border-border">
+              <div>
+                <span class="text-ink-muted block text-[11px]">زمان برگزاری:</span>
+                <span class="font-bold text-ink">پنجشنبه ۱۰:۰۰ الی ۱۲:۰۰</span>
+              </div>
+              <div>
+                <span class="text-ink-muted block text-[11px]">محل برگزاری:</span>
+                <span class="font-bold text-ink">کافه اعلامی در تلگرام</span>
+              </div>
+            </div>
+
+            <a href="#register" class="w-full text-center py-2.5 bg-brand-primary hover:bg-brand-accent text-surface text-xs font-extrabold rounded-lg transition-colors">
+              مشاهده جزئیات و رزرو صندلی
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
