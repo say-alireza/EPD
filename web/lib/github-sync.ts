@@ -330,3 +330,241 @@ export async function syncGalleryPhotoToGitHub(options: GalleryPhotoSyncOptions)
     commitUrl: commitData.html_url || `https://github.com/${getGitHubConfig().repo}/commit/${commitData.sha}`,
   };
 }
+
+export async function deletePosterFromGitHub(posterId: string): Promise<{ commitSha: string; commitUrl: string }> {
+  const { branch } = getGitHubConfig();
+  const refData = await githubRequest<{ object: { sha: string } }>(`/git/ref/heads/${branch}`);
+  const latestCommitSha = refData.object.sha;
+
+  // 1. Read and update posters.json
+  const postersFile = await fetchFileFromRepo("web/data/posters.json", branch);
+  let postersArray: Array<{
+    id: string;
+    sessionNumber: number;
+    topicEn: string;
+    dateFa: string;
+    image: string;
+  }> = [];
+
+  if (postersFile) {
+    try {
+      postersArray = JSON.parse(postersFile.content);
+    } catch {
+      postersArray = [];
+    }
+  }
+
+  const targetPoster = postersArray.find((p) => p.id === posterId);
+  postersArray = postersArray.filter((p) => p.id !== posterId);
+
+  const postersBlob = await githubRequest<{ sha: string }>("/git/blobs", {
+    method: "POST",
+    body: {
+      content: encodeUtf8Base64(JSON.stringify(postersArray, null, 2) + "\n"),
+      encoding: "base64",
+    },
+  });
+
+  const treeEntries: Array<{ path: string; mode: string; type: string; sha: string }> = [
+    {
+      path: "web/data/posters.json",
+      mode: "100644",
+      type: "blob",
+      sha: postersBlob.sha,
+    },
+  ];
+
+  // 2. If targetPoster was in next-session.json, update next-session.json as well
+  const nextSessionFile = await fetchFileFromRepo("web/data/next-session.json", branch);
+  if (nextSessionFile) {
+    try {
+      const nextSessionData = JSON.parse(nextSessionFile.content);
+      if (
+        (targetPoster && nextSessionData.number === targetPoster.sessionNumber) ||
+        (targetPoster && nextSessionData.posterImage === targetPoster.image)
+      ) {
+        // Fallback to top remaining poster, or null
+        const topRemaining = postersArray[0];
+        nextSessionData.posterImage = topRemaining ? topRemaining.image : null;
+        if (topRemaining) {
+          nextSessionData.number = topRemaining.sessionNumber;
+          nextSessionData.topicEn = topRemaining.topicEn;
+        }
+
+        const nextSessionBlob = await githubRequest<{ sha: string }>("/git/blobs", {
+          method: "POST",
+          body: {
+            content: encodeUtf8Base64(JSON.stringify(nextSessionData, null, 2) + "\n"),
+            encoding: "base64",
+          },
+        });
+
+        treeEntries.push({
+          path: "web/data/next-session.json",
+          mode: "100644",
+          type: "blob",
+          sha: nextSessionBlob.sha,
+        });
+      }
+    } catch (e) {
+      console.error("Error updating next-session.json on poster delete:", e);
+    }
+  }
+
+  const treeData = await githubRequest<{ sha: string }>("/git/trees", {
+    method: "POST",
+    body: {
+      base_tree: latestCommitSha,
+      tree: treeEntries,
+    },
+  });
+
+  const commitData = await githubRequest<{ sha: string; html_url: string }>("/git/commits", {
+    method: "POST",
+    body: {
+      message: `chore(posters): delete poster ${posterId}`,
+      tree: treeData.sha,
+      parents: [latestCommitSha],
+    },
+  });
+
+  await githubRequest(`/git/refs/heads/${branch}`, {
+    method: "PATCH",
+    body: {
+      sha: commitData.sha,
+    },
+  });
+
+  return {
+    commitSha: commitData.sha,
+    commitUrl: commitData.html_url || `https://github.com/${getGitHubConfig().repo}/commit/${commitData.sha}`,
+  };
+}
+
+export async function deleteGalleryFromGitHub(galleryId: string): Promise<{ commitSha: string; commitUrl: string }> {
+  const { branch } = getGitHubConfig();
+  const refData = await githubRequest<{ object: { sha: string } }>(`/git/ref/heads/${branch}`);
+  const latestCommitSha = refData.object.sha;
+
+  const galleryFile = await fetchFileFromRepo("web/data/gallery.json", branch);
+  let galleryArray: Array<{ id: string; sessionNumber: number; image: string; caption?: string }> = [];
+
+  if (galleryFile) {
+    try {
+      galleryArray = JSON.parse(galleryFile.content);
+    } catch {
+      galleryArray = [];
+    }
+  }
+
+  galleryArray = galleryArray.filter((g) => g.id !== galleryId);
+
+  const galleryBlob = await githubRequest<{ sha: string }>("/git/blobs", {
+    method: "POST",
+    body: {
+      content: encodeUtf8Base64(JSON.stringify(galleryArray, null, 2) + "\n"),
+      encoding: "base64",
+    },
+  });
+
+  const treeData = await githubRequest<{ sha: string }>("/git/trees", {
+    method: "POST",
+    body: {
+      base_tree: latestCommitSha,
+      tree: [
+        {
+          path: "web/data/gallery.json",
+          mode: "100644",
+          type: "blob",
+          sha: galleryBlob.sha,
+        },
+      ],
+    },
+  });
+
+  const commitData = await githubRequest<{ sha: string; html_url: string }>("/git/commits", {
+    method: "POST",
+    body: {
+      message: `chore(gallery): delete gallery item ${galleryId}`,
+      tree: treeData.sha,
+      parents: [latestCommitSha],
+    },
+  });
+
+  await githubRequest(`/git/refs/heads/${branch}`, {
+    method: "PATCH",
+    body: {
+      sha: commitData.sha,
+    },
+  });
+
+  return {
+    commitSha: commitData.sha,
+    commitUrl: commitData.html_url || `https://github.com/${getGitHubConfig().repo}/commit/${commitData.sha}`,
+  };
+}
+
+export async function syncSessionUpdateToGitHub(partialData: Record<string, unknown>): Promise<{ commitSha: string; commitUrl: string }> {
+  const { branch } = getGitHubConfig();
+  const refData = await githubRequest<{ object: { sha: string } }>(`/git/ref/heads/${branch}`);
+  const latestCommitSha = refData.object.sha;
+
+  const nextSessionFile = await fetchFileFromRepo("web/data/next-session.json", branch);
+  let nextSessionData: Record<string, unknown> = {};
+  if (nextSessionFile) {
+    try {
+      nextSessionData = JSON.parse(nextSessionFile.content);
+    } catch {
+      nextSessionData = {};
+    }
+  }
+
+  nextSessionData = {
+    ...nextSessionData,
+    ...partialData,
+  };
+
+  const nextSessionBlob = await githubRequest<{ sha: string }>("/git/blobs", {
+    method: "POST",
+    body: {
+      content: encodeUtf8Base64(JSON.stringify(nextSessionData, null, 2) + "\n"),
+      encoding: "base64",
+    },
+  });
+
+  const treeData = await githubRequest<{ sha: string }>("/git/trees", {
+    method: "POST",
+    body: {
+      base_tree: latestCommitSha,
+      tree: [
+        {
+          path: "web/data/next-session.json",
+          mode: "100644",
+          type: "blob",
+          sha: nextSessionBlob.sha,
+        },
+      ],
+    },
+  });
+
+  const commitData = await githubRequest<{ sha: string; html_url: string }>("/git/commits", {
+    method: "POST",
+    body: {
+      message: `chore(session): update session details`,
+      tree: treeData.sha,
+      parents: [latestCommitSha],
+    },
+  });
+
+  await githubRequest(`/git/refs/heads/${branch}`, {
+    method: "PATCH",
+    body: {
+      sha: commitData.sha,
+    },
+  });
+
+  return {
+    commitSha: commitData.sha,
+    commitUrl: commitData.html_url || `https://github.com/${getGitHubConfig().repo}/commit/${commitData.sha}`,
+  };
+}

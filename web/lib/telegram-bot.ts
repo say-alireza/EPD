@@ -15,7 +15,13 @@ import {
   getBotState,
   setBotState,
 } from "./db";
-import { syncPosterToGitHub, syncGalleryPhotoToGitHub } from "./github-sync";
+import {
+  syncPosterToGitHub,
+  syncGalleryPhotoToGitHub,
+  deletePosterFromGitHub,
+  deleteGalleryFromGitHub,
+  syncSessionUpdateToGitHub,
+} from "./github-sync";
 
 // Primary Telegram Bot Token (Read from environment variables)
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "placeholder_token_for_build";
@@ -361,21 +367,49 @@ bot.callbackQuery("action_add_slot", async (ctx) => {
 // Poster Delete
 bot.callbackQuery(/^delete_poster_(.+)$/, async (ctx) => {
   const posterId = ctx.match[1];
-  await deletePoster(posterId);
-  await ctx.answerCallbackQuery("پوستر با موفقیت حذف شد");
-  await ctx.reply("پوستر مورد نظر از آرشیو سایت حذف شد.", {
+  await ctx.answerCallbackQuery("در حال پردازش حذف...");
+  await ctx.reply("⏳ در حال حذف پوستر از ریپازیتوری گیت‌هاب...", {
     reply_markup: getMainMenuKeyboard(),
   });
+
+  try {
+    const syncRes = await deletePosterFromGitHub(posterId);
+    await deletePoster(posterId);
+    await ctx.reply(
+      `پوستر با موفقیت از گیت‌هاب و سایت حذف شد.\nسایت ظرف ۱ الی ۲ دقیقه آینده به‌روزرسانی می‌شود.\n\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+      { reply_markup: getMainMenuKeyboard() }
+    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    console.error("deletePoster error:", errorMsg);
+    await ctx.reply(`خطا در حذف پوستر از گیت‌هاب:\n${errorMsg}`, {
+      reply_markup: getMainMenuKeyboard(),
+    });
+  }
 });
 
 // Gallery Delete
 bot.callbackQuery(/^delete_gallery_(.+)$/, async (ctx) => {
   const galleryId = ctx.match[1];
-  await deleteGalleryItem(galleryId);
-  await ctx.answerCallbackQuery("عکس با موفقیت حذف شد");
-  await ctx.reply("تصویر مورد نظر از گالری سایت حذف شد.", {
+  await ctx.answerCallbackQuery("در حال پردازش حذف...");
+  await ctx.reply("⏳ در حال حذف تصویر از گالری گیت‌هاب...", {
     reply_markup: getMainMenuKeyboard(),
   });
+
+  try {
+    const syncRes = await deleteGalleryFromGitHub(galleryId);
+    await deleteGalleryItem(galleryId);
+    await ctx.reply(
+      `تصویر با موفقیت از گالری در گیت‌هاب حذف شد.\nسایت ظرف ۱ الی ۲ دقیقه آینده به‌روزرسانی می‌شود.\n\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+      { reply_markup: getMainMenuKeyboard() }
+    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    console.error("deleteGallery error:", errorMsg);
+    await ctx.reply(`خطا در حذف عکس از گیت‌هاب:\n${errorMsg}`, {
+      reply_markup: getMainMenuKeyboard(),
+    });
+  }
 });
 
 // Upload triggers via inline
@@ -509,11 +543,20 @@ bot.on("message:text", async (ctx) => {
         await ctx.reply("لطفاً یک عدد معتبر ارسال کنید یا «لغو عملیات» را بزنید.");
         return;
       }
-      await updateUpcomingSession({ number: num });
       setBotState(userId, null);
-      await ctx.reply(`شماره نشست با موفقیت به جلسه ${num} تغییر یافت.`, {
-        reply_markup: getMainMenuKeyboard(),
-      });
+      await updateUpcomingSession({ number: num });
+      try {
+        const syncRes = await syncSessionUpdateToGitHub({ number: num });
+        await ctx.reply(
+          `شماره نشست با موفقیت به جلسه ${num} تغییر یافت و در گیت‌هاب ثبت شد.\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        await ctx.reply(`شماره نشست آپدیت شد ولی خطای همگام‌سازی گیت‌هاب رخ داد:\n${msg}`, {
+          reply_markup: getMainMenuKeyboard(),
+        });
+      }
       break;
     }
 
@@ -530,14 +573,23 @@ bot.on("message:text", async (ctx) => {
 
     case "awaiting_session_topic_fa": {
       const topicEn = String(state.data.topicEn || "Session Topic");
+      setBotState(userId, null);
       await updateUpcomingSession({
         topicEn,
         topicFa: text,
       });
-      setBotState(userId, null);
-      await ctx.reply("موضوع نشست با موفقیت بهروزرسانی شد.", {
-        reply_markup: getMainMenuKeyboard(),
-      });
+      try {
+        const syncRes = await syncSessionUpdateToGitHub({ topicEn, topicFa: text });
+        await ctx.reply(
+          `موضوع نشست با موفقیت به‌روزرسانی و در گیت‌هاب ثبت شد.\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        await ctx.reply(`موضوع نشست آپدیت شد ولی خطای همگام‌سازی گیت‌هاب رخ داد:\n${msg}`, {
+          reply_markup: getMainMenuKeyboard(),
+        });
+      }
       break;
     }
 
@@ -547,20 +599,38 @@ bot.on("message:text", async (ctx) => {
         await ctx.reply("لطفاً یک عدد معتبر ارسال کنید یا «لغو عملیات» را بزنید.");
         return;
       }
-      await updateUpcomingSession({ remainingSeats: seats });
       setBotState(userId, null);
-      await ctx.reply(`ظرفیت صندلیهای باقیمانده به ${seats} تغییر یافت.`, {
-        reply_markup: getMainMenuKeyboard(),
-      });
+      await updateUpcomingSession({ remainingSeats: seats });
+      try {
+        const syncRes = await syncSessionUpdateToGitHub({ remainingSeats: seats });
+        await ctx.reply(
+          `ظرفیت صندلی‌های باقیمانده به ${seats} تغییر یافت و در گیت‌هاب ثبت شد.\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        await ctx.reply(`ظرفیت صندلی‌ها آپدیت شد ولی خطای همگام‌سازی رخ داد:\n${msg}`, {
+          reply_markup: getMainMenuKeyboard(),
+        });
+      }
       break;
     }
 
     case "awaiting_session_venue": {
-      await updateUpcomingSession({ venueFa: text });
       setBotState(userId, null);
-      await ctx.reply("مکان برگزاری با موفقیت بهروزرسانی شد.", {
-        reply_markup: getMainMenuKeyboard(),
-      });
+      await updateUpcomingSession({ venueFa: text });
+      try {
+        const syncRes = await syncSessionUpdateToGitHub({ venueFa: text });
+        await ctx.reply(
+          `مکان برگزاری با موفقیت به‌روزرسانی و در گیت‌هاب ثبت شد.\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        await ctx.reply(`مکان برگزاری آپدیت شد ولی خطای همگام‌سازی رخ داد:\n${msg}`, {
+          reply_markup: getMainMenuKeyboard(),
+        });
+      }
       break;
     }
 
