@@ -590,7 +590,26 @@ bot.on("message:text", async (ctx) => {
         return;
       }
 
+      setBotState(userId, {
+        step: "awaiting_new_slot_price",
+        data: { title: state.data.title, capacity: cap },
+      });
+      await ctx.reply("مبلغ ورودی این سانس را به تومان وارد کنید (مثال: 50000 یا برای رایگان عدد 0):", {
+        reply_markup: getCancelKeyboard(),
+      });
+      break;
+    }
+
+    case "awaiting_new_slot_price": {
+      const asciiText = text.replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[,،\s]/g, "");
+      const price = parseInt(asciiText, 10);
+      if (isNaN(price) || price < 0) {
+        await ctx.reply("لطفاً یک مبلغ معتبر به عدد (تومان) ارسال کنید یا «لغو عملیات» را بزنید.");
+        return;
+      }
+
       const slotTitle = String(state.data.title);
+      const cap = Number(state.data.capacity);
       const slotId = "slot-" + Date.now().toString(36);
 
       await addSlot({
@@ -601,8 +620,16 @@ bot.on("message:text", async (ctx) => {
         isFull: false,
       });
 
+      const feeFa = price === 0 ? "رایگان" : `${price.toLocaleString()} تومان`;
+      await updateUpcomingSession({ feeTomans: price, feeFa });
+      try {
+        await syncSessionUpdateToGitHub({ feeTomans: price, feeFa });
+      } catch (e) {
+        console.error("Error syncing fee to GitHub:", e);
+      }
+
       setBotState(userId, null);
-      await ctx.reply(`سانس جدید «${slotTitle}» با ظرفیت ${cap} نفر با موفقیت اضافه شد.`, {
+      await ctx.reply(`سانس جدید «${slotTitle}» با ظرفیت ${cap} نفر و مبلغ ورودی «${feeFa}» با موفقیت اضافه شد.`, {
         reply_markup: getMainMenuKeyboard(),
       });
       break;
@@ -797,11 +824,29 @@ bot.on("message:text", async (ctx) => {
     }
 
     case "awaiting_poster_date_fa": {
-      const { fileUrl, sessionNumber, topicEn } = state.data;
-      const dateFa = text;
+      setBotState(userId, {
+        step: "awaiting_poster_price",
+        data: { ...state.data, dateFa: text },
+      });
+      await ctx.reply("مبلغ ورودی این نشست را به تومان وارد کنید (مثال: 50000 یا برای رایگان عدد 0):", {
+        reply_markup: getCancelKeyboard(),
+      });
+      break;
+    }
+
+    case "awaiting_poster_price": {
+      const asciiText = text.replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[,،\s]/g, "");
+      const price = parseInt(asciiText, 10);
+      if (isNaN(price) || price < 0) {
+        await ctx.reply("لطفاً یک مبلغ معتبر به عدد (تومان) ارسال کنید یا «لغو عملیات» را بزنید.");
+        return;
+      }
+
+      const { fileUrl, sessionNumber, topicEn, dateFa } = state.data;
+      const feeFa = price === 0 ? "رایگان" : `${price.toLocaleString()} تومان`;
 
       setBotState(userId, null);
-      await ctx.reply("⏳ در حال دانلود و ارسال پوستر به ریپازیتوری گیت‌هاب...", {
+      await ctx.reply("⏳ در حال دانلود و ارسال پوستر و مشخصات نشست به ریپازیتوری گیت‌هاب...", {
         reply_markup: getMainMenuKeyboard(),
       });
 
@@ -813,7 +858,9 @@ bot.on("message:text", async (ctx) => {
         const syncResult = await syncPosterToGitHub({
           sessionNumber: Number(sessionNumber),
           topicEn: String(topicEn),
-          dateFa,
+          dateFa: String(dateFa),
+          feeTomans: price,
+          feeFa,
           imageBuffer,
         });
 
@@ -823,17 +870,19 @@ bot.on("message:text", async (ctx) => {
           id: `poster-${sessionNumber}`,
           sessionNumber: Number(sessionNumber),
           topicEn: String(topicEn),
-          dateFa,
+          dateFa: String(dateFa),
           image: posterRelPath,
         });
         await updateUpcomingSession({
           number: Number(sessionNumber),
           topicEn: String(topicEn),
           posterImage: posterRelPath,
+          feeTomans: price,
+          feeFa,
         });
 
         await ctx.reply(
-          `پوستر نشست ${sessionNumber} با موفقیت در گیت‌هاب ثبت شد.\n\nسایت تا ۱ الی ۲ دقیقه دیگر به صورت خودکار بیلد و به‌روزرسانی می‌شود.\n\nشناسه کامیت: ${syncResult.commitSha.slice(0, 7)}`,
+          `نشست جدید (جلسه ${sessionNumber}) با مبلغ ورودی «${feeFa}» با موفقیت در گیت‌هاب ثبت شد.\n\nسایت تا ۱ الی ۲ دقیقه دیگر به‌روزرسانی می‌شود.\nشناسه کامیت: ${syncResult.commitSha.slice(0, 7)}`,
           { reply_markup: getMainMenuKeyboard() }
         );
       } catch (err: unknown) {

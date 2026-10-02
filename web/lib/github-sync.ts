@@ -92,6 +92,8 @@ export interface SessionPosterSyncOptions {
   imageBuffer: ArrayBuffer;
   venueFa?: string;
   timeFa?: string;
+  feeTomans?: number;
+  feeFa?: string;
 }
 
 export async function syncPosterToGitHub(options: SessionPosterSyncOptions): Promise<{ commitSha: string; commitUrl: string }> {
@@ -134,6 +136,8 @@ export async function syncPosterToGitHub(options: SessionPosterSyncOptions): Pro
     posterImage: imagePublicUrl,
     timeFa: options.timeFa || nextSessionData.timeFa || "۱۰:۰۰ تا ۱۲:۰۰",
     venueFa: options.venueFa || nextSessionData.venueFa || "مشهد، بلوار احمدآباد، کافه کتاب آفتاب",
+    feeTomans: options.feeTomans !== undefined ? options.feeTomans : (typeof nextSessionData.feeTomans === "number" ? nextSessionData.feeTomans : 50000),
+    feeFa: options.feeFa || (typeof nextSessionData.feeFa === "string" ? nextSessionData.feeFa : "۵۰,۰۰۰ تومان"),
   };
 
   const nextSessionBlob = await githubRequest<{ sha: string }>("/git/blobs", {
