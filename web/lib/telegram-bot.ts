@@ -16,6 +16,7 @@ import {
   getBotState,
   setBotState,
 } from "./db";
+import { syncPosterToGitHub, syncGalleryPhotoToGitHub } from "./github-sync";
 
 // Primary Telegram Bot Token (Read from environment variables)
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "placeholder_token_for_build";
@@ -597,27 +598,50 @@ bot.on("message:text", async (ctx) => {
       const { fileUrl, sessionNumber, topicEn } = state.data;
       const dateFa = text;
 
-      const posterId = `poster-${sessionNumber}-${Date.now()}`;
-      await addPoster({
-        id: posterId,
-        sessionNumber: Number(sessionNumber),
-        topicEn: String(topicEn),
-        dateFa,
-        image: String(fileUrl),
-      });
-
-      // Also update upcoming session hero
-      await updateUpcomingSession({
-        number: Number(sessionNumber),
-        topicEn: String(topicEn),
-        posterImage: String(fileUrl),
-      });
-
       setBotState(userId, null);
-      await ctx.reply(
-        `پوستر نشست ${sessionNumber} با موضوع «${topicEn}» ثبت شد و روی صفحه اصلی و آرشیو پوسترها قرار گرفت.`,
-        { reply_markup: getMainMenuKeyboard() }
-      );
+      await ctx.reply("⏳ در حال دانلود و ارسال پوستر به ریپازیتوری گیت‌هاب...", {
+        reply_markup: getMainMenuKeyboard(),
+      });
+
+      try {
+        const imgRes = await fetch(String(fileUrl));
+        if (!imgRes.ok) throw new Error("خطا در دانلود فایل پوستر از سرور تلگرام");
+        const imageBuffer = await imgRes.arrayBuffer();
+
+        const syncResult = await syncPosterToGitHub({
+          sessionNumber: Number(sessionNumber),
+          topicEn: String(topicEn),
+          dateFa,
+          imageBuffer,
+        });
+
+        // Update local memory/D1 fallback
+        const posterRelPath = `/media/posters/poster-epd${sessionNumber}.jpg`;
+        await addPoster({
+          id: `poster-${sessionNumber}`,
+          sessionNumber: Number(sessionNumber),
+          topicEn: String(topicEn),
+          dateFa,
+          image: posterRelPath,
+        });
+        await updateUpcomingSession({
+          number: Number(sessionNumber),
+          topicEn: String(topicEn),
+          posterImage: posterRelPath,
+        });
+
+        await ctx.reply(
+          `پوستر نشست ${sessionNumber} با موفقیت در گیت‌هاب ثبت شد.\n\nسایت تا ۱ الی ۲ دقیقه دیگر به صورت خودکار بیلد و به‌روزرسانی می‌شود.\n\nشناسه کامیت: ${syncResult.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error("Poster sync to GitHub error:", errorMsg);
+        await ctx.reply(
+          `خطا در ثبت پوستر روی گیت‌هاب:\n${errorMsg}\n\nلطفاً اطمینان حاصل کنید GITHUB_TOKEN در کلودفلر تنظیم شده باشد.`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      }
       break;
     }
 
@@ -630,17 +654,33 @@ bot.on("message:text", async (ctx) => {
       }
 
       const { fileUrl } = state.data;
-      const galleryId = `gallery-${sessionNumber}-${Date.now()}`;
-      await addGalleryItem({
-        id: galleryId,
-        sessionNumber,
-        image: String(fileUrl),
-      });
-
       setBotState(userId, null);
-      await ctx.reply(`عکس با موفقیت به گالری تصاویر نشست ${sessionNumber} اضافه شد.`, {
+      await ctx.reply("⏳ در حال آپلود تصویر در گالری گیت‌هاب...", {
         reply_markup: getMainMenuKeyboard(),
       });
+
+      try {
+        const imgRes = await fetch(String(fileUrl));
+        if (!imgRes.ok) throw new Error("خطا در دانلود تصویر از سرور تلگرام");
+        const imageBuffer = await imgRes.arrayBuffer();
+
+        const syncResult = await syncGalleryPhotoToGitHub({
+          sessionNumber,
+          imageBuffer,
+        });
+
+        await ctx.reply(
+          `عکس نشست ${sessionNumber} با موفقیت به گالری در گیت‌هاب اضافه شد.\n\nشناسه کامیت: ${syncResult.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error("Gallery sync to GitHub error:", errorMsg);
+        await ctx.reply(
+          `خطا در ثبت تصویر گالری در گیت‌هاب:\n${errorMsg}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      }
       break;
     }
   }
