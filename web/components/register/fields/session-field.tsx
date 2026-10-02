@@ -42,9 +42,12 @@ export function SessionField({ sessions, isLoading, error: fetchError }: Session
         </option>
         {sessions.map((session) => {
           const isFull = session.isFull || session.remainingSeats <= 0;
+          const feeBadge = session.feeFa ? ` [${session.feeFa}]` : "";
           return (
             <option key={session.id} value={session.id} disabled={isFull}>
-              {session.title}{" "}
+              {session.title}
+              {feeBadge}
+              {" "}
               {isFull
                 ? `(${strings.fields.sessionId.full})`
                 : strings.fields.sessionId.remainingSeats(session.remainingSeats)}

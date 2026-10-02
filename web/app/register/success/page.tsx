@@ -19,9 +19,26 @@ export default function RegisterSuccessPage() {
           ثبت‌نام شما با موفقیت ثبت شد
         </h1>
         <p className="text-sm text-ink-muted leading-relaxed">
-          اطلاعات نشست و لوکیشن دقیق از طریق پیامک برای شما ارسال خواهد شد.
+          اطلاعات دقیق لوکیشن و هماهنگی‌های نشست در کانال تلگرام EPD به آدرس{" "}
+          <a
+            href="https://t.me/EPDCommunity"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-teal font-bold underline underline-offset-4 hover:opacity-80"
+          >
+            @EPDCommunity
+          </a>{" "}
+          اطلاع‌رسانی می‌شود.
         </p>
-        <div className="pt-4">
+        <div className="pt-4 flex flex-col gap-3">
+          <a
+            href="https://t.me/EPDCommunity"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center w-full px-6 py-3 bg-brand-teal text-surface font-extrabold text-sm rounded-lg hover:opacity-90 transition-opacity"
+          >
+            مشاهده کانال تلگرام EPD
+          </a>
           <Link
             href="/"
             className="inline-flex items-center justify-center w-full px-6 py-3 bg-brand-primary text-surface font-extrabold text-sm rounded-lg hover:opacity-90 transition-opacity"

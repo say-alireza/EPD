@@ -194,21 +194,30 @@ bot.hears("مدیریت سانسها و ظرفیت", async (ctx) => {
   const session = await getUpcomingSession();
 
   let text = "مدیریت سانسها و ظرفیت صندلیها:\n\n";
-  text += `مبلغ ورودی جلسه: ${session.feeFa || (session.feeTomans ? session.feeTomans.toLocaleString() + " تومان" : "رایگان")}\n\n`;
   const kb = new InlineKeyboard();
 
   slots.forEach((s) => {
     const status = s.isFull ? "[تکمیل ظرفیت]" : `[${s.remainingSeats} صندلی خالی]`;
-    text += `• ${s.title}\n  وضعیت: ${status} (ظرفیت کل: ${s.capacity})\n\n`;
+    const feeDisplay =
+      s.feeFa ||
+      (s.feeTomans !== undefined
+        ? s.feeTomans === 0
+          ? "رایگان"
+          : `${s.feeTomans.toLocaleString()} تومان`
+        : session.feeFa || "۵۰,۰۰۰ تومان");
+
+    text += `• ${s.title}\n  وضعیت: ${status} (ظرفیت: ${s.capacity}) | مبلغ: ${feeDisplay}\n\n`;
+
     kb.text(
-      s.isFull ? `باز کردن: ${s.title.substring(0, 18)}` : `بستن: ${s.title.substring(0, 18)}`,
+      s.isFull ? `باز کردن: ${s.title.substring(0, 14)}` : `بستن: ${s.title.substring(0, 14)}`,
       `toggle_slot_${s.id}`
     )
-      .text(`حذف`, `delete_slot_${s.id}`)
+      .text(`مبلغ (${feeDisplay})`, `edit_slot_fee_${s.id}`)
+      .text("حذف", `delete_slot_${s.id}`)
       .row();
   });
 
-  kb.text("ویرایش مبلغ ورودی", "edit_session_price")
+  kb.text("ویرایش مبلغ پیش‌فرض نشست", "edit_session_price")
     .text("افزودن سانس جدید", "action_add_slot")
     .row();
 
@@ -333,20 +342,32 @@ bot.callbackQuery(/^toggle_slot_(.+)$/, async (ctx) => {
   }
 
   let text = "مدیریت سانسها و ظرفیت صندلیها (بهروزرسانی شد):\n\n";
+  const session = await getUpcomingSession();
   const kb = new InlineKeyboard();
 
   updatedSlots.forEach((s) => {
     const status = s.isFull ? "[تکمیل ظرفیت]" : `[${s.remainingSeats} صندلی خالی]`;
-    text += `• ${s.title}\n  وضعیت: ${status} (ظرفیت کل: ${s.capacity})\n\n`;
+    const feeDisplay =
+      s.feeFa ||
+      (s.feeTomans !== undefined
+        ? s.feeTomans === 0
+          ? "رایگان"
+          : `${s.feeTomans.toLocaleString()} تومان`
+        : session.feeFa || "۵۰,۰۰۰ تومان");
+
+    text += `• ${s.title}\n  وضعیت: ${status} (ظرفیت: ${s.capacity}) | مبلغ: ${feeDisplay}\n\n`;
     kb.text(
-      s.isFull ? `باز کردن: ${s.title.substring(0, 18)}` : `بستن: ${s.title.substring(0, 18)}`,
+      s.isFull ? `باز کردن: ${s.title.substring(0, 14)}` : `بستن: ${s.title.substring(0, 14)}`,
       `toggle_slot_${s.id}`
     )
+      .text(`مبلغ (${feeDisplay})`, `edit_slot_fee_${s.id}`)
       .text(`حذف`, `delete_slot_${s.id}`)
       .row();
   });
 
-  kb.text("افزودن سانس جدید", "action_add_slot").row();
+  kb.text("ویرایش مبلغ پیش‌فرض نشست", "edit_session_price")
+    .text("افزودن سانس جدید", "action_add_slot")
+    .row();
   await ctx.editMessageText(text, { reply_markup: kb });
 });
 
@@ -363,21 +384,54 @@ bot.callbackQuery(/^delete_slot_(.+)$/, async (ctx) => {
   await ctx.answerCallbackQuery("سانس با موفقیت حذف شد");
 
   let text = "مدیریت سانسها و ظرفیت صندلیها (سانس حذف شد):\n\n";
+  const session = await getUpcomingSession();
   const kb = new InlineKeyboard();
 
   updatedSlots.forEach((s) => {
     const status = s.isFull ? "[تکمیل ظرفیت]" : `[${s.remainingSeats} صندلی خالی]`;
-    text += `• ${s.title}\n  وضعیت: ${status} (ظرفیت کل: ${s.capacity})\n\n`;
+    const feeDisplay =
+      s.feeFa ||
+      (s.feeTomans !== undefined
+        ? s.feeTomans === 0
+          ? "رایگان"
+          : `${s.feeTomans.toLocaleString()} تومان`
+        : session.feeFa || "۵۰,۰۰۰ تومان");
+
+    text += `• ${s.title}\n  وضعیت: ${status} (ظرفیت: ${s.capacity}) | مبلغ: ${feeDisplay}\n\n`;
     kb.text(
-      s.isFull ? `باز کردن: ${s.title.substring(0, 18)}` : `بستن: ${s.title.substring(0, 18)}`,
+      s.isFull ? `باز کردن: ${s.title.substring(0, 14)}` : `بستن: ${s.title.substring(0, 14)}`,
       `toggle_slot_${s.id}`
     )
+      .text(`مبلغ (${feeDisplay})`, `edit_slot_fee_${s.id}`)
       .text(`حذف`, `delete_slot_${s.id}`)
       .row();
   });
 
-  kb.text("افزودن سانس جدید", "action_add_slot").row();
+  kb.text("ویرایش مبلغ پیش‌فرض نشست", "edit_session_price")
+    .text("افزودن سانس جدید", "action_add_slot")
+    .row();
   await ctx.editMessageText(text, { reply_markup: kb });
+});
+
+// Edit specific slot fee
+bot.callbackQuery(/^edit_slot_fee_(.+)$/, async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const slotId = ctx.match[1];
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  const slots = await getSlots();
+  const target = slots.find((s) => s.id === slotId);
+  if (!target) {
+    await ctx.reply("سانس مورد نظر یافت نشد.");
+    return;
+  }
+
+  setBotState(userId, { step: "awaiting_slot_fee", data: { slotId } });
+  await ctx.reply(
+    `مبلغ ورودی برای «${target.title}» را به تومان وارد کنید (برای رایگان عدد 0 ارسال کنید):`,
+    { reply_markup: getCancelKeyboard() }
+  );
 });
 
 // Add Slot prompt
@@ -623,6 +677,7 @@ bot.on("message:text", async (ctx) => {
       const slotTitle = String(state.data.title);
       const cap = Number(state.data.capacity);
       const slotId = "slot-" + Date.now().toString(36);
+      const feeFa = price === 0 ? "رایگان" : `${price.toLocaleString()} تومان`;
 
       await addSlot({
         id: slotId,
@@ -630,6 +685,8 @@ bot.on("message:text", async (ctx) => {
         capacity: cap,
         remainingSeats: cap,
         isFull: false,
+        feeTomans: price,
+        feeFa: feeFa,
       });
 
       const updatedSlots = await getSlots();
@@ -639,16 +696,34 @@ bot.on("message:text", async (ctx) => {
         console.error("Error syncing slots to GitHub:", e);
       }
 
+      setBotState(userId, null);
+      await ctx.reply(`سانس «${slotTitle}» با ظرفیت ${cap} صندلی و مبلغ «${feeFa}» با موفقیت اضافه شد.`, {
+        reply_markup: getMainMenuKeyboard(),
+      });
+      break;
+    }
+
+    case "awaiting_slot_fee": {
+      const asciiText = text.replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[,،\s]/g, "");
+      const price = parseInt(asciiText, 10);
+      if (isNaN(price) || price < 0) {
+        await ctx.reply("لطفاً یک مبلغ معتبر به عدد (تومان) ارسال کنید یا «لغو عملیات» را بزنید.");
+        return;
+      }
+
+      const slotId = String(state.data.slotId);
       const feeFa = price === 0 ? "رایگان" : `${price.toLocaleString()} تومان`;
-      await updateUpcomingSession({ feeTomans: price, feeFa });
+      await updateSlot(slotId, { feeTomans: price, feeFa });
+
+      const updatedSlots = await getSlots();
       try {
-        await syncSessionUpdateToGitHub({ feeTomans: price, feeFa });
+        await syncSlotsToGitHub(updatedSlots);
       } catch (e) {
-        console.error("Error syncing fee to GitHub:", e);
+        console.error("Error syncing slots to GitHub:", e);
       }
 
       setBotState(userId, null);
-      await ctx.reply(`سانس جدید «${slotTitle}» با ظرفیت ${cap} نفر و مبلغ ورودی «${feeFa}» با موفقیت اضافه شد.`, {
+      await ctx.reply(`مبلغ سانس با موفقیت به «${feeFa}» تغییر یافت و ذخیره شد.`, {
         reply_markup: getMainMenuKeyboard(),
       });
       break;

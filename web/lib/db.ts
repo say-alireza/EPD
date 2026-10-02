@@ -84,6 +84,11 @@ function getD1(): D1DatabaseLike | null {
 // SESSIONS & SLOTS
 // ---------------------------------------------
 export async function getUpcomingSession(): Promise<UpcomingSession> {
+  const slots = await getSlots();
+  const totalSlotSeats = slots.length > 0
+    ? slots.reduce((acc, s) => acc + (s.isFull ? 0 : s.remainingSeats), 0)
+    : undefined;
+
   const d1 = getD1();
   if (d1) {
     try {
@@ -100,7 +105,7 @@ export async function getUpcomingSession(): Promise<UpcomingSession> {
           venueFa: String(row.venue_fa),
           venueEn: row.venue_en ? String(row.venue_en) : undefined,
           levelFa: String(row.level_fa),
-          remainingSeats: Number(row.remaining_seats),
+          remainingSeats: totalSlotSeats !== undefined ? totalSlotSeats : Number(row.remaining_seats),
           topicEn: String(row.topic_en),
           topicFa: String(row.topic_fa),
           posterImage: row.poster_image ? String(row.poster_image) : null,
@@ -118,7 +123,10 @@ export async function getUpcomingSession(): Promise<UpcomingSession> {
       console.error("D1 getUpcomingSession error:", e);
     }
   }
-  return memoryUpcomingSession;
+  return {
+    ...memoryUpcomingSession,
+    remainingSeats: totalSlotSeats !== undefined ? totalSlotSeats : memoryUpcomingSession.remainingSeats,
+  };
 }
 
 export async function updateUpcomingSession(data: Partial<UpcomingSession>): Promise<UpcomingSession> {
@@ -184,6 +192,11 @@ export async function getSlots(): Promise<Session[]> {
           capacity: Number(r.capacity),
           remainingSeats: Number(r.remaining_seats),
           isFull: Boolean(r.is_full),
+          feeTomans:
+            r.fee_tomans !== undefined && r.fee_tomans !== null
+              ? Number(r.fee_tomans)
+              : undefined,
+          feeFa: r.fee_fa ? String(r.fee_fa) : undefined,
         }));
       }
     } catch (e) {
@@ -195,7 +208,7 @@ export async function getSlots(): Promise<Session[]> {
 
 export async function updateSlot(
   slotId: string,
-  updates: Partial<Pick<Session, "title" | "capacity" | "remainingSeats" | "isFull">>
+  updates: Partial<Pick<Session, "title" | "capacity" | "remainingSeats" | "isFull" | "feeTomans" | "feeFa">>
 ): Promise<Session | null> {
   const index = memorySlots.findIndex((s) => s.id === slotId);
   if (index !== -1) {
@@ -211,15 +224,25 @@ export async function updateSlot(
         const merged: Session = { ...existing, ...updates };
         await d1
           .prepare(
-            `INSERT INTO slots (id, title, capacity, remaining_seats, is_full)
-             VALUES (?, ?, ?, ?, ?)
+            `INSERT INTO slots (id, title, capacity, remaining_seats, is_full, fee_tomans, fee_fa)
+             VALUES (?, ?, ?, ?, ?, ?, ?)
              ON CONFLICT(id) DO UPDATE SET
                title=excluded.title,
                capacity=excluded.capacity,
                remaining_seats=excluded.remaining_seats,
-               is_full=excluded.is_full`
+               is_full=excluded.is_full,
+               fee_tomans=excluded.fee_tomans,
+               fee_fa=excluded.fee_fa`
           )
-          .bind(merged.id, merged.title, merged.capacity, merged.remainingSeats, merged.isFull ? 1 : 0)
+          .bind(
+            merged.id,
+            merged.title,
+            merged.capacity,
+            merged.remainingSeats,
+            merged.isFull ? 1 : 0,
+            merged.feeTomans ?? null,
+            merged.feeFa ?? null
+          )
           .run();
         return merged;
       }
@@ -236,8 +259,18 @@ export async function addSlot(slot: Session): Promise<Session> {
   if (d1) {
     try {
       await d1
-        .prepare("INSERT INTO slots (id, title, capacity, remaining_seats, is_full) VALUES (?, ?, ?, ?, ?)")
-        .bind(slot.id, slot.title, slot.capacity, slot.remainingSeats, slot.isFull ? 1 : 0)
+        .prepare(
+          "INSERT INTO slots (id, title, capacity, remaining_seats, is_full, fee_tomans, fee_fa) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        )
+        .bind(
+          slot.id,
+          slot.title,
+          slot.capacity,
+          slot.remainingSeats,
+          slot.isFull ? 1 : 0,
+          slot.feeTomans ?? null,
+          slot.feeFa ?? null
+        )
         .run();
     } catch (e) {
       console.error("D1 addSlot error:", e);

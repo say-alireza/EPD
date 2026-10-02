@@ -5,6 +5,8 @@ export interface Session {
   capacity: number;
   remainingSeats: number;
   isFull: boolean;
+  feeTomans?: number;
+  feeFa?: string;
 }
 
 export interface UpcomingSession {

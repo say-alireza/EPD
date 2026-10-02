@@ -31,19 +31,27 @@ export async function POST(request: Request) {
       );
     }
 
+    const slots = await getSlots();
+    const selectedSlot = slots.find((s) => s.id === sessionId);
     const session = await getUpcomingSession();
-    const feeTomans = session.feeTomans ?? 0;
 
-    // ۱. اگر نشست دارای مبلغ ورودی است (> 0): شروع تراکنش درگاه زرین‌پال
+    // تعیین مبلغ ورودی: اولویت با مبلغ اختصاصی سانس است
+    const feeTomans =
+      selectedSlot?.feeTomans !== undefined
+        ? selectedSlot.feeTomans
+        : (session.feeTomans ?? 0);
+
+    // ۱. اگر نشست یا سانس دارای مبلغ ورودی است (> 0): شروع تراکنش درگاه زرین‌پال
     if (feeTomans > 0) {
       const url = new URL(request.url);
       const isLocal = url.hostname === "localhost" || url.hostname === "127.0.0.1";
       const origin = isLocal ? "https://epdcommunity.ir" : url.origin;
       const callbackUrl = `${origin}/api/payment/callback/`;
 
+      const slotName = selectedSlot?.title ? ` - ${selectedSlot.title.split(":")[0]}` : "";
       const paymentRes = await requestZarinpalPayment({
         amountTomans: feeTomans,
-        description: `ثبت‌نام ${fullName} در نشست ${session.number} EPD`,
+        description: `ثبت‌نام ${fullName} در نشست ${session.number} EPD${slotName}`,
         callbackUrl,
         mobile,
         email,
@@ -74,9 +82,7 @@ export async function POST(request: Request) {
       });
 
       // اطلاع‌رسانی آنی به ادمین‌های تلگرام
-      const slots = await getSlots();
-      const slot = slots.find((s) => s.id === sessionId);
-      const sessionTitle = slot ? slot.title : sessionId;
+      const sessionTitle = selectedSlot ? selectedSlot.title : sessionId;
 
       notifyAdminsNewRegistration({
         fullName,
@@ -116,9 +122,7 @@ export async function POST(request: Request) {
       amountTomans: 0,
     });
 
-    const slots = await getSlots();
-    const slot = slots.find((s) => s.id === sessionId);
-    const sessionTitle = slot ? slot.title : sessionId;
+    const sessionTitle = selectedSlot ? selectedSlot.title : sessionId;
 
     notifyAdminsNewRegistration({
       fullName,

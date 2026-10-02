@@ -4,20 +4,26 @@
     "title": "سانس اول: پنجشنبه ساعت ۱۶ تا ۱۸",
     "capacity": 15,
     "remainingSeats": 15,
-    "isFull": false
+    "isFull": false,
+    "feeTomans": 50000,
+    "feeFa": "۵۰,۰۰۰ تومان"
   },
   {
     "id": "slot-mur834z1",
     "title": "جلسات گیم: شنبه ساعت ۱۸ تا ۱۹:۳۰",
     "capacity": 10,
     "remainingSeats": 10,
-    "isFull": false
+    "isFull": false,
+    "feeTomans": 50000,
+    "feeFa": "۵۰,۰۰۰ تومان"
   },
   {
     "id": "slot-mur8kulq",
     "title": "تست",
     "capacity": 3,
     "remainingSeats": 3,
-    "isFull": false
+    "isFull": false,
+    "feeTomans": 0,
+    "feeFa": "رایگان"
   }
 ]

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { registrationSchema, RegistrationFormValues } from "@/lib/schema";
@@ -48,6 +48,14 @@ export function RegistrationForm() {
   });
 
   const { handleSubmit, formState: { isSubmitting } } = methods;
+  const selectedSessionId = useWatch({ control: methods.control, name: "sessionId" });
+  const selectedSlot = sessions.find((s) => s.id === selectedSessionId);
+  const activeFee = selectedSlot?.feeTomans !== undefined
+    ? {
+        feeTomans: selectedSlot.feeTomans,
+        feeFa: selectedSlot.feeFa || (selectedSlot.feeTomans === 0 ? "رایگان" : `${selectedSlot.feeTomans.toLocaleString()} تومان`),
+      }
+    : upcomingFee;
 
   // دریافت لیست سانس‌ها از API داخلی Next.js
   useEffect(() => {
@@ -155,19 +163,19 @@ export function RegistrationForm() {
 
         <div className="space-y-4">
           <AcceptTermsField />
-          {upcomingFee && (
+          {activeFee && (
             <div className="bg-surface border border-border/80 rounded-lg p-3.5 flex items-center justify-between text-xs">
-              <span className="text-ink-muted">مبلغ ورودی نشست:</span>
+              <span className="text-ink-muted">مبلغ ورودی سانس انتخابی:</span>
               <span className="font-extrabold text-brand-primary text-sm">
-                {upcomingFee.feeFa}
+                {activeFee.feeFa}
               </span>
             </div>
           )}
           <Button type="submit" disabled={isSubmitting} className="w-full">
             {isSubmitting
               ? strings.form.submitting
-              : upcomingFee && upcomingFee.feeTomans > 0
-              ? `پرداخت و ثبت‌نام نهایی (${upcomingFee.feeFa})`
+              : activeFee && activeFee.feeTomans > 0
+              ? `پرداخت و ثبت‌نام نهایی (${activeFee.feeFa})`
               : strings.form.submit}
           </Button>
         </div>

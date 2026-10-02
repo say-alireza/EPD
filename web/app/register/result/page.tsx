@@ -71,7 +71,16 @@ function PaymentResultContent() {
             </div>
 
             <div className="p-3.5 bg-brand-gold/10 border border-brand-gold/30 rounded-xl text-xs text-ink leading-relaxed">
-              اطلاعات لوکیشن، هماهنگی و جزییات تکمیلی نشست از طریق پیامک برای شما ارسال خواهد شد.
+              اطلاعات دقیق لوکیشن و هماهنگی‌های نشست در کانال تلگرام EPD به آدرس{" "}
+              <a
+                href="https://t.me/EPDCommunity"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-teal font-bold underline underline-offset-4 hover:opacity-80"
+              >
+                @EPDCommunity
+              </a>{" "}
+              اطلاع‌رسانی می‌شود.
             </div>
 
             <div className="pt-2">
