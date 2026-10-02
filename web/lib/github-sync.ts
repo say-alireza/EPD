@@ -54,12 +54,27 @@ async function githubRequest<T>(
   return response.json() as Promise<T>;
 }
 
+function decodeBase64Utf8(base64: string): string {
+  const binaryString = atob(base64.replace(/[\n\r\s]/g, ""));
+  const bytes = Uint8Array.from(binaryString, (c) => c.charCodeAt(0));
+  return new TextDecoder("utf-8").decode(bytes);
+}
+
+function encodeUtf8Base64(str: string): string {
+  const bytes = new TextEncoder().encode(str);
+  let binary = "";
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
 async function fetchFileFromRepo(path: string, branch: string): Promise<{ content: string; sha: string } | null> {
   try {
     const res = await githubRequest<{ content: string; sha: string; encoding: string }>(
       `/contents/${path}?ref=${branch}`
     );
-    const decoded = atob(res.content.replace(/\n/g, ""));
+    const decoded = decodeBase64Utf8(res.content);
     return { content: decoded, sha: res.sha };
   } catch (err: unknown) {
     if (err instanceof Error && err.message.includes("404")) {
@@ -124,8 +139,8 @@ export async function syncPosterToGitHub(options: SessionPosterSyncOptions): Pro
   const nextSessionBlob = await githubRequest<{ sha: string }>("/git/blobs", {
     method: "POST",
     body: {
-      content: JSON.stringify(nextSessionData, null, 2) + "\n",
-      encoding: "utf-8",
+      content: encodeUtf8Base64(JSON.stringify(nextSessionData, null, 2) + "\n"),
+      encoding: "base64",
     },
   });
 
@@ -160,8 +175,8 @@ export async function syncPosterToGitHub(options: SessionPosterSyncOptions): Pro
   const postersBlob = await githubRequest<{ sha: string }>("/git/blobs", {
     method: "POST",
     body: {
-      content: JSON.stringify(postersArray, null, 2) + "\n",
-      encoding: "utf-8",
+      content: encodeUtf8Base64(JSON.stringify(postersArray, null, 2) + "\n"),
+      encoding: "base64",
     },
   });
 
@@ -268,8 +283,8 @@ export async function syncGalleryPhotoToGitHub(options: GalleryPhotoSyncOptions)
   const galleryBlob = await githubRequest<{ sha: string }>("/git/blobs", {
     method: "POST",
     body: {
-      content: JSON.stringify(galleryArray, null, 2) + "\n",
-      encoding: "utf-8",
+      content: encodeUtf8Base64(JSON.stringify(galleryArray, null, 2) + "\n"),
+      encoding: "base64",
     },
   });
 
