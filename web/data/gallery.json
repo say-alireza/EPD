@@ -1,63 +1,198 @@
 [
   {
-    "id": "gallery-pop-culture-01",
-    "sessionNumber": 12,
-    "image": "/media/gallery/gallery-pop-culture-01.jpg"
+    "id": "gallery-epd210-01",
+    "sessionNumber": 210,
+    "image": "/media/gallery/gallery-epd210-01.jpg"
   },
   {
-    "id": "gallery-pop-culture-02",
-    "sessionNumber": 12,
-    "image": "/media/gallery/gallery-pop-culture-02.jpg"
+    "id": "gallery-epd210-02",
+    "sessionNumber": 210,
+    "image": "/media/gallery/gallery-epd210-02.jpg"
   },
   {
-    "id": "gallery-childhood-01",
+    "id": "gallery-epd209-01",
+    "sessionNumber": 209,
+    "image": "/media/gallery/gallery-epd209-01.jpg"
+  },
+  {
+    "id": "gallery-epd209-02",
+    "sessionNumber": 209,
+    "image": "/media/gallery/gallery-epd209-02.jpg"
+  },
+  {
+    "id": "gallery-epd209-03",
+    "sessionNumber": 209,
+    "image": "/media/gallery/gallery-epd209-03.jpg"
+  },
+  {
+    "id": "gallery-epd208-01",
+    "sessionNumber": 208,
+    "image": "/media/gallery/gallery-epd208-01.jpg"
+  },
+  {
+    "id": "gallery-epd208-02",
+    "sessionNumber": 208,
+    "image": "/media/gallery/gallery-epd208-02.jpg"
+  },
+  {
+    "id": "gallery-epd207-01",
+    "sessionNumber": 207,
+    "image": "/media/gallery/gallery-epd207-01.jpg"
+  },
+  {
+    "id": "gallery-epd207-02",
+    "sessionNumber": 207,
+    "image": "/media/gallery/gallery-epd207-02.jpg"
+  },
+  {
+    "id": "gallery-epd206-01",
+    "sessionNumber": 206,
+    "image": "/media/gallery/gallery-epd206-01.jpg"
+  },
+  {
+    "id": "gallery-epd206-02",
+    "sessionNumber": 206,
+    "image": "/media/gallery/gallery-epd206-02.jpg"
+  },
+  {
+    "id": "gallery-epd205-01",
+    "sessionNumber": 205,
+    "image": "/media/gallery/gallery-epd205-01.jpg"
+  },
+  {
+    "id": "gallery-epd205-02",
+    "sessionNumber": 205,
+    "image": "/media/gallery/gallery-epd205-02.jpg"
+  },
+  {
+    "id": "gallery-epd204-a-01",
+    "sessionNumber": 204,
+    "image": "/media/gallery/gallery-epd204-a-01.jpg"
+  },
+  {
+    "id": "gallery-epd204-a-02",
+    "sessionNumber": 204,
+    "image": "/media/gallery/gallery-epd204-a-02.jpg"
+  },
+  {
+    "id": "gallery-epd204-b-01",
+    "sessionNumber": 204,
+    "image": "/media/gallery/gallery-epd204-b-01.jpg"
+  },
+  {
+    "id": "gallery-epd204-b-02",
+    "sessionNumber": 204,
+    "image": "/media/gallery/gallery-epd204-b-02.jpg"
+  },
+  {
+    "id": "gallery-epd204-b-03",
+    "sessionNumber": 204,
+    "image": "/media/gallery/gallery-epd204-b-03.jpg"
+  },
+  {
+    "id": "gallery-epd203-01",
+    "sessionNumber": 203,
+    "image": "/media/gallery/gallery-epd203-01.jpg"
+  },
+  {
+    "id": "gallery-epd203-02",
+    "sessionNumber": 203,
+    "image": "/media/gallery/gallery-epd203-02.jpg"
+  },
+  {
+    "id": "gallery-epd202-01",
+    "sessionNumber": 202,
+    "image": "/media/gallery/gallery-epd202-01.jpg"
+  },
+  {
+    "id": "gallery-epd202-02",
+    "sessionNumber": 202,
+    "image": "/media/gallery/gallery-epd202-02.jpg"
+  },
+  {
+    "id": "gallery-epd200-01",
+    "sessionNumber": 200,
+    "image": "/media/gallery/gallery-epd200-01.jpg"
+  },
+  {
+    "id": "gallery-epd200-02",
+    "sessionNumber": 200,
+    "image": "/media/gallery/gallery-epd200-02.jpg"
+  },
+  {
+    "id": "gallery-epd199-01",
+    "sessionNumber": 199,
+    "image": "/media/gallery/gallery-epd199-01.jpg"
+  },
+  {
+    "id": "gallery-epd199-02",
+    "sessionNumber": 199,
+    "image": "/media/gallery/gallery-epd199-02.jpg"
+  },
+  {
+    "id": "gallery-epd197-01",
+    "sessionNumber": 197,
+    "image": "/media/gallery/gallery-epd197-01.jpg"
+  },
+  {
+    "id": "gallery-epd197-02",
+    "sessionNumber": 197,
+    "image": "/media/gallery/gallery-epd197-02.jpg"
+  },
+  {
+    "id": "gallery-epd195-01",
+    "sessionNumber": 195,
+    "image": "/media/gallery/gallery-epd195-01.jpg"
+  },
+  {
+    "id": "gallery-epd194-01",
+    "sessionNumber": 194,
+    "image": "/media/gallery/gallery-epd194-01.jpg"
+  },
+  {
+    "id": "gallery-epd193-01",
+    "sessionNumber": 193,
+    "image": "/media/gallery/gallery-epd193-01.jpg"
+  },
+  {
+    "id": "gallery-epd191-01",
+    "sessionNumber": 191,
+    "image": "/media/gallery/gallery-epd191-01.jpg"
+  },
+  {
+    "id": "gallery-epd190-01",
+    "sessionNumber": 190,
+    "image": "/media/gallery/gallery-epd190-01.jpg"
+  },
+  {
+    "id": "gallery-epd11-01",
+    "sessionNumber": 11,
+    "image": "/media/gallery/gallery-epd11-01.jpg"
+  },
+  {
+    "id": "gallery-epd11-02",
+    "sessionNumber": 11,
+    "image": "/media/gallery/gallery-epd11-02.jpg"
+  },
+  {
+    "id": "gallery-epd10-a-01",
     "sessionNumber": 10,
-    "image": "/media/gallery/gallery-childhood-01.jpg"
+    "image": "/media/gallery/gallery-epd10-a-01.jpg"
   },
   {
-    "id": "gallery-childhood-02",
+    "id": "gallery-epd10-a-02",
     "sessionNumber": 10,
-    "image": "/media/gallery/gallery-childhood-02.jpg"
+    "image": "/media/gallery/gallery-epd10-a-02.jpg"
   },
   {
-    "id": "gallery-superstitions-01",
-    "sessionNumber": 9,
-    "image": "/media/gallery/gallery-superstitions-01.jpg"
+    "id": "gallery-epd10-b-01",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-b-01.jpg"
   },
   {
-    "id": "gallery-superstitions-02",
-    "sessionNumber": 9,
-    "image": "/media/gallery/gallery-superstitions-02.jpg"
-  },
-  {
-    "id": "gallery-perfect-day-01",
-    "sessionNumber": 7,
-    "image": "/media/gallery/gallery-perfect-day-01.jpg"
-  },
-  {
-    "id": "gallery-perfect-day-02",
-    "sessionNumber": 7,
-    "image": "/media/gallery/gallery-perfect-day-02.jpg"
-  },
-  {
-    "id": "gallery-borrowed-opinions-01",
-    "sessionNumber": 5,
-    "image": "/media/gallery/gallery-borrowed-opinions-01.jpg"
-  },
-  {
-    "id": "gallery-people-everywhere-01",
-    "sessionNumber": 4,
-    "image": "/media/gallery/gallery-people-everywhere-01.jpg"
-  },
-  {
-    "id": "gallery-football-cult-01",
-    "sessionNumber": 3,
-    "image": "/media/gallery/gallery-football-cult-01.jpg"
-  },
-  {
-    "id": "gallery-dare-to-begin-01",
-    "sessionNumber": 1,
-    "image": "/media/gallery/gallery-dare-to-begin-01.jpg"
+    "id": "gallery-epd10-b-02",
+    "sessionNumber": 10,
+    "image": "/media/gallery/gallery-epd10-b-02.jpg"
   },
   {
     "id": "gallery-epd9-01",
@@ -80,33 +215,33 @@
     "image": "/media/gallery/gallery-epd9-04.jpg"
   },
   {
-    "id": "gallery-epd10-01",
-    "sessionNumber": 10,
-    "image": "/media/gallery/gallery-epd10-01.jpg"
+    "id": "gallery-epd9-05",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-05.jpg"
   },
   {
-    "id": "gallery-epd10-02",
-    "sessionNumber": 10,
-    "image": "/media/gallery/gallery-epd10-02.jpg"
+    "id": "gallery-epd9-06",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-06.jpg"
   },
   {
-    "id": "gallery-epd10-03",
-    "sessionNumber": 10,
-    "image": "/media/gallery/gallery-epd10-03.jpg"
+    "id": "gallery-epd9-07",
+    "sessionNumber": 9,
+    "image": "/media/gallery/gallery-epd9-07.jpg"
   },
   {
-    "id": "gallery-epd10-04",
-    "sessionNumber": 10,
-    "image": "/media/gallery/gallery-epd10-04.jpg"
+    "id": "gallery-epd8-01",
+    "sessionNumber": 8,
+    "image": "/media/gallery/gallery-epd8-01.jpg"
   },
   {
-    "id": "gallery-epd11-01",
-    "sessionNumber": 11,
-    "image": "/media/gallery/gallery-epd11-01.jpg"
+    "id": "gallery-epd8-02",
+    "sessionNumber": 8,
+    "image": "/media/gallery/gallery-epd8-02.jpg"
   },
   {
-    "id": "gallery-epd11-02",
-    "sessionNumber": 11,
-    "image": "/media/gallery/gallery-epd11-02.jpg"
+    "id": "gallery-epd8-03",
+    "sessionNumber": 8,
+    "image": "/media/gallery/gallery-epd8-03.jpg"
   }
 ]

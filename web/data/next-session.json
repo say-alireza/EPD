@@ -1,15 +1,15 @@
 {
   "id": "session-upcoming",
   "number": 212,
-  "dateIso": "2026-08-27T10:00:00+03:30",
-  "timeFa": "۱۰:۰۰ تا ۱۲:۰۰",
-  "timeEn": "10:00 – 12:00",
+  "dateIso": "2026-10-03T18:00:00+03:30",
+  "timeFa": "۱۸:۰۰ تا ۲۰:۰۰",
+  "timeEn": "18:00 – 20:00",
   "venueFa": "بلوار وکیل آباد، نرسیده به پل هاشمیه، بین وکیل آباد ۱۰ و ۱۲، دن‌کلاب.",
-  "venueEn": "Mashhad · Aftab Book Cafe",
+  "venueEn": "Mashhad · Dan Club",
   "levelFa": "متوسط و پیشرفته (B1+)",
   "remainingSeats": 6,
   "topicEn": "EPD Quest for Victory",
-  "topicFa": "بازی های این هفته:\n1️⃣ Alias\n2️⃣ Spy\n3️⃣ Taboo",
+  "topicFa": "بازی‌های این هفته:\n1️⃣ Alias\n2️⃣ Spy\n3️⃣ Taboo",
   "descriptionFa": "نشست ویژه بازی‌های گروهی و تعاملی به زبان انگلیسی برای تقویت مکالمه و تفکر سریع در محیطی دوستانه.",
-  "posterImage": "/media/posters/session-pop-culture.jpg"
+  "posterImage": "/media/posters/poster-epd212.jpg"
 }
