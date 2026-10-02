@@ -194,7 +194,7 @@ export default function HomePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
               <div className="bg-ground border border-border rounded-lg p-3">
                 <span className="text-ink-muted block text-[11px]">محل برگزاری</span>
-                <span className="font-bold text-ink">دن‌کلاب (Dan Club)</span>
+                <span className="font-bold text-ink">اعلام در کانال تلگرام</span>
               </div>
               <div className="bg-ground border border-border rounded-lg p-3">
                 <span className="text-ink-muted block text-[11px]">بازی‌های پرطرفدار</span>
@@ -214,29 +214,18 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="w-full lg:w-96 shrink-0 grid grid-cols-2 gap-3">
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-border bg-ground">
-              <Image
-                src={assetPath("/media/gallery/gallery-epd209-01.jpg")}
-                alt="اسکوربورد بازی Heads-Up"
-                width={400}
-                height={300}
+          <div className="w-full lg:w-96 shrink-0">
+            <div className="relative aspect-[16/10] sm:aspect-[4/3] rounded-xl overflow-hidden border border-border bg-ground shadow-sm">
+              <video
+                src={assetPath("/media/gallery/quest-scoreboard.mp4")}
+                autoPlay
+                loop
+                muted
+                playsInline
                 className="w-full h-full object-cover"
               />
-              <span className="absolute bottom-2 start-2 bg-ink/80 text-surface text-[10px] font-bold px-2 py-0.5 rounded">
-                اسکوربورد بازی
-              </span>
-            </div>
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-border bg-ground">
-              <Image
-                src={assetPath("/media/gallery/gallery-epd209-02.jpg")}
-                alt="مسابقه در کافه دن‌کلاب"
-                width={400}
-                height={300}
-                className="w-full h-full object-cover"
-              />
-              <span className="absolute bottom-2 start-2 bg-ink/80 text-surface text-[10px] font-bold px-2 py-0.5 rounded">
-                نمایشگر دن‌کلاب
+              <span className="absolute bottom-2.5 start-2.5 bg-ink/85 text-surface text-[11px] font-bold px-2.5 py-1 rounded shadow-xs">
+                اسکوربورد رسمی مسابقات Quest
               </span>
             </div>
           </div>
