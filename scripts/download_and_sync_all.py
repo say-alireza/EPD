@@ -2,6 +2,7 @@ import os
 import json
 import urllib.request
 import time
+from PIL import Image
 
 proxy_support = urllib.request.ProxyHandler({
     'http': 'socks5://127.0.0.1:10808',
@@ -16,16 +17,17 @@ os.makedirs(POSTERS_DIR, exist_ok=True)
 os.makedirs(GALLERY_DIR, exist_ok=True)
 
 def download_image(url, target_path):
-    if os.path.exists(target_path) and os.path.getsize(target_path) > 5000:
-        return True
     req = urllib.request.Request(url, headers={
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
     })
     try:
         content = opener.open(req, timeout=30).read()
-        if len(content) > 1000:
+        if len(content) > 2000:
             with open(target_path, 'wb') as f:
                 f.write(content)
+            # verify resolution
+            im = Image.open(target_path)
+            print(f"Downloaded {os.path.basename(target_path)}: {im.size}, {len(content)/1024:.1f} KB")
             return True
         else:
             print(f"Warning: downloaded content too small ({len(content)} bytes) for {url}")
@@ -34,7 +36,7 @@ def download_image(url, target_path):
         print(f"Error downloading {url} -> {target_path}: {e}")
         return False
 
-# Mapping of all sessions based on channel posts analysis
+# High-resolution poster posts (original photo broadcasts, not reminder quote thumbnails)
 POSTERS_SPEC = [
     {
         "id": "poster-212",
@@ -54,7 +56,7 @@ POSTERS_SPEC = [
         "category": "new-chapter",
         "topicEn": "Main Character Energy",
         "dateFa": "پنج‌شنبه ۹ مهر ۱۴۰۵",
-        "post_id": 189,
+        "post_id": 187,
         "photo_idx": 0,
         "filename": "poster-epd211.jpg"
     },
@@ -65,7 +67,7 @@ POSTERS_SPEC = [
         "category": "new-chapter",
         "topicEn": "Racism & Society",
         "dateFa": "پنج‌شنبه ۲ مهر ۱۴۰۵",
-        "post_id": 184,
+        "post_id": 183,
         "photo_idx": 0,
         "filename": "poster-epd210.jpg"
     },
@@ -87,7 +89,7 @@ POSTERS_SPEC = [
         "category": "new-chapter",
         "topicEn": "Crimes and Mysteries",
         "dateFa": "پنج‌شنبه ۲۶ شهریور ۱۴۰۵",
-        "post_id": 176,
+        "post_id": 175,
         "photo_idx": 0,
         "filename": "poster-epd208.jpg"
     },
@@ -98,7 +100,7 @@ POSTERS_SPEC = [
         "category": "new-chapter",
         "topicEn": "Imaginary Worlds",
         "dateFa": "پنج‌شنبه ۱۹ شهریور ۱۴۰۵",
-        "post_id": 172,
+        "post_id": 171,
         "photo_idx": 0,
         "filename": "poster-epd207.jpg"
     },
@@ -120,7 +122,7 @@ POSTERS_SPEC = [
         "category": "new-chapter",
         "topicEn": "Siblings and Family",
         "dateFa": "پنج‌شنبه ۵ شهریور ۱۴۰۵",
-        "post_id": 162,
+        "post_id": 160,
         "photo_idx": 0,
         "filename": "poster-epd205.jpg"
     },
@@ -142,7 +144,7 @@ POSTERS_SPEC = [
         "category": "new-chapter",
         "topicEn": "Forgiveness (Deep Talk)",
         "dateFa": "پنج‌شنبه ۲۹ مرداد ۱۴۰۵",
-        "post_id": 148,
+        "post_id": 147,
         "photo_idx": 0,
         "filename": "poster-epd203.jpg"
     },
@@ -153,7 +155,7 @@ POSTERS_SPEC = [
         "category": "new-chapter",
         "topicEn": "Pop Culture",
         "dateFa": "پنج‌شنبه ۲۲ مرداد ۱۴۰۵",
-        "post_id": 144,
+        "post_id": 143,
         "photo_idx": 0,
         "filename": "poster-epd202.jpg"
     },
@@ -164,7 +166,7 @@ POSTERS_SPEC = [
         "category": "new-chapter",
         "topicEn": "EPD Quest for Victory",
         "dateFa": "سه‌شنبه ۲۰ مرداد ۱۴۰۵",
-        "post_id": 142,
+        "post_id": 140,
         "photo_idx": 0,
         "filename": "poster-epd201.jpg"
     },
@@ -175,7 +177,7 @@ POSTERS_SPEC = [
         "category": "new-chapter",
         "topicEn": "Childhood Memories",
         "dateFa": "پنج‌شنبه ۱۵ مرداد ۱۴۰۵",
-        "post_id": 133,
+        "post_id": 132,
         "photo_idx": 0,
         "filename": "poster-epd200.jpg"
     },
@@ -186,7 +188,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "Superstitions",
         "dateFa": "پنج‌شنبه ۸ مرداد ۱۴۰۵",
-        "post_id": 122,
+        "post_id": 121,
         "photo_idx": 0,
         "filename": "poster-epd199.jpg"
     },
@@ -197,7 +199,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "Green Flag",
         "dateFa": "پنج‌شنبه ۱ مرداد ۱۴۰۵",
-        "post_id": 120,
+        "post_id": 119,
         "photo_idx": 0,
         "filename": "poster-epd198.jpg"
     },
@@ -208,7 +210,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "The Perfect Day",
         "dateFa": "پنج‌شنبه ۲۵ تیر ۱۴۰۵",
-        "post_id": 116,
+        "post_id": 114,
         "photo_idx": 0,
         "filename": "poster-epd197.jpg"
     },
@@ -219,7 +221,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "The Brand Called You",
         "dateFa": "چهارشنبه ۱۷ تیر ۱۴۰۵",
-        "post_id": 113,
+        "post_id": 111,
         "photo_idx": 0,
         "filename": "poster-epd196.jpg"
     },
@@ -230,7 +232,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "Self Expression",
         "dateFa": "پنج‌شنبه ۱۱ تیر ۱۴۰۵",
-        "post_id": 109,
+        "post_id": 108,
         "photo_idx": 0,
         "filename": "poster-epd195.jpg"
     },
@@ -241,7 +243,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "Modern Lifestyle",
         "dateFa": "سه‌شنبه ۲ تیر ۱۴۰۵",
-        "post_id": 106,
+        "post_id": 102,
         "photo_idx": 0,
         "filename": "poster-epd194.jpg"
     },
@@ -252,7 +254,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "Communication Arts",
         "dateFa": "پنج‌شنبه ۲۸ خرداد ۱۴۰۵",
-        "post_id": 100,
+        "post_id": 97,
         "photo_idx": 0,
         "filename": "poster-epd193.jpg"
     },
@@ -263,7 +265,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "Language & Mindset",
         "dateFa": "پنج‌شنبه ۲۱ خرداد ۱۴۰۵",
-        "post_id": 95,
+        "post_id": 94,
         "photo_idx": 0,
         "filename": "poster-epd192.jpg"
     },
@@ -274,7 +276,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "Habit Building",
         "dateFa": "پنج‌شنبه ۱۴ خرداد ۱۴۰۵",
-        "post_id": 90,
+        "post_id": 89,
         "photo_idx": 0,
         "filename": "poster-epd191.jpg"
     },
@@ -285,7 +287,7 @@ POSTERS_SPEC = [
         "category": "weekly-1405",
         "topicEn": "Free Discussion Opening",
         "dateFa": "پنج‌شنبه ۷ خرداد ۱۴۰۵",
-        "post_id": 81,
+        "post_id": 80,
         "photo_idx": 0,
         "filename": "poster-epd190.jpg"
     },
@@ -296,7 +298,7 @@ POSTERS_SPEC = [
         "category": "courses",
         "topicEn": "EPD 11 Course (30 Sessions)",
         "dateFa": "مهر ۱۴۰۴",
-        "post_id": 70,
+        "post_id": 68,
         "photo_idx": 0,
         "filename": "poster-epd11-course.jpg"
     },
@@ -324,7 +326,7 @@ POSTERS_SPEC = [
     }
 ]
 
-# Gallery definition with sessionLabel, category, and isScoreboard flag
+# Gallery definition with only high-resolution photos
 GALLERY_SPEC = [
     {"sessionNumber": 210, "sessionLabel": "جلسه ۲۱۰", "category": "new-chapter", "post_id": 185, "prefix": "epd210", "caption": "نشست دیسکاشن نژادپرستی و جامعه"},
     {"sessionNumber": 209, "sessionLabel": "جلسه ۲۰۹ (لیگ بازی)", "category": "scoreboard", "post_id": 180, "prefix": "epd209", "caption": "مسابقه Shrek / Heads-Up و اسکوربورد مانیتور دن‌کلاب", "isScoreboard": True},
@@ -332,8 +334,7 @@ GALLERY_SPEC = [
     {"sessionNumber": 207, "sessionLabel": "جلسه ۲۰۷", "category": "new-chapter", "post_id": 173, "prefix": "epd207", "caption": "گفتگو پیرامون جهان‌های خیالی در کافه کتاب"},
     {"sessionNumber": 206, "sessionLabel": "جلسه ۲۰۶", "category": "new-chapter", "post_id": 169, "prefix": "epd206", "caption": "بحث پیرامون رازها و اعتماد"},
     {"sessionNumber": 205, "sessionLabel": "جلسه ۲۰۵", "category": "new-chapter", "post_id": 163, "prefix": "epd205", "caption": "نشست صمیمی خواهر و برادرها و خانواده"},
-    {"sessionNumber": 204, "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)", "category": "scoreboard", "post_id": 159, "prefix": "epd204-a", "caption": "دورهمی رقابتی EPD Quest for Victory", "isScoreboard": True},
-    {"sessionNumber": 204, "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)", "category": "scoreboard", "post_id": 154, "prefix": "epd204-b", "caption": "بردگیم و چالش‌های گروهی Quest for Victory", "isScoreboard": True},
+    {"sessionNumber": 204, "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)", "category": "scoreboard", "post_id": 154, "prefix": "epd204", "caption": "بردگیم و چالش‌های گروهی Quest for Victory", "isScoreboard": True},
     {"sessionNumber": 203, "sessionLabel": "جلسه ۲۰۳", "category": "new-chapter", "post_id": 150, "prefix": "epd203", "caption": "نشست عمیق Forgiveness (Deep Talk)"},
     {"sessionNumber": 202, "sessionLabel": "جلسه ۲۰۲", "category": "new-chapter", "post_id": 145, "prefix": "epd202", "caption": "نشست پاپ کالچر و موسیقی"},
     {"sessionNumber": 200, "sessionLabel": "جلسه ۲۰۰", "category": "new-chapter", "post_id": 134, "prefix": "epd200", "caption": "آغاز فصل جدید EPD - مرور خاطرات کودکی"},
@@ -356,7 +357,7 @@ def run():
         posts = json.load(f)
     posts_by_id = {p['id']: p for p in posts}
     
-    print("=== Processing Posters with Labels and Categories ===")
+    print("=== Downloading High-Resolution Posters ===")
     final_posters = []
     for spec in POSTERS_SPEC:
         p = posts_by_id.get(spec['post_id'])
@@ -377,10 +378,11 @@ def run():
                 "dateFa": spec["dateFa"],
                 "image": f"/media/posters/{filename}"
             })
+        time.sleep(0.2)
             
-    print(f"Processed {len(final_posters)} posters.")
+    print(f"\nProcessed {len(final_posters)} high-res posters.")
     
-    print("\n=== Processing Gallery Photos with Labels, Categories, and Scoreboards ===")
+    print("\n=== Downloading High-Resolution Gallery Photos ===")
     final_gallery = []
     for spec in GALLERY_SPEC:
         p = posts_by_id.get(spec['post_id'])
@@ -404,25 +406,24 @@ def run():
                 if spec.get("isScoreboard"):
                     item["isScoreboard"] = True
                 final_gallery.append(item)
+            time.sleep(0.2)
                 
-    print(f"Processed {len(final_gallery)} gallery photos.")
+    print(f"\nProcessed {len(final_gallery)} high-res gallery photos.")
     
-    # Sort posters: new-chapter first, then weekly-1405, then courses, ordered by sessionNumber
+    # Sort posters
     cat_order = {"new-chapter": 0, "weekly-1405": 1, "courses": 2}
     final_posters.sort(key=lambda x: (cat_order.get(x.get("category", ""), 9), -x["sessionNumber"]))
-    
-    # Sort gallery by sessionNumber descending
     final_gallery.sort(key=lambda x: (cat_order.get(x.get("category", "new-chapter"), 9), -x["sessionNumber"]))
     
     posters_json_path = "C:/Users/Alireza/Desktop/my projects/epd/web/data/posters.json"
     with open(posters_json_path, "w", encoding="utf-8") as f:
         json.dump(final_posters, f, ensure_ascii=False, indent=2)
-    print(f"Saved to {posters_json_path}")
+    print(f"Saved {len(final_posters)} posters to {posters_json_path}")
     
     gallery_json_path = "C:/Users/Alireza/Desktop/my projects/epd/web/data/gallery.json"
     with open(gallery_json_path, "w", encoding="utf-8") as f:
         json.dump(final_gallery, f, ensure_ascii=False, indent=2)
-    print(f"Saved to {gallery_json_path}")
+    print(f"Saved {len(final_gallery)} gallery photos to {gallery_json_path}")
 
 if __name__ == "__main__":
     run()

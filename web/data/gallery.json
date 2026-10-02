@@ -288,14 +288,6 @@
     "image": "/media/gallery/gallery-epd9-05.jpg"
   },
   {
-    "id": "gallery-epd9-06",
-    "sessionNumber": 9,
-    "sessionLabel": "دوره ۹ (۳۰ جلسه)",
-    "category": "courses",
-    "captionFa": "دورهمی فارغ‌التحصیلی نهمین دوره سلسله جلسات EPD",
-    "image": "/media/gallery/gallery-epd9-06.jpg"
-  },
-  {
     "id": "gallery-epd9-07",
     "sessionNumber": 9,
     "sessionLabel": "دوره ۹ (۳۰ جلسه)",
@@ -355,48 +347,30 @@
     "isScoreboard": true
   },
   {
-    "id": "gallery-epd204-a-01",
-    "sessionNumber": 204,
-    "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
-    "category": "scoreboard",
-    "captionFa": "دورهمی رقابتی EPD Quest for Victory",
-    "image": "/media/gallery/gallery-epd204-a-01.jpg",
-    "isScoreboard": true
-  },
-  {
-    "id": "gallery-epd204-a-02",
-    "sessionNumber": 204,
-    "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
-    "category": "scoreboard",
-    "captionFa": "دورهمی رقابتی EPD Quest for Victory",
-    "image": "/media/gallery/gallery-epd204-a-02.jpg",
-    "isScoreboard": true
-  },
-  {
-    "id": "gallery-epd204-b-01",
+    "id": "gallery-epd204-01",
     "sessionNumber": 204,
     "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
     "category": "scoreboard",
     "captionFa": "بردگیم و چالش‌های گروهی Quest for Victory",
-    "image": "/media/gallery/gallery-epd204-b-01.jpg",
+    "image": "/media/gallery/gallery-epd204-01.jpg",
     "isScoreboard": true
   },
   {
-    "id": "gallery-epd204-b-02",
+    "id": "gallery-epd204-02",
     "sessionNumber": 204,
     "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
     "category": "scoreboard",
     "captionFa": "بردگیم و چالش‌های گروهی Quest for Victory",
-    "image": "/media/gallery/gallery-epd204-b-02.jpg",
+    "image": "/media/gallery/gallery-epd204-02.jpg",
     "isScoreboard": true
   },
   {
-    "id": "gallery-epd204-b-03",
+    "id": "gallery-epd204-03",
     "sessionNumber": 204,
     "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
     "category": "scoreboard",
     "captionFa": "بردگیم و چالش‌های گروهی Quest for Victory",
-    "image": "/media/gallery/gallery-epd204-b-03.jpg",
+    "image": "/media/gallery/gallery-epd204-03.jpg",
     "isScoreboard": true
   }
 ]
