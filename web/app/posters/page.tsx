@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
@@ -12,6 +12,17 @@ import { PosterItem } from "@/lib/types";
 export default function PostersPage() {
   const { pastPosters } = strings.landing;
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [selectedPoster, setSelectedPoster] = useState<PosterItem | null>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedPoster(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const categories = [
     { id: "all", label: "همه پوسترها", count: postersData.length },
@@ -119,16 +130,22 @@ export default function PostersPage() {
             {filteredPosters.map((poster) => (
               <div
                 key={poster.id}
-                className="bg-surface border border-border rounded-xl p-3 flex flex-col gap-3 group hover:border-brand-primary transition-all duration-200 shadow-2xs"
+                onClick={() => setSelectedPoster(poster)}
+                className="bg-surface border border-border rounded-xl p-3 flex flex-col gap-3 group hover:border-brand-primary hover:shadow-md transition-all duration-200 shadow-2xs cursor-pointer"
               >
-                <div className="relative w-full aspect-[3/4] bg-ground rounded-lg overflow-hidden border border-border">
+                <div className="relative w-full aspect-[4/5] bg-black/5 rounded-lg overflow-hidden border border-border/80">
                   <Image
                     src={assetPath(poster.image)}
                     alt={poster.topicEn}
-                    width={600}
-                    height={800}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    width={800}
+                    height={1000}
+                    className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-200 flex items-center justify-center">
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-surface/90 text-ink text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+                      مشاهده اندازه کامل
+                    </span>
+                  </div>
                 </div>
                 <div className="flex flex-col gap-1 text-start">
                   <span className="text-[11px] font-extrabold text-brand-primary">
@@ -144,6 +161,42 @@ export default function PostersPage() {
           </div>
         </main>
       </div>
+
+      {/* Lightbox Modal */}
+      {selectedPoster && (
+        <div
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+          onClick={() => setSelectedPoster(null)}
+        >
+          <div
+            className="relative max-w-2xl w-full max-h-[92vh] flex flex-col items-center gap-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedPoster(null)}
+              className="absolute -top-10 left-0 text-white/80 hover:text-white text-sm font-bold bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg transition-colors cursor-pointer"
+            >
+              بستن ✕
+            </button>
+            <div className="relative w-full max-h-[80vh] flex items-center justify-center rounded-xl overflow-hidden border border-white/15 bg-black/50 shadow-2xl">
+              <img
+                src={assetPath(selectedPoster.image)}
+                alt={selectedPoster.topicEn}
+                className="max-h-[80vh] w-auto max-w-full object-contain rounded-xl"
+              />
+            </div>
+            <div className="w-full flex items-center justify-between text-white/90 text-xs sm:text-sm px-2">
+              <span className="font-extrabold text-brand-gold">
+                {selectedPoster.sessionLabel || `جلسه ${selectedPoster.sessionNumber}`}
+              </span>
+              <span className="font-bold font-mono" dir="ltr">
+                {selectedPoster.topicEn}
+              </span>
+              <span className="text-white/70">{selectedPoster.dateFa}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="w-full border-t border-border py-6 bg-surface mt-12">
