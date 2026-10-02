@@ -5,5 +5,12 @@
     "capacity": 15,
     "remainingSeats": 15,
     "isFull": false
+  },
+  {
+    "id": "slot-mur834z1",
+    "title": "جلسات گیم: شنبه ساعت ۱۸ تا ۱۹:۳۰",
+    "capacity": 10,
+    "remainingSeats": 10,
+    "isFull": false
   }
 ]
