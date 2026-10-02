@@ -159,13 +159,13 @@ export default function HomePage() {
                   <div className="relative w-full aspect-[4/3] bg-ground overflow-hidden">
                     <Image
                       src={assetPath(item.image)}
-                      alt={`جلسه ${item.sessionNumber}`}
+                      alt={item.sessionLabel || `جلسه ${item.sessionNumber}`}
                       width={600}
                       height={450}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute bottom-2 start-2 bg-ink/80 text-surface px-2.5 py-1 rounded text-[11px] font-bold">
-                      جلسه {item.sessionNumber}
+                      {item.sessionLabel || `جلسه ${item.sessionNumber}`}
                     </div>
                   </div>
                 </article>
@@ -178,7 +178,71 @@ export default function HomePage() {
           )}
         </section>
 
-        {/* 4. Past posters — compact strip, link to /posters */}
+        {/* 4. EPD Quest for Victory — Game League & Scoreboard */}
+        <section className="bg-surface border border-border rounded-2xl p-6 sm:p-10 flex flex-col lg:flex-row gap-8 items-center text-start">
+          <div className="flex-1 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-brand-primary">
+              <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
+              <span>لیگ بازی‌های انگلیسی · EPD QUEST FOR VICTORY</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-ink leading-tight">
+              رقابت، هیجان و تقویت مکالمه در قالب بازی‌های گروهی
+            </h2>
+            <p className="text-sm text-ink-muted leading-relaxed">
+              در کنار نشست‌های هفتگی Free Discussion، لیگ اختصاصی بازی‌های EPD با چالش‌هایی نظیر Alias، Heads-Up، Guessmoji، Spy و Taboo برگزار می‌شود. شرکت‌کنندگان در تیم‌ها به رقابت می‌پردازند، ستاره و امتیاز جمع می‌کنند و نتایج در اسکوربورد لیگ ثبت می‌شود.
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
+              <div className="bg-ground border border-border rounded-lg p-3">
+                <span className="text-ink-muted block text-[11px]">محل برگزاری</span>
+                <span className="font-bold text-ink">دن‌کلاب (Dan Club)</span>
+              </div>
+              <div className="bg-ground border border-border rounded-lg p-3">
+                <span className="text-ink-muted block text-[11px]">بازی‌های پرطرفدار</span>
+                <span className="font-bold text-ink">Alias · Spy · Taboo</span>
+              </div>
+              <div className="bg-ground border border-border rounded-lg p-3 col-span-2 sm:col-span-1">
+                <span className="text-ink-muted block text-[11px]">سیستم مسابقات</span>
+                <span className="font-bold text-ink">امتیازدهی و اسکوربورد</span>
+              </div>
+            </div>
+            <div className="pt-2">
+              <Link
+                href="/gallery"
+                className="inline-flex items-center gap-2 text-xs font-bold text-brand-primary hover:text-brand-accent transition-colors underline"
+              >
+                مشاهده تصاویر بازی‌ها و اسکوربورد در گالری ←
+              </Link>
+            </div>
+          </div>
+          <div className="w-full lg:w-96 shrink-0 grid grid-cols-2 gap-3">
+            <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-border bg-ground">
+              <Image
+                src={assetPath("/media/gallery/gallery-epd209-01.jpg")}
+                alt="اسکوربورد بازی Heads-Up"
+                width={400}
+                height={300}
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute bottom-2 start-2 bg-ink/80 text-surface text-[10px] font-bold px-2 py-0.5 rounded">
+                اسکوربورد بازی
+              </span>
+            </div>
+            <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-border bg-ground">
+              <Image
+                src={assetPath("/media/gallery/gallery-epd209-02.jpg")}
+                alt="مسابقه در کافه دن‌کلاب"
+                width={400}
+                height={300}
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute bottom-2 start-2 bg-ink/80 text-surface text-[10px] font-bold px-2 py-0.5 rounded">
+                نمایشگر دن‌کلاب
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. Past posters — compact strip, link to /posters */}
         <section className="flex flex-col gap-8 text-start">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
@@ -201,7 +265,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            {postersData.map((poster) => (
+            {postersData.slice(0, 8).map((poster) => (
               <div
                 key={poster.id}
                 className="bg-surface border border-border rounded-xl p-3 flex flex-col gap-3 group hover:border-brand-primary transition-all duration-200"
@@ -217,7 +281,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex flex-col gap-1 text-start">
                   <span className="text-[11px] font-extrabold text-brand-primary">
-                    {pastPosters.sessionPrefix} {poster.sessionNumber}
+                    {poster.sessionLabel || `${pastPosters.sessionPrefix} ${poster.sessionNumber}`}
                   </span>
                   <p className="text-xs font-bold text-ink line-clamp-1" dir="ltr">
                     {poster.topicEn}

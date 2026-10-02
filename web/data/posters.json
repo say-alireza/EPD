@@ -2,6 +2,8 @@
   {
     "id": "poster-212",
     "sessionNumber": 212,
+    "sessionLabel": "جلسه ۲۱۲ (لیگ بازی)",
+    "category": "new-chapter",
     "topicEn": "EPD Quest for Victory",
     "dateFa": "شنبه ۱۱ مهر ۱۴۰۵",
     "image": "/media/posters/poster-epd212.jpg"
@@ -9,6 +11,8 @@
   {
     "id": "poster-211",
     "sessionNumber": 211,
+    "sessionLabel": "جلسه ۲۱۱",
+    "category": "new-chapter",
     "topicEn": "Main Character Energy",
     "dateFa": "پنج‌شنبه ۹ مهر ۱۴۰۵",
     "image": "/media/posters/poster-epd211.jpg"
@@ -16,6 +20,8 @@
   {
     "id": "poster-210",
     "sessionNumber": 210,
+    "sessionLabel": "جلسه ۲۱۰",
+    "category": "new-chapter",
     "topicEn": "Racism & Society",
     "dateFa": "پنج‌شنبه ۲ مهر ۱۴۰۵",
     "image": "/media/posters/poster-epd210.jpg"
@@ -23,6 +29,8 @@
   {
     "id": "poster-209",
     "sessionNumber": 209,
+    "sessionLabel": "جلسه ۲۰۹ (لیگ بازی)",
+    "category": "new-chapter",
     "topicEn": "EPD Quest for Victory",
     "dateFa": "یکشنبه ۲۹ شهریور ۱۴۰۵",
     "image": "/media/posters/poster-epd209.jpg"
@@ -30,6 +38,8 @@
   {
     "id": "poster-208",
     "sessionNumber": 208,
+    "sessionLabel": "جلسه ۲۰۸",
+    "category": "new-chapter",
     "topicEn": "Crimes and Mysteries",
     "dateFa": "پنج‌شنبه ۲۶ شهریور ۱۴۰۵",
     "image": "/media/posters/poster-epd208.jpg"
@@ -37,6 +47,8 @@
   {
     "id": "poster-207",
     "sessionNumber": 207,
+    "sessionLabel": "جلسه ۲۰۷",
+    "category": "new-chapter",
     "topicEn": "Imaginary Worlds",
     "dateFa": "پنج‌شنبه ۱۹ شهریور ۱۴۰۵",
     "image": "/media/posters/poster-epd207.jpg"
@@ -44,6 +56,8 @@
   {
     "id": "poster-206",
     "sessionNumber": 206,
+    "sessionLabel": "جلسه ۲۰۶",
+    "category": "new-chapter",
     "topicEn": "Secrets and Lies",
     "dateFa": "پنج‌شنبه ۱۲ شهریور ۱۴۰۵",
     "image": "/media/posters/poster-epd206.jpg"
@@ -51,6 +65,8 @@
   {
     "id": "poster-205",
     "sessionNumber": 205,
+    "sessionLabel": "جلسه ۲۰۵",
+    "category": "new-chapter",
     "topicEn": "Siblings and Family",
     "dateFa": "پنج‌شنبه ۵ شهریور ۱۴۰۵",
     "image": "/media/posters/poster-epd205.jpg"
@@ -58,6 +74,8 @@
   {
     "id": "poster-204",
     "sessionNumber": 204,
+    "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
+    "category": "new-chapter",
     "topicEn": "EPD Quest for Victory",
     "dateFa": "دوشنبه ۲ شهریور ۱۴۰۵",
     "image": "/media/posters/poster-epd204.jpg"
@@ -65,6 +83,8 @@
   {
     "id": "poster-203",
     "sessionNumber": 203,
+    "sessionLabel": "جلسه ۲۰۳",
+    "category": "new-chapter",
     "topicEn": "Forgiveness (Deep Talk)",
     "dateFa": "پنج‌شنبه ۲۹ مرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd203.jpg"
@@ -72,6 +92,8 @@
   {
     "id": "poster-202",
     "sessionNumber": 202,
+    "sessionLabel": "جلسه ۲۰۲",
+    "category": "new-chapter",
     "topicEn": "Pop Culture",
     "dateFa": "پنج‌شنبه ۲۲ مرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd202.jpg"
@@ -79,6 +101,8 @@
   {
     "id": "poster-201",
     "sessionNumber": 201,
+    "sessionLabel": "جلسه ۲۰۱ (افتتاحیه لیگ بازی)",
+    "category": "new-chapter",
     "topicEn": "EPD Quest for Victory",
     "dateFa": "سه‌شنبه ۲۰ مرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd201.jpg"
@@ -86,6 +110,8 @@
   {
     "id": "poster-200",
     "sessionNumber": 200,
+    "sessionLabel": "جلسه ۲۰۰ (فصل جدید)",
+    "category": "new-chapter",
     "topicEn": "Childhood Memories",
     "dateFa": "پنج‌شنبه ۱۵ مرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd200.jpg"
@@ -93,6 +119,8 @@
   {
     "id": "poster-199",
     "sessionNumber": 199,
+    "sessionLabel": "جلسه ۱۹۹",
+    "category": "weekly-1405",
     "topicEn": "Superstitions",
     "dateFa": "پنج‌شنبه ۸ مرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd199.jpg"
@@ -100,6 +128,8 @@
   {
     "id": "poster-198",
     "sessionNumber": 198,
+    "sessionLabel": "جلسه ۱۹۸",
+    "category": "weekly-1405",
     "topicEn": "Green Flag",
     "dateFa": "پنج‌شنبه ۱ مرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd198.jpg"
@@ -107,6 +137,8 @@
   {
     "id": "poster-197",
     "sessionNumber": 197,
+    "sessionLabel": "جلسه ۱۹۷",
+    "category": "weekly-1405",
     "topicEn": "The Perfect Day",
     "dateFa": "پنج‌شنبه ۲۵ تیر ۱۴۰۵",
     "image": "/media/posters/poster-epd197.jpg"
@@ -114,6 +146,8 @@
   {
     "id": "poster-196",
     "sessionNumber": 196,
+    "sessionLabel": "جلسه ۱۹۶",
+    "category": "weekly-1405",
     "topicEn": "The Brand Called You",
     "dateFa": "چهارشنبه ۱۷ تیر ۱۴۰۵",
     "image": "/media/posters/poster-epd196.jpg"
@@ -121,6 +155,8 @@
   {
     "id": "poster-195",
     "sessionNumber": 195,
+    "sessionLabel": "جلسه ۱۹۵",
+    "category": "weekly-1405",
     "topicEn": "Self Expression",
     "dateFa": "پنج‌شنبه ۱۱ تیر ۱۴۰۵",
     "image": "/media/posters/poster-epd195.jpg"
@@ -128,6 +164,8 @@
   {
     "id": "poster-194",
     "sessionNumber": 194,
+    "sessionLabel": "جلسه ۱۹۴",
+    "category": "weekly-1405",
     "topicEn": "Modern Lifestyle",
     "dateFa": "سه‌شنبه ۲ تیر ۱۴۰۵",
     "image": "/media/posters/poster-epd194.jpg"
@@ -135,6 +173,8 @@
   {
     "id": "poster-193",
     "sessionNumber": 193,
+    "sessionLabel": "جلسه ۱۹۳",
+    "category": "weekly-1405",
     "topicEn": "Communication Arts",
     "dateFa": "پنج‌شنبه ۲۸ خرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd193.jpg"
@@ -142,6 +182,8 @@
   {
     "id": "poster-192",
     "sessionNumber": 192,
+    "sessionLabel": "جلسه ۱۹۲",
+    "category": "weekly-1405",
     "topicEn": "Language & Mindset",
     "dateFa": "پنج‌شنبه ۲۱ خرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd192.jpg"
@@ -149,6 +191,8 @@
   {
     "id": "poster-191",
     "sessionNumber": 191,
+    "sessionLabel": "جلسه ۱۹۱",
+    "category": "weekly-1405",
     "topicEn": "Habit Building",
     "dateFa": "پنج‌شنبه ۱۴ خرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd191.jpg"
@@ -156,6 +200,8 @@
   {
     "id": "poster-190",
     "sessionNumber": 190,
+    "sessionLabel": "جلسه ۱۹۰ (افتتاحیه سال)",
+    "category": "weekly-1405",
     "topicEn": "Free Discussion Opening",
     "dateFa": "پنج‌شنبه ۷ خرداد ۱۴۰۵",
     "image": "/media/posters/poster-epd190.jpg"
@@ -163,21 +209,27 @@
   {
     "id": "poster-epd11",
     "sessionNumber": 11,
-    "topicEn": "EPD 11 Course",
+    "sessionLabel": "دوره ۱۱ (۳۰ جلسه جامع)",
+    "category": "courses",
+    "topicEn": "EPD 11 Course (30 Sessions)",
     "dateFa": "مهر ۱۴۰۴",
     "image": "/media/posters/poster-epd11-course.jpg"
   },
   {
     "id": "poster-epd10",
     "sessionNumber": 10,
-    "topicEn": "EPD 10 Course",
+    "sessionLabel": "دوره ۱۰ (۸ جلسه فشرده)",
+    "category": "courses",
+    "topicEn": "EPD 10 Course (8 Sessions)",
     "dateFa": "مرداد ۱۴۰۴",
     "image": "/media/posters/poster-epd10-course.jpg"
   },
   {
     "id": "poster-epd9",
     "sessionNumber": 9,
-    "topicEn": "EPD 9 Course",
+    "sessionLabel": "دوره ۹ (۳۰ جلسه جامع)",
+    "category": "courses",
+    "topicEn": "EPD 9 Course (30 Sessions)",
     "dateFa": "فروردین ۱۴۰۴",
     "image": "/media/posters/poster-epd9-course.jpg"
   }

@@ -2,246 +2,401 @@
   {
     "id": "gallery-epd210-01",
     "sessionNumber": 210,
+    "sessionLabel": "جلسه ۲۱۰",
+    "category": "new-chapter",
+    "captionFa": "نشست دیسکاشن نژادپرستی و جامعه",
     "image": "/media/gallery/gallery-epd210-01.jpg"
   },
   {
     "id": "gallery-epd210-02",
     "sessionNumber": 210,
+    "sessionLabel": "جلسه ۲۱۰",
+    "category": "new-chapter",
+    "captionFa": "نشست دیسکاشن نژادپرستی و جامعه",
     "image": "/media/gallery/gallery-epd210-02.jpg"
-  },
-  {
-    "id": "gallery-epd209-01",
-    "sessionNumber": 209,
-    "image": "/media/gallery/gallery-epd209-01.jpg"
-  },
-  {
-    "id": "gallery-epd209-02",
-    "sessionNumber": 209,
-    "image": "/media/gallery/gallery-epd209-02.jpg"
-  },
-  {
-    "id": "gallery-epd209-03",
-    "sessionNumber": 209,
-    "image": "/media/gallery/gallery-epd209-03.jpg"
   },
   {
     "id": "gallery-epd208-01",
     "sessionNumber": 208,
+    "sessionLabel": "جلسه ۲۰۸",
+    "category": "new-chapter",
+    "captionFa": "نشست تحلیل پرونده‌های جنایی و معماها",
     "image": "/media/gallery/gallery-epd208-01.jpg"
   },
   {
     "id": "gallery-epd208-02",
     "sessionNumber": 208,
+    "sessionLabel": "جلسه ۲۰۸",
+    "category": "new-chapter",
+    "captionFa": "نشست تحلیل پرونده‌های جنایی و معماها",
     "image": "/media/gallery/gallery-epd208-02.jpg"
   },
   {
     "id": "gallery-epd207-01",
     "sessionNumber": 207,
+    "sessionLabel": "جلسه ۲۰۷",
+    "category": "new-chapter",
+    "captionFa": "گفتگو پیرامون جهان‌های خیالی در کافه کتاب",
     "image": "/media/gallery/gallery-epd207-01.jpg"
   },
   {
     "id": "gallery-epd207-02",
     "sessionNumber": 207,
+    "sessionLabel": "جلسه ۲۰۷",
+    "category": "new-chapter",
+    "captionFa": "گفتگو پیرامون جهان‌های خیالی در کافه کتاب",
     "image": "/media/gallery/gallery-epd207-02.jpg"
   },
   {
     "id": "gallery-epd206-01",
     "sessionNumber": 206,
+    "sessionLabel": "جلسه ۲۰۶",
+    "category": "new-chapter",
+    "captionFa": "بحث پیرامون رازها و اعتماد",
     "image": "/media/gallery/gallery-epd206-01.jpg"
   },
   {
     "id": "gallery-epd206-02",
     "sessionNumber": 206,
+    "sessionLabel": "جلسه ۲۰۶",
+    "category": "new-chapter",
+    "captionFa": "بحث پیرامون رازها و اعتماد",
     "image": "/media/gallery/gallery-epd206-02.jpg"
   },
   {
     "id": "gallery-epd205-01",
     "sessionNumber": 205,
+    "sessionLabel": "جلسه ۲۰۵",
+    "category": "new-chapter",
+    "captionFa": "نشست صمیمی خواهر و برادرها و خانواده",
     "image": "/media/gallery/gallery-epd205-01.jpg"
   },
   {
     "id": "gallery-epd205-02",
     "sessionNumber": 205,
+    "sessionLabel": "جلسه ۲۰۵",
+    "category": "new-chapter",
+    "captionFa": "نشست صمیمی خواهر و برادرها و خانواده",
     "image": "/media/gallery/gallery-epd205-02.jpg"
-  },
-  {
-    "id": "gallery-epd204-a-01",
-    "sessionNumber": 204,
-    "image": "/media/gallery/gallery-epd204-a-01.jpg"
-  },
-  {
-    "id": "gallery-epd204-a-02",
-    "sessionNumber": 204,
-    "image": "/media/gallery/gallery-epd204-a-02.jpg"
-  },
-  {
-    "id": "gallery-epd204-b-01",
-    "sessionNumber": 204,
-    "image": "/media/gallery/gallery-epd204-b-01.jpg"
-  },
-  {
-    "id": "gallery-epd204-b-02",
-    "sessionNumber": 204,
-    "image": "/media/gallery/gallery-epd204-b-02.jpg"
-  },
-  {
-    "id": "gallery-epd204-b-03",
-    "sessionNumber": 204,
-    "image": "/media/gallery/gallery-epd204-b-03.jpg"
   },
   {
     "id": "gallery-epd203-01",
     "sessionNumber": 203,
+    "sessionLabel": "جلسه ۲۰۳",
+    "category": "new-chapter",
+    "captionFa": "نشست عمیق Forgiveness (Deep Talk)",
     "image": "/media/gallery/gallery-epd203-01.jpg"
   },
   {
     "id": "gallery-epd203-02",
     "sessionNumber": 203,
+    "sessionLabel": "جلسه ۲۰۳",
+    "category": "new-chapter",
+    "captionFa": "نشست عمیق Forgiveness (Deep Talk)",
     "image": "/media/gallery/gallery-epd203-02.jpg"
   },
   {
     "id": "gallery-epd202-01",
     "sessionNumber": 202,
+    "sessionLabel": "جلسه ۲۰۲",
+    "category": "new-chapter",
+    "captionFa": "نشست پاپ کالچر و موسیقی",
     "image": "/media/gallery/gallery-epd202-01.jpg"
   },
   {
     "id": "gallery-epd202-02",
     "sessionNumber": 202,
+    "sessionLabel": "جلسه ۲۰۲",
+    "category": "new-chapter",
+    "captionFa": "نشست پاپ کالچر و موسیقی",
     "image": "/media/gallery/gallery-epd202-02.jpg"
   },
   {
     "id": "gallery-epd200-01",
     "sessionNumber": 200,
+    "sessionLabel": "جلسه ۲۰۰",
+    "category": "new-chapter",
+    "captionFa": "آغاز فصل جدید EPD - مرور خاطرات کودکی",
     "image": "/media/gallery/gallery-epd200-01.jpg"
   },
   {
     "id": "gallery-epd200-02",
     "sessionNumber": 200,
+    "sessionLabel": "جلسه ۲۰۰",
+    "category": "new-chapter",
+    "captionFa": "آغاز فصل جدید EPD - مرور خاطرات کودکی",
     "image": "/media/gallery/gallery-epd200-02.jpg"
   },
   {
     "id": "gallery-epd199-01",
     "sessionNumber": 199,
+    "sessionLabel": "جلسه ۱۹۹",
+    "category": "weekly-1405",
+    "captionFa": "نشست خرافات و باورهای عجیب",
     "image": "/media/gallery/gallery-epd199-01.jpg"
   },
   {
     "id": "gallery-epd199-02",
     "sessionNumber": 199,
+    "sessionLabel": "جلسه ۱۹۹",
+    "category": "weekly-1405",
+    "captionFa": "نشست خرافات و باورهای عجیب",
     "image": "/media/gallery/gallery-epd199-02.jpg"
   },
   {
     "id": "gallery-epd197-01",
     "sessionNumber": 197,
+    "sessionLabel": "جلسه ۱۹۷",
+    "category": "weekly-1405",
+    "captionFa": "نشست یک روز ایده‌آل",
     "image": "/media/gallery/gallery-epd197-01.jpg"
   },
   {
     "id": "gallery-epd197-02",
     "sessionNumber": 197,
+    "sessionLabel": "جلسه ۱۹۷",
+    "category": "weekly-1405",
+    "captionFa": "نشست یک روز ایده‌آل",
     "image": "/media/gallery/gallery-epd197-02.jpg"
   },
   {
     "id": "gallery-epd195-01",
     "sessionNumber": 195,
+    "sessionLabel": "جلسه ۱۹۵",
+    "category": "weekly-1405",
+    "captionFa": "دورهمی کافه کتاب نظام پزشکی",
     "image": "/media/gallery/gallery-epd195-01.jpg"
   },
   {
     "id": "gallery-epd194-01",
     "sessionNumber": 194,
+    "sessionLabel": "جلسه ۱۹۴",
+    "category": "weekly-1405",
+    "captionFa": "نشست سبک زندگی و گفتگو",
     "image": "/media/gallery/gallery-epd194-01.jpg"
   },
   {
     "id": "gallery-epd193-01",
     "sessionNumber": 193,
+    "sessionLabel": "جلسه ۱۹۳",
+    "category": "weekly-1405",
+    "captionFa": "نشست مهارت‌های ارتباطی",
     "image": "/media/gallery/gallery-epd193-01.jpg"
   },
   {
     "id": "gallery-epd191-01",
     "sessionNumber": 191,
+    "sessionLabel": "جلسه ۱۹۱",
+    "category": "weekly-1405",
+    "captionFa": "نشست عادات سازنده و مکالمه",
     "image": "/media/gallery/gallery-epd191-01.jpg"
   },
   {
     "id": "gallery-epd190-01",
     "sessionNumber": 190,
+    "sessionLabel": "جلسه ۱۹۰",
+    "category": "weekly-1405",
+    "captionFa": "افتتاحیه جلسات هفتگی تابستان ۱۴۰۵",
     "image": "/media/gallery/gallery-epd190-01.jpg"
   },
   {
     "id": "gallery-epd11-01",
     "sessionNumber": 11,
+    "sessionLabel": "دوره ۱۱ (۳۰ جلسه)",
+    "category": "courses",
+    "captionFa": "کلاس‌های دیسکاشن پیشرفته دوره ۱۱",
     "image": "/media/gallery/gallery-epd11-01.jpg"
   },
   {
     "id": "gallery-epd11-02",
     "sessionNumber": 11,
+    "sessionLabel": "دوره ۱۱ (۳۰ جلسه)",
+    "category": "courses",
+    "captionFa": "کلاس‌های دیسکاشن پیشرفته دوره ۱۱",
     "image": "/media/gallery/gallery-epd11-02.jpg"
   },
   {
     "id": "gallery-epd10-a-01",
     "sessionNumber": 10,
+    "sessionLabel": "دوره ۱۰ (۸ جلسه)",
+    "category": "courses",
+    "captionFa": "نشست‌های مکالمه آزاد کارخانه نوآوری دوره ۱۰",
     "image": "/media/gallery/gallery-epd10-a-01.jpg"
   },
   {
     "id": "gallery-epd10-a-02",
     "sessionNumber": 10,
+    "sessionLabel": "دوره ۱۰ (۸ جلسه)",
+    "category": "courses",
+    "captionFa": "نشست‌های مکالمه آزاد کارخانه نوآوری دوره ۱۰",
     "image": "/media/gallery/gallery-epd10-a-02.jpg"
   },
   {
     "id": "gallery-epd10-b-01",
     "sessionNumber": 10,
+    "sessionLabel": "دوره ۱۰ (۸ جلسه)",
+    "category": "courses",
+    "captionFa": "عکس‌های یادگاری دوره ۱۰",
     "image": "/media/gallery/gallery-epd10-b-01.jpg"
   },
   {
     "id": "gallery-epd10-b-02",
     "sessionNumber": 10,
+    "sessionLabel": "دوره ۱۰ (۸ جلسه)",
+    "category": "courses",
+    "captionFa": "عکس‌های یادگاری دوره ۱۰",
     "image": "/media/gallery/gallery-epd10-b-02.jpg"
   },
   {
     "id": "gallery-epd9-01",
     "sessionNumber": 9,
+    "sessionLabel": "دوره ۹ (۳۰ جلسه)",
+    "category": "courses",
+    "captionFa": "دورهمی فارغ‌التحصیلی نهمین دوره سلسله جلسات EPD",
     "image": "/media/gallery/gallery-epd9-01.jpg"
   },
   {
     "id": "gallery-epd9-02",
     "sessionNumber": 9,
+    "sessionLabel": "دوره ۹ (۳۰ جلسه)",
+    "category": "courses",
+    "captionFa": "دورهمی فارغ‌التحصیلی نهمین دوره سلسله جلسات EPD",
     "image": "/media/gallery/gallery-epd9-02.jpg"
   },
   {
     "id": "gallery-epd9-03",
     "sessionNumber": 9,
+    "sessionLabel": "دوره ۹ (۳۰ جلسه)",
+    "category": "courses",
+    "captionFa": "دورهمی فارغ‌التحصیلی نهمین دوره سلسله جلسات EPD",
     "image": "/media/gallery/gallery-epd9-03.jpg"
   },
   {
     "id": "gallery-epd9-04",
     "sessionNumber": 9,
+    "sessionLabel": "دوره ۹ (۳۰ جلسه)",
+    "category": "courses",
+    "captionFa": "دورهمی فارغ‌التحصیلی نهمین دوره سلسله جلسات EPD",
     "image": "/media/gallery/gallery-epd9-04.jpg"
   },
   {
     "id": "gallery-epd9-05",
     "sessionNumber": 9,
+    "sessionLabel": "دوره ۹ (۳۰ جلسه)",
+    "category": "courses",
+    "captionFa": "دورهمی فارغ‌التحصیلی نهمین دوره سلسله جلسات EPD",
     "image": "/media/gallery/gallery-epd9-05.jpg"
   },
   {
     "id": "gallery-epd9-06",
     "sessionNumber": 9,
+    "sessionLabel": "دوره ۹ (۳۰ جلسه)",
+    "category": "courses",
+    "captionFa": "دورهمی فارغ‌التحصیلی نهمین دوره سلسله جلسات EPD",
     "image": "/media/gallery/gallery-epd9-06.jpg"
   },
   {
     "id": "gallery-epd9-07",
     "sessionNumber": 9,
+    "sessionLabel": "دوره ۹ (۳۰ جلسه)",
+    "category": "courses",
+    "captionFa": "دورهمی فارغ‌التحصیلی نهمین دوره سلسله جلسات EPD",
     "image": "/media/gallery/gallery-epd9-07.jpg"
   },
   {
     "id": "gallery-epd8-01",
     "sessionNumber": 8,
+    "sessionLabel": "دوره‌های گذشته (EPD 1–8)",
+    "category": "courses",
+    "captionFa": "تصاویر خاطره‌انگیز نخستین دوره‌های EPD در تالارهای دانشگاه فردوسی",
     "image": "/media/gallery/gallery-epd8-01.jpg"
   },
   {
     "id": "gallery-epd8-02",
     "sessionNumber": 8,
+    "sessionLabel": "دوره‌های گذشته (EPD 1–8)",
+    "category": "courses",
+    "captionFa": "تصاویر خاطره‌انگیز نخستین دوره‌های EPD در تالارهای دانشگاه فردوسی",
     "image": "/media/gallery/gallery-epd8-02.jpg"
   },
   {
     "id": "gallery-epd8-03",
     "sessionNumber": 8,
+    "sessionLabel": "دوره‌های گذشته (EPD 1–8)",
+    "category": "courses",
+    "captionFa": "تصاویر خاطره‌انگیز نخستین دوره‌های EPD در تالارهای دانشگاه فردوسی",
     "image": "/media/gallery/gallery-epd8-03.jpg"
+  },
+  {
+    "id": "gallery-epd209-01",
+    "sessionNumber": 209,
+    "sessionLabel": "جلسه ۲۰۹ (لیگ بازی)",
+    "category": "scoreboard",
+    "captionFa": "مسابقه Shrek / Heads-Up و اسکوربورد مانیتور دن‌کلاب",
+    "image": "/media/gallery/gallery-epd209-01.jpg",
+    "isScoreboard": true
+  },
+  {
+    "id": "gallery-epd209-02",
+    "sessionNumber": 209,
+    "sessionLabel": "جلسه ۲۰۹ (لیگ بازی)",
+    "category": "scoreboard",
+    "captionFa": "مسابقه Shrek / Heads-Up و اسکوربورد مانیتور دن‌کلاب",
+    "image": "/media/gallery/gallery-epd209-02.jpg",
+    "isScoreboard": true
+  },
+  {
+    "id": "gallery-epd209-03",
+    "sessionNumber": 209,
+    "sessionLabel": "جلسه ۲۰۹ (لیگ بازی)",
+    "category": "scoreboard",
+    "captionFa": "مسابقه Shrek / Heads-Up و اسکوربورد مانیتور دن‌کلاب",
+    "image": "/media/gallery/gallery-epd209-03.jpg",
+    "isScoreboard": true
+  },
+  {
+    "id": "gallery-epd204-a-01",
+    "sessionNumber": 204,
+    "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
+    "category": "scoreboard",
+    "captionFa": "دورهمی رقابتی EPD Quest for Victory",
+    "image": "/media/gallery/gallery-epd204-a-01.jpg",
+    "isScoreboard": true
+  },
+  {
+    "id": "gallery-epd204-a-02",
+    "sessionNumber": 204,
+    "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
+    "category": "scoreboard",
+    "captionFa": "دورهمی رقابتی EPD Quest for Victory",
+    "image": "/media/gallery/gallery-epd204-a-02.jpg",
+    "isScoreboard": true
+  },
+  {
+    "id": "gallery-epd204-b-01",
+    "sessionNumber": 204,
+    "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
+    "category": "scoreboard",
+    "captionFa": "بردگیم و چالش‌های گروهی Quest for Victory",
+    "image": "/media/gallery/gallery-epd204-b-01.jpg",
+    "isScoreboard": true
+  },
+  {
+    "id": "gallery-epd204-b-02",
+    "sessionNumber": 204,
+    "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
+    "category": "scoreboard",
+    "captionFa": "بردگیم و چالش‌های گروهی Quest for Victory",
+    "image": "/media/gallery/gallery-epd204-b-02.jpg",
+    "isScoreboard": true
+  },
+  {
+    "id": "gallery-epd204-b-03",
+    "sessionNumber": 204,
+    "sessionLabel": "جلسه ۲۰۴ (لیگ بازی)",
+    "category": "scoreboard",
+    "captionFa": "بردگیم و چالش‌های گروهی Quest for Victory",
+    "image": "/media/gallery/gallery-epd204-b-03.jpg",
+    "isScoreboard": true
   }
 ]

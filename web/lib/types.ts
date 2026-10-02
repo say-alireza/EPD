@@ -30,12 +30,18 @@ export interface PosterItem {
   topicEn: string;
   dateFa: string;
   image: string;
+  category?: "new-chapter" | "weekly-1405" | "courses";
+  sessionLabel?: string;
 }
 
 export interface GalleryItem {
   id: string;
   sessionNumber: number;
   image: string;
+  category?: "new-chapter" | "weekly-1405" | "courses" | "scoreboard";
+  sessionLabel?: string;
+  captionFa?: string;
+  isScoreboard?: boolean;
 }
 
 export interface RegistrationRecord {
