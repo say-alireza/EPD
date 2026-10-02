@@ -16,6 +16,7 @@ let memoryUpcomingSession: UpcomingSession = {
   remainingSeats: defaultNextSession.remainingSeats ?? 6,
   topicEn: defaultNextSession.topicEn || "Upcoming Session",
   topicFa: defaultNextSession.topicFa || "موضوع جلسه به زودی اعلام میشود",
+  descriptionFa: (defaultNextSession as { descriptionFa?: string }).descriptionFa || "",
   posterImage: defaultNextSession.posterImage || null,
 };
 

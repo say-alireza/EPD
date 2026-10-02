@@ -78,17 +78,38 @@ export function UpcomingSessionCard({
           <span>
             {data.remainingSeats
               ? `${data.remainingSeats.toLocaleString("fa-IR")} صندلی باقیمانده`
-              : "ثبتنام فعال"}
+              : "ثبت‌نام فعال"}
           </span>
         </div>
       </div>
+
+      {/* Topic and Description */}
+      {(data.topicEn || data.topicFa || data.descriptionFa) && (
+        <div className="flex flex-col gap-2 border-y border-border/60 py-3.5">
+          {data.topicEn && (
+            <h3 className="text-lg sm:text-xl font-black text-ink tracking-tight font-display" dir="ltr">
+              {data.topicEn}
+            </h3>
+          )}
+          {data.topicFa && (
+            <p className="text-xs sm:text-sm font-bold text-brand-primary whitespace-pre-line leading-relaxed">
+              {data.topicFa}
+            </p>
+          )}
+          {data.descriptionFa && (
+            <p className="text-xs text-ink-muted leading-relaxed whitespace-pre-line pt-0.5">
+              {data.descriptionFa}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Poster placeholder box with dashed borders */}
       <div className="w-full bg-ground border border-dashed border-brand-primary/40 rounded-xl p-4 flex flex-col items-center justify-center text-center gap-3 overflow-hidden min-h-[220px]">
         {data.posterImage ? (
           <Image
             src={assetPath(data.posterImage)}
-            alt={data.topicEn}
+            alt={data.topicEn || `پوستر جلسه ${data.number}`}
             width={400}
             height={500}
             className="w-full max-w-xs h-auto object-contain rounded-lg shadow-xs"

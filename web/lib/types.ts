@@ -19,6 +19,8 @@ export interface UpcomingSession {
   remainingSeats: number;
   topicEn: string;
   topicFa: string;
+  descriptionFa?: string;
+  descriptionEn?: string;
   posterImage?: string | null;
 }
 

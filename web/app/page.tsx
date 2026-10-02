@@ -27,7 +27,7 @@ export default function HomePage() {
         </Link>
         <div className="flex items-center gap-3">
           <a
-            href="https://t.me/EPDSupport"
+            href="https://t.me/EPDCommunity"
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs sm:text-sm font-bold text-ink-muted hover:text-ink transition-colors px-3 py-1.5 border border-border rounded-lg hover:border-brand-primary"
@@ -105,7 +105,7 @@ export default function HomePage() {
             {/* Telegram Channel Announcement Note */}
             <div className="pt-1">
               <a
-                href="https://t.me/EPDSupport"
+                href="https://t.me/EPDCommunity"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 text-xs font-medium text-ink-muted hover:text-ink transition-colors bg-surface border border-border px-3.5 py-2 rounded-lg shadow-2xs hover:border-brand-primary"
@@ -305,7 +305,7 @@ export default function HomePage() {
               <div className="flex flex-col gap-2">
                 <span className="font-bold text-ink">{footer.socialTitle}</span>
                 <a
-                  href="https://t.me/EPDSupport"
+                  href="https://t.me/EPDCommunity"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-ink-muted hover:text-ink transition-colors"

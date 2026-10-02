@@ -156,7 +156,8 @@ bot.hears("مشخصات نشست جاری", async (ctx) => {
   text += `شماره نشست: جلسه ${session.number}\n`;
   text += `موضوع انگلیسی: ${session.topicEn}\n`;
   text += `موضوع فارسی: ${session.topicFa}\n`;
-  text += `زمان: ${session.timeFa}\n`;
+  text += `توضیحات: ${session.descriptionFa || "تنظیم نشده"}\n`;
+  text += `زمان و ساعت: ${session.timeFa}\n`;
   text += `مکان: ${session.venueFa}\n`;
   text += `سطح: ${session.levelFa}\n`;
   text += `ظرفیت باقیمانده کل: ${session.remainingSeats} صندلی\n`;
@@ -165,6 +166,9 @@ bot.hears("مشخصات نشست جاری", async (ctx) => {
   const kb = new InlineKeyboard()
     .text("ویرایش شماره جلسه", "edit_session_number")
     .text("ویرایش موضوع", "edit_session_topic")
+    .row()
+    .text("ویرایش توضیحات", "edit_session_desc")
+    .text("ویرایش زمان و ساعت", "edit_session_time")
     .row()
     .text("ویرایش صندلی باقیمانده", "edit_session_seats")
     .text("ویرایش مکان", "edit_session_venue");
@@ -458,6 +462,28 @@ bot.callbackQuery("edit_session_topic", async (ctx) => {
   });
 });
 
+bot.callbackQuery("edit_session_desc", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  setBotState(userId, { step: "awaiting_session_desc", data: {} });
+  await ctx.reply("توضیحات نشست را ارسال کنید (برای نمایش در کارت نشست و صفحه اصلی سایت):", {
+    reply_markup: getCancelKeyboard(),
+  });
+});
+
+bot.callbackQuery("edit_session_time", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  setBotState(userId, { step: "awaiting_session_time", data: {} });
+  await ctx.reply("زمان و ساعت برگزاری را ارسال کنید (مثال: ۱۰:۰۰ تا ۱۲:۰۰ یا پنج‌شنبه ساعت ۱۷ تا ۱۹):", {
+    reply_markup: getCancelKeyboard(),
+  });
+});
+
 bot.callbackQuery("edit_session_seats", async (ctx) => {
   await ctx.answerCallbackQuery();
   const userId = ctx.from?.id;
@@ -587,6 +613,42 @@ bot.on("message:text", async (ctx) => {
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
         await ctx.reply(`موضوع نشست آپدیت شد ولی خطای همگام‌سازی گیت‌هاب رخ داد:\n${msg}`, {
+          reply_markup: getMainMenuKeyboard(),
+        });
+      }
+      break;
+    }
+
+    case "awaiting_session_desc": {
+      setBotState(userId, null);
+      await updateUpcomingSession({ descriptionFa: text });
+      try {
+        const syncRes = await syncSessionUpdateToGitHub({ descriptionFa: text });
+        await ctx.reply(
+          `توضیحات نشست با موفقیت به‌روزرسانی و در گیت‌هاب ثبت شد.\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        await ctx.reply(`توضیحات نشست آپدیت شد ولی خطای همگام‌سازی رخ داد:\n${msg}`, {
+          reply_markup: getMainMenuKeyboard(),
+        });
+      }
+      break;
+    }
+
+    case "awaiting_session_time": {
+      setBotState(userId, null);
+      await updateUpcomingSession({ timeFa: text });
+      try {
+        const syncRes = await syncSessionUpdateToGitHub({ timeFa: text });
+        await ctx.reply(
+          `زمان نشست با موفقیت به «${text}» تغییر یافت و در گیت‌هاب ثبت شد.\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        await ctx.reply(`زمان نشست آپدیت شد ولی خطای همگام‌سازی رخ داد:\n${msg}`, {
           reply_markup: getMainMenuKeyboard(),
         });
       }
