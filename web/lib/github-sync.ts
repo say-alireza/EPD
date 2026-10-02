@@ -572,3 +572,53 @@ export async function syncSessionUpdateToGitHub(partialData: Record<string, unkn
     commitUrl: commitData.html_url || `https://github.com/${getGitHubConfig().repo}/commit/${commitData.sha}`,
   };
 }
+
+export async function syncSlotsToGitHub(slots: unknown[]): Promise<{ commitSha: string; commitUrl: string }> {
+  const { branch } = getGitHubConfig();
+  const refData = await githubRequest<{ object: { sha: string } }>(`/git/ref/heads/${branch}`);
+  const latestCommitSha = refData.object.sha;
+
+  const slotsBlob = await githubRequest<{ sha: string }>("/git/blobs", {
+    method: "POST",
+    body: {
+      content: encodeUtf8Base64(JSON.stringify(slots, null, 2) + "\n"),
+      encoding: "base64",
+    },
+  });
+
+  const treeData = await githubRequest<{ sha: string }>("/git/trees", {
+    method: "POST",
+    body: {
+      base_tree: latestCommitSha,
+      tree: [
+        {
+          path: "web/data/slots.json",
+          mode: "100644",
+          type: "blob",
+          sha: slotsBlob.sha,
+        },
+      ],
+    },
+  });
+
+  const commitData = await githubRequest<{ sha: string; html_url: string }>("/git/commits", {
+    method: "POST",
+    body: {
+      message: "chore(slots): sync updated slots list",
+      tree: treeData.sha,
+      parents: [latestCommitSha],
+    },
+  });
+
+  await githubRequest(`/git/refs/heads/${branch}`, {
+    method: "PATCH",
+    body: {
+      sha: commitData.sha,
+    },
+  });
+
+  return {
+    commitSha: commitData.sha,
+    commitUrl: commitData.html_url || `https://github.com/${getGitHubConfig().repo}/commit/${commitData.sha}`,
+  };
+}

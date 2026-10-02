@@ -2,6 +2,7 @@ import { Session, UpcomingSession, PosterItem, GalleryItem, RegistrationRecord }
 import defaultNextSession from "@/data/next-session.json";
 import defaultGallery from "@/data/gallery.json";
 import defaultPosters from "@/data/posters.json";
+import defaultSlots from "@/data/slots.json";
 
 // In-memory cache for fallback when running locally or before D1 is provisioned
 let memoryUpcomingSession: UpcomingSession = {
@@ -22,29 +23,7 @@ let memoryUpcomingSession: UpcomingSession = {
   feeFa: (defaultNextSession as { feeFa?: string }).feeFa || "۵۰,۰۰۰ تومان",
 };
 
-const memorySlots: Session[] = [
-  {
-    id: "session-1",
-    title: "سانس اول: پنجشنبه ساعت ۱۶ تا ۱۸",
-    capacity: 15,
-    remainingSeats: 6,
-    isFull: false,
-  },
-  {
-    id: "session-2",
-    title: "سانس دوم: پنجشنبه ساعت ۱۸:۳۰ تا ۲۰:۳۰",
-    capacity: 15,
-    remainingSeats: 3,
-    isFull: false,
-  },
-  {
-    id: "session-game",
-    title: "سانس ویژه Game Night: سهشنبه ساعت ۱۸ تا ۲۰",
-    capacity: 12,
-    remainingSeats: 8,
-    isFull: false,
-  },
-];
+const memorySlots: Session[] = [...(defaultSlots as Session[])];
 
 const memoryRegistrations: RegistrationRecord[] = [];
 const memoryPosters: PosterItem[] = [...(defaultPosters as PosterItem[])];

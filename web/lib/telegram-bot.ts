@@ -21,6 +21,7 @@ import {
   deletePosterFromGitHub,
   deleteGalleryFromGitHub,
   syncSessionUpdateToGitHub,
+  syncSlotsToGitHub,
 } from "./github-sync";
 
 function getBotToken(): string {
@@ -325,6 +326,12 @@ bot.callbackQuery(/^toggle_slot_(.+)$/, async (ctx) => {
   }
 
   const updatedSlots = await getSlots();
+  try {
+    await syncSlotsToGitHub(updatedSlots);
+  } catch (e) {
+    console.error("Error syncing slots to GitHub:", e);
+  }
+
   let text = "مدیریت سانسها و ظرفیت صندلیها (بهروزرسانی شد):\n\n";
   const kb = new InlineKeyboard();
 
@@ -347,9 +354,14 @@ bot.callbackQuery(/^toggle_slot_(.+)$/, async (ctx) => {
 bot.callbackQuery(/^delete_slot_(.+)$/, async (ctx) => {
   const slotId = ctx.match[1];
   await deleteSlot(slotId);
+  const updatedSlots = await getSlots();
+  try {
+    await syncSlotsToGitHub(updatedSlots);
+  } catch (e) {
+    console.error("Error syncing slots to GitHub:", e);
+  }
   await ctx.answerCallbackQuery("سانس با موفقیت حذف شد");
 
-  const updatedSlots = await getSlots();
   let text = "مدیریت سانسها و ظرفیت صندلیها (سانس حذف شد):\n\n";
   const kb = new InlineKeyboard();
 
@@ -619,6 +631,13 @@ bot.on("message:text", async (ctx) => {
         remainingSeats: cap,
         isFull: false,
       });
+
+      const updatedSlots = await getSlots();
+      try {
+        await syncSlotsToGitHub(updatedSlots);
+      } catch (e) {
+        console.error("Error syncing slots to GitHub:", e);
+      }
 
       const feeFa = price === 0 ? "رایگان" : `${price.toLocaleString()} تومان`;
       await updateUpcomingSession({ feeTomans: price, feeFa });

@@ -1,0 +1,9 @@
+[
+  {
+    "id": "session-1",
+    "title": "سانس اول: پنجشنبه ساعت ۱۶ تا ۱۸",
+    "capacity": 15,
+    "remainingSeats": 15,
+    "isFull": false
+  }
+]
