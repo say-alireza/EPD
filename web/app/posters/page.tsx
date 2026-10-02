@@ -179,6 +179,7 @@ export default function PostersPage() {
               بستن ✕
             </button>
             <div className="relative w-full max-h-[80vh] flex items-center justify-center rounded-xl overflow-hidden border border-white/15 bg-black/50 shadow-2xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={assetPath(selectedPoster.image)}
                 alt={selectedPoster.topicEn}
