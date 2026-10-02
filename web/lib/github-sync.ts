@@ -194,8 +194,6 @@ export async function syncPosterToGitHub(options: SessionPosterSyncOptions): Pro
   });
 
   // 6. Create Commit
-  const commitMessage = `feat(session): publish poster and details for session ${options.sessionNumber} [skip ci]`;
-  // We don't skip ci on Cloudflare Pages because Cloudflare listens to all pushes unless explicitly configured
   const commitData = await githubRequest<{ sha: string; html_url: string }>("/git/commits", {
     method: "POST",
     body: {

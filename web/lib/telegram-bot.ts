@@ -11,7 +11,6 @@ import {
   addPoster,
   deletePoster,
   getGallery,
-  addGalleryItem,
   deleteGalleryItem,
   getBotState,
   setBotState,
