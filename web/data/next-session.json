@@ -1,6 +1,6 @@
 {
   "id": "session-upcoming",
-  "number": 13,
+  "number": 12,
   "dateIso": "2026-08-27T10:00:00+03:30",
   "timeFa": "۱۰:۰۰ تا ۱۲:۰۰",
   "timeEn": "10:00 – 12:00",
@@ -8,7 +8,7 @@
   "venueEn": "Mashhad · Aftab Book Cafe",
   "levelFa": "متوسط و پیشرفته (B1+)",
   "remainingSeats": 6,
-  "topicEn": "test",
+  "topicEn": "Pop Culture",
   "topicFa": "موضوع و محورهای گفت‌وگوی این هفته به زودی اعلام خواهد شد",
-  "posterImage": "/media/posters/poster-epd13.jpg"
+  "posterImage": "/media/posters/session-pop-culture.jpg"
 }
