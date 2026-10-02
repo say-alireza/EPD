@@ -12,5 +12,12 @@
     "capacity": 10,
     "remainingSeats": 10,
     "isFull": false
+  },
+  {
+    "id": "slot-mur8kulq",
+    "title": "تست",
+    "capacity": 3,
+    "remainingSeats": 3,
+    "isFull": false
   }
 ]
