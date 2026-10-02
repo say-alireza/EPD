@@ -44,6 +44,7 @@ export interface GalleryItem {
   sessionLabel?: string;
   captionFa?: string;
   isScoreboard?: boolean;
+  isVideo?: boolean;
 }
 
 export interface RegistrationRecord {

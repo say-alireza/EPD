@@ -127,16 +127,27 @@ export default function GalleryPage() {
                   className="bg-surface border border-border rounded-xl overflow-hidden flex flex-col group shadow-xs hover:border-brand-primary hover:shadow-md transition-all duration-200 cursor-pointer"
                 >
                   <div className="relative w-full aspect-[4/3] bg-ground overflow-hidden">
-                    <Image
-                      src={assetPath(item.image)}
-                      alt={`تصویر ${item.sessionLabel || `جلسه ${item.sessionNumber}`}`}
-                      width={800}
-                      height={600}
-                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
-                    />
+                    {item.isVideo || item.image.endsWith(".mp4") ? (
+                      <video
+                        src={assetPath(item.image)}
+                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <Image
+                        src={assetPath(item.image)}
+                        alt={`تصویر ${item.sessionLabel || `جلسه ${item.sessionNumber}`}`}
+                        width={800}
+                        height={600}
+                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+                      />
+                    )}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-200 flex items-center justify-center">
                       <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-surface/90 text-ink text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">
-                        مشاهده اندازه کامل
+                        {item.isVideo || item.image.endsWith(".mp4") ? "پخش ویدیوی کامل" : "مشاهده اندازه کامل"}
                       </span>
                     </div>
                     <div className="absolute bottom-3 start-3 bg-ink/85 text-surface px-2.5 py-1 rounded text-xs font-bold shadow-xs">
@@ -181,12 +192,23 @@ export default function GalleryPage() {
               بستن ✕
             </button>
             <div className="relative w-full max-h-[80vh] flex items-center justify-center rounded-xl overflow-hidden border border-white/15 bg-black/50 shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={assetPath(selectedItem.image)}
-                alt={selectedItem.captionFa || `جلسه ${selectedItem.sessionNumber}`}
-                className="max-h-[80vh] w-auto max-w-full object-contain rounded-xl"
-              />
+              {selectedItem.isVideo || selectedItem.image.endsWith(".mp4") ? (
+                <video
+                  src={assetPath(selectedItem.image)}
+                  className="max-h-[80vh] w-auto max-w-full object-contain rounded-xl"
+                  controls
+                  autoPlay
+                  loop
+                  playsInline
+                />
+              ) : (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={assetPath(selectedItem.image)}
+                  alt={selectedItem.captionFa || `جلسه ${selectedItem.sessionNumber}`}
+                  className="max-h-[80vh] w-auto max-w-full object-contain rounded-xl"
+                />
+              )}
             </div>
             <div className="w-full flex items-center justify-between text-white/90 text-xs sm:text-sm px-2">
               <span className="font-extrabold text-brand-gold">

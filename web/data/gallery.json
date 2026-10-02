@@ -320,6 +320,16 @@
     "image": "/media/gallery/gallery-epd8-03.jpg"
   },
   {
+    "id": "gallery-scoreboard-quest",
+    "sessionNumber": 204,
+    "sessionLabel": "اسکوربورد رسمی کوئست (Quest Scoreboard)",
+    "category": "scoreboard",
+    "captionFa": "ویدیوی رسمی اسکوربورد چالش‌ها و رقابت‌های گروهی Quest for Victory",
+    "image": "/media/gallery/quest-scoreboard.mp4",
+    "isScoreboard": true,
+    "isVideo": true
+  },
+  {
     "id": "gallery-epd209-01",
     "sessionNumber": 209,
     "sessionLabel": "جلسه ۲۰۹ (لیگ بازی)",
