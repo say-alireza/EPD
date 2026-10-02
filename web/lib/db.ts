@@ -378,13 +378,19 @@ export async function getPosters(): Promise<PosterItem[]> {
     try {
       const res = await d1.prepare("SELECT * FROM posters ORDER BY session_number DESC").all();
       if (res && res.results && res.results.length > 0) {
-        return res.results.map((r) => ({
-          id: String(r.id),
-          sessionNumber: Number(r.session_number),
-          topicEn: String(r.topic_en),
-          dateFa: String(r.date_fa),
-          image: String(r.image_url),
-        }));
+        return res.results.map((r) => {
+          const sNum = Number(r.session_number);
+          const rawDate = String(r.date_fa || "");
+          const fallback = (defaultPosters as PosterItem[]).find((p) => p.sessionNumber === sNum);
+          const isMojibake = /[\u00D9\u00D8\u00E2]/.test(rawDate);
+          return {
+            id: String(r.id),
+            sessionNumber: sNum,
+            topicEn: String(r.topic_en),
+            dateFa: (isMojibake && fallback) ? fallback.dateFa : rawDate,
+            image: String(r.image_url),
+          };
+        });
       }
     } catch (e) {
       console.error("D1 getPosters error:", e);
