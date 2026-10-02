@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { addRegistration, getSlots } from "@/lib/db";
+import { addRegistration, getSlots, getUpcomingSession } from "@/lib/db";
 import { notifyAdminsNewRegistration } from "@/lib/telegram-bot";
+import { requestZarinpalPayment } from "@/lib/zarinpal";
 
 export const runtime = "edge";
 
@@ -30,7 +31,76 @@ export async function POST(request: Request) {
       );
     }
 
-    // ۱. ثبت در دیتابیس D1 و کَش سیستم
+    const session = await getUpcomingSession();
+    const feeTomans = session.feeTomans ?? 0;
+
+    // ۱. اگر نشست دارای مبلغ ورودی است (> 0): شروع تراکنش درگاه زرین‌پال
+    if (feeTomans > 0) {
+      const url = new URL(request.url);
+      const isLocal = url.hostname === "localhost" || url.hostname === "127.0.0.1";
+      const origin = isLocal ? "https://epdcommunity.ir" : url.origin;
+      const callbackUrl = `${origin}/api/payment/callback/`;
+
+      const paymentRes = await requestZarinpalPayment({
+        amountTomans: feeTomans,
+        description: `ثبت‌نام ${fullName} در نشست ${session.number} EPD`,
+        callbackUrl,
+        mobile,
+        email,
+      });
+
+      if (!paymentRes.success || !paymentRes.authority || !paymentRes.paymentUrl) {
+        return NextResponse.json(
+          { error: paymentRes.error || "خطا در اتصال به درگاه پرداخت زرین‌پال" },
+          { status: 502 }
+        );
+      }
+
+      // ثبت اولیه با وضعیت در انتظار پرداخت (pending)
+      const record = await addRegistration({
+        fullName,
+        email,
+        mobile,
+        sessionId,
+        languageLevel,
+        firstTime: Boolean(firstTime),
+        topicSuggestion,
+        referralCode,
+        heardFrom,
+        socialHandle,
+        paymentStatus: "pending",
+        paymentAuthority: paymentRes.authority,
+        amountTomans: feeTomans,
+      });
+
+      // اطلاع‌رسانی آنی به ادمین‌های تلگرام
+      const slots = await getSlots();
+      const slot = slots.find((s) => s.id === sessionId);
+      const sessionTitle = slot ? slot.title : sessionId;
+
+      notifyAdminsNewRegistration({
+        fullName,
+        mobile,
+        email,
+        sessionTitle,
+        languageLevel,
+        topicSuggestion,
+        amountTomans: feeTomans,
+        paymentStatus: "در انتظار پرداخت درگاه",
+      }).catch((e) => console.error("Telegram Notification Error:", e));
+
+      return NextResponse.json(
+        {
+          message: "هدایت به درگاه پرداخت",
+          paymentUrl: paymentRes.paymentUrl,
+          authority: paymentRes.authority,
+          registrationId: record.id,
+        },
+        { status: 200 }
+      );
+    }
+
+    // ۲. اگر نشست رایگان است (feeTomans === 0): ثبت قطعی مستقیم
     const record = await addRegistration({
       fullName,
       email,
@@ -42,14 +112,14 @@ export async function POST(request: Request) {
       referralCode,
       heardFrom,
       socialHandle,
+      paymentStatus: "free",
+      amountTomans: 0,
     });
 
-    // ۲. دریافت عنوان سانس جهت ارسال در نوتیفیکیشن
     const slots = await getSlots();
     const slot = slots.find((s) => s.id === sessionId);
     const sessionTitle = slot ? slot.title : sessionId;
 
-    // ۳. ارسال آنی نوتیفیکیشن تلگرام به ادمینها
     notifyAdminsNewRegistration({
       fullName,
       mobile,
@@ -57,22 +127,19 @@ export async function POST(request: Request) {
       sessionTitle,
       languageLevel,
       topicSuggestion,
-    }).catch((telegramError) =>
-      console.error("Telegram Notification Error:", telegramError)
-    );
+      amountTomans: 0,
+      paymentStatus: "رایگان",
+    }).catch((e) => console.error("Telegram Notification Error:", e));
 
-    // ۴. همگامسازی همزمان با Google Sheet
     fetch(GOOGLE_SHEET_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, email, mobile, sessionId }),
-    }).catch((sheetError) =>
-      console.error("Google Sheet Sync Error:", sheetError)
-    );
+      body: JSON.stringify({ fullName, email, mobile, sessionId, status: "free" }),
+    }).catch((e) => console.error("Google Sheet Sync Error:", e));
 
     return NextResponse.json(
       {
-        message: "اطلاعات با موفقیت دریافت و ثبت شد.",
+        message: "ثبت‌نام با موفقیت انجام شد.",
         data: record,
       },
       { status: 200 }
@@ -80,7 +147,7 @@ export async function POST(request: Request) {
   } catch (err) {
     console.error("POST /api/register error:", err);
     return NextResponse.json(
-      { error: "دادههای ارسالی نامعتبر است." },
+      { error: "داده‌های ارسالی نامعتبر است." },
       { status: 400 }
     );
   }

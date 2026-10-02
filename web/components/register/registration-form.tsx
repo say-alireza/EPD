@@ -27,6 +27,7 @@ export function RegistrationForm() {
   const [isLoadingSessions, setIsLoadingSessions] = useState(true);
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [upcomingFee, setUpcomingFee] = useState<{ feeTomans: number; feeFa: string } | null>(null);
 
   const methods = useForm<RegistrationFormValues>({
     resolver: zodResolver(registrationSchema),
@@ -37,6 +38,8 @@ export function RegistrationForm() {
       mobile: "",
       email: "",
       sessionId: "",
+      languageLevel: "",
+      heardFrom: "",
       topicSuggestion: "",
       referralCode: "",
       socialHandle: "",
@@ -61,6 +64,21 @@ export function RegistrationForm() {
         setSessionError(strings.form.fetchSessionsError);
         setIsLoadingSessions(false);
       });
+
+    fetch("/api/upcoming")
+      .then(async (res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data) => {
+        if (data && (data.feeTomans !== undefined || data.feeFa)) {
+          setUpcomingFee({
+            feeTomans: data.feeTomans ?? 0,
+            feeFa: data.feeFa || (data.feeTomans ? `${data.feeTomans.toLocaleString()} تومان` : "رایگان"),
+          });
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // ارسال فرم به API داخلی ثبت‌نام
@@ -76,11 +94,11 @@ export function RegistrationForm() {
           email: values.email,
           sessionId: values.sessionId,
           acceptTerms: true,
-          languageLevel: values.languageLevel,
+          languageLevel: values.languageLevel || undefined,
           firstTime: values.firstTime,
           topicSuggestion: values.topicSuggestion || undefined,
           referralCode: values.referralCode || undefined,
-          heardFrom: values.heardFrom,
+          heardFrom: values.heardFrom || undefined,
           socialHandle: values.socialHandle || undefined,
         }),
       });
@@ -137,8 +155,20 @@ export function RegistrationForm() {
 
         <div className="space-y-4">
           <AcceptTermsField />
+          {upcomingFee && (
+            <div className="bg-surface border border-border/80 rounded-lg p-3.5 flex items-center justify-between text-xs">
+              <span className="text-ink-muted">مبلغ ورودی نشست:</span>
+              <span className="font-extrabold text-brand-primary text-sm">
+                {upcomingFee.feeFa}
+              </span>
+            </div>
+          )}
           <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? strings.form.submitting : strings.form.submit}
+            {isSubmitting
+              ? strings.form.submitting
+              : upcomingFee && upcomingFee.feeTomans > 0
+              ? `پرداخت و ثبت‌نام نهایی (${upcomingFee.feeFa})`
+              : strings.form.submit}
           </Button>
         </div>
       </form>

@@ -18,6 +18,8 @@ let memoryUpcomingSession: UpcomingSession = {
   topicFa: defaultNextSession.topicFa || "موضوع جلسه به زودی اعلام میشود",
   descriptionFa: (defaultNextSession as { descriptionFa?: string }).descriptionFa || "",
   posterImage: defaultNextSession.posterImage || null,
+  feeTomans: (defaultNextSession as { feeTomans?: number }).feeTomans ?? 50000,
+  feeFa: (defaultNextSession as { feeFa?: string }).feeFa || "۵۰,۰۰۰ تومان",
 };
 
 const memorySlots: Session[] = [
@@ -123,6 +125,14 @@ export async function getUpcomingSession(): Promise<UpcomingSession> {
           topicEn: String(row.topic_en),
           topicFa: String(row.topic_fa),
           posterImage: row.poster_image ? String(row.poster_image) : null,
+          feeTomans:
+            row.fee_tomans !== undefined && row.fee_tomans !== null
+              ? Number(row.fee_tomans)
+              : (defaultNextSession as { feeTomans?: number }).feeTomans ?? 50000,
+          feeFa:
+            row.fee_fa !== undefined && row.fee_fa !== null
+              ? String(row.fee_fa)
+              : (defaultNextSession as { feeFa?: string }).feeFa || "۵۰,۰۰۰ تومان",
         };
       }
     } catch (e) {
@@ -141,8 +151,8 @@ export async function updateUpcomingSession(data: Partial<UpcomingSession>): Pro
       const s = { ...current, ...data };
       await d1
         .prepare(
-          `INSERT INTO sessions (id, session_number, topic_en, topic_fa, date_iso, time_fa, time_en, venue_fa, venue_en, level_fa, remaining_seats, poster_image, is_active)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+          `INSERT INTO sessions (id, session_number, topic_en, topic_fa, date_iso, time_fa, time_en, venue_fa, venue_en, level_fa, remaining_seats, fee_tomans, fee_fa, poster_image, is_active)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
            ON CONFLICT(id) DO UPDATE SET
              session_number=excluded.session_number,
              topic_en=excluded.topic_en,
@@ -154,6 +164,8 @@ export async function updateUpcomingSession(data: Partial<UpcomingSession>): Pro
              venue_en=excluded.venue_en,
              level_fa=excluded.level_fa,
              remaining_seats=excluded.remaining_seats,
+             fee_tomans=excluded.fee_tomans,
+             fee_fa=excluded.fee_fa,
              poster_image=excluded.poster_image`
         )
         .bind(
@@ -168,6 +180,8 @@ export async function updateUpcomingSession(data: Partial<UpcomingSession>): Pro
           s.venueEn || null,
           s.levelFa,
           s.remainingSeats,
+          s.feeTomans ?? 50000,
+          s.feeFa || "۵۰,۰۰۰ تومان",
           s.posterImage || null
         )
         .run();
@@ -497,3 +511,105 @@ export function setBotState(userId: number, state: { step: string; data: Record<
     memoryBotState.set(userId, state);
   }
 }
+
+// ---------------------------------------------
+// PAYMENT VERIFICATION & REGISTRATION CONFIRMATION
+// ---------------------------------------------
+export async function getRegistrationByAuthority(
+  authority: string
+): Promise<RegistrationRecord | null> {
+  const mem = memoryRegistrations.find((r) => r.paymentAuthority === authority);
+  if (mem) return mem;
+
+  const d1 = getD1();
+  if (d1) {
+    try {
+      const res = await d1
+        .prepare("SELECT * FROM registrations WHERE payment_authority = ? LIMIT 1")
+        .bind(authority)
+        .first<Record<string, unknown>>();
+
+      if (res) {
+        return {
+          id: String(res.id),
+          fullName: String(res.full_name),
+          mobile: String(res.mobile),
+          email: String(res.email),
+          sessionId: String(res.session_id),
+          languageLevel: res.language_level as "beginner" | "intermediate" | "advanced" | undefined,
+          firstTime: Boolean(res.first_time),
+          topicSuggestion: res.topic_suggestion ? String(res.topic_suggestion) : undefined,
+          paymentStatus: res.payment_status as "free" | "pending" | "paid" | "failed" | undefined,
+          paymentAuthority: res.payment_authority ? String(res.payment_authority) : undefined,
+          paymentRefId: res.payment_ref_id ? String(res.payment_ref_id) : undefined,
+          amountTomans: typeof res.amount_tomans === "number" ? res.amount_tomans : undefined,
+          createdAt: String(res.created_at),
+          paidAt: res.paid_at ? String(res.paid_at) : undefined,
+        };
+      }
+    } catch (e) {
+      console.error("D1 getRegistrationByAuthority error:", e);
+    }
+  }
+  return null;
+}
+
+export async function confirmRegistrationPayment(
+  authority: string,
+  refId: string | number
+): Promise<RegistrationRecord | null> {
+  const reg = memoryRegistrations.find((r) => r.paymentAuthority === authority);
+  const now = new Date().toISOString();
+
+  if (reg) {
+    reg.paymentStatus = "paid";
+    reg.paymentRefId = String(refId);
+    reg.paidAt = now;
+
+    // Decrement slot remaining seats now that payment is confirmed
+    const slot = memorySlots.find((s) => s.id === reg.sessionId);
+    if (slot && slot.remainingSeats > 0) {
+      slot.remainingSeats -= 1;
+      if (slot.remainingSeats === 0) slot.isFull = true;
+    }
+
+    if (memoryUpcomingSession.remainingSeats > 0) {
+      memoryUpcomingSession.remainingSeats -= 1;
+    }
+  }
+
+  const d1 = getD1();
+  if (d1) {
+    try {
+      await d1
+        .prepare(
+          `UPDATE registrations 
+           SET payment_status = 'paid', payment_ref_id = ?, paid_at = ? 
+           WHERE payment_authority = ?`
+        )
+        .bind(String(refId), now, authority)
+        .run();
+
+      if (reg?.sessionId) {
+        await d1
+          .prepare(
+            `UPDATE slots 
+             SET remaining_seats = MAX(0, remaining_seats - 1), 
+                 is_full = CASE WHEN remaining_seats <= 1 THEN 1 ELSE is_full END 
+             WHERE id = ?`
+          )
+          .bind(reg.sessionId)
+          .run();
+      }
+
+      await d1
+        .prepare("UPDATE sessions SET remaining_seats = MAX(0, remaining_seats - 1) WHERE is_active = 1")
+        .run();
+    } catch (e) {
+      console.error("D1 confirmRegistrationPayment error:", e);
+    }
+  }
+
+  return reg || null;
+}
+

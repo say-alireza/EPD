@@ -22,6 +22,8 @@ export interface UpcomingSession {
   descriptionFa?: string;
   descriptionEn?: string;
   posterImage?: string | null;
+  feeTomans?: number;
+  feeFa?: string;
 }
 
 export interface PosterItem {
@@ -58,6 +60,11 @@ export interface RegistrationRecord {
   heardFrom?: "instagram" | "telegram" | "friend" | "other";
   socialHandle?: string;
   createdAt: string;
+  paymentStatus?: "free" | "pending" | "paid" | "failed";
+  paymentAuthority?: string;
+  paymentRefId?: string;
+  amountTomans?: number;
+  paidAt?: string;
 }
 
 export interface RegistrationPayload {

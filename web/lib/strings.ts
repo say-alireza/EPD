@@ -32,7 +32,7 @@ export const strings = {
     },
     languageLevel: {
       label: "سطح زبان انگلیسی",
-      placeholder: "سطح خود را انتخاب کنید",
+      placeholder: "انتخاب سطح (اختیاری)",
       options: {
         beginner: "مقدماتی (Beginner)",
         intermediate: "متوسط (Intermediate)",
@@ -48,7 +48,7 @@ export const strings = {
     },
     heardFrom: {
       label: "نحوه آشنایی با ما",
-      placeholder: "انتخاب کنید",
+      placeholder: "نحوه آشنایی (اختیاری)",
       options: {
         instagram: "اینستاگرام",
         telegram: "تلگرام",

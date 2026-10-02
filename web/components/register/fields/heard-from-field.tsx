@@ -18,17 +18,17 @@ export function HeardFromField() {
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
-        {strings.fields.heardFrom.label}
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink flex items-center justify-between">
+        <span>{strings.fields.heardFrom.label}</span>
+        <span className="text-xs font-normal text-ink-muted">(اختیاری)</span>
       </label>
       <Select
-
         id={fieldId}
         error={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         {...register("heardFrom")}
       >
-        <option value="">{strings.fields.heardFrom.placeholder}</option>
+        <option value="">نحوه آشنایی (اختیاری)</option>
         <option value="instagram">{strings.fields.heardFrom.options.instagram}</option>
         <option value="telegram">{strings.fields.heardFrom.options.telegram}</option>
         <option value="friend">{strings.fields.heardFrom.options.friend}</option>

@@ -18,17 +18,17 @@ export function LanguageLevelField() {
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
-        {strings.fields.languageLevel.label}
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink flex items-center justify-between">
+        <span>{strings.fields.languageLevel.label}</span>
+        <span className="text-xs font-normal text-ink-muted">(اختیاری)</span>
       </label>
       <Select
-
         id={fieldId}
         error={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         {...register("languageLevel")}
       >
-        <option value="">{strings.fields.languageLevel.placeholder}</option>
+        <option value="">انتخاب سطح (اختیاری)</option>
         <option value="beginner">{strings.fields.languageLevel.options.beginner}</option>
         <option value="intermediate">{strings.fields.languageLevel.options.intermediate}</option>
         <option value="advanced">{strings.fields.languageLevel.options.advanced}</option>

@@ -30,7 +30,10 @@ export const registrationSchema = z.object({
     message: strings.validation.acceptTermsRequired,
   }),
   languageLevel: z
-    .enum(["beginner", "intermediate", "advanced"])
+    .union([
+      z.enum(["beginner", "intermediate", "advanced"]),
+      z.literal(""),
+    ])
     .optional(),
   firstTime: z.boolean().optional(),
   topicSuggestion: z
@@ -46,7 +49,10 @@ export const registrationSchema = z.object({
     .optional()
     .or(z.literal("")),
   heardFrom: z
-    .enum(["instagram", "telegram", "friend", "other"])
+    .union([
+      z.enum(["instagram", "telegram", "friend", "other"]),
+      z.literal(""),
+    ])
     .optional(),
   socialHandle: z
     .string()

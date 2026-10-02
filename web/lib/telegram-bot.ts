@@ -23,6 +23,10 @@ import {
   syncSessionUpdateToGitHub,
 } from "./github-sync";
 
+function getBotToken(): string {
+  return process.env.TELEGRAM_BOT_TOKEN || "";
+}
+
 // Primary Telegram Bot Token (Read from environment variables)
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "placeholder_token_for_build";
 
@@ -160,6 +164,7 @@ bot.hears("مشخصات نشست جاری", async (ctx) => {
   text += `زمان و ساعت: ${session.timeFa}\n`;
   text += `مکان: ${session.venueFa}\n`;
   text += `سطح: ${session.levelFa}\n`;
+  text += `مبلغ ورودی: ${session.feeFa || (session.feeTomans ? session.feeTomans.toLocaleString() + " تومان" : "رایگان")}\n`;
   text += `ظرفیت باقیمانده کل: ${session.remainingSeats} صندلی\n`;
   text += `پوستر: ${session.posterImage ? "آپلود شده" : "تنظیم نشده"}\n`;
 
@@ -171,7 +176,10 @@ bot.hears("مشخصات نشست جاری", async (ctx) => {
     .text("ویرایش زمان و ساعت", "edit_session_time")
     .row()
     .text("ویرایش صندلی باقیمانده", "edit_session_seats")
-    .text("ویرایش مکان", "edit_session_venue");
+    .text("ویرایش مبلغ ورودی", "edit_session_price")
+    .row()
+    .text("ویرایش مکان", "edit_session_venue")
+    .text("تغییر پوستر نشست", "edit_session_poster");
 
   await ctx.reply(text, { reply_markup: kb });
 });
@@ -182,8 +190,10 @@ bot.hears("مدیریت سانسها و ظرفیت", async (ctx) => {
   if (!isAdmin(userId)) return;
 
   const slots = await getSlots();
+  const session = await getUpcomingSession();
 
   let text = "مدیریت سانسها و ظرفیت صندلیها:\n\n";
+  text += `مبلغ ورودی جلسه: ${session.feeFa || (session.feeTomans ? session.feeTomans.toLocaleString() + " تومان" : "رایگان")}\n\n`;
   const kb = new InlineKeyboard();
 
   slots.forEach((s) => {
@@ -197,7 +207,9 @@ bot.hears("مدیریت سانسها و ظرفیت", async (ctx) => {
       .row();
   });
 
-  kb.text("افزودن سانس جدید", "action_add_slot").row();
+  kb.text("ویرایش مبلغ ورودی", "edit_session_price")
+    .text("افزودن سانس جدید", "action_add_slot")
+    .row();
 
   await ctx.reply(text, { reply_markup: kb });
 });
@@ -495,6 +507,17 @@ bot.callbackQuery("edit_session_seats", async (ctx) => {
   });
 });
 
+bot.callbackQuery("edit_session_price", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  setBotState(userId, { step: "awaiting_session_price", data: {} });
+  await ctx.reply("مبلغ ورودی جلسه را به تومان ارسال کنید (مثال: 50000 یا برای رایگان عدد 0):", {
+    reply_markup: getCancelKeyboard(),
+  });
+});
+
 bot.callbackQuery("edit_session_venue", async (ctx) => {
   await ctx.answerCallbackQuery();
   const userId = ctx.from?.id;
@@ -504,6 +527,29 @@ bot.callbackQuery("edit_session_venue", async (ctx) => {
   await ctx.reply("آدرس محل برگزاری را ارسال کنید:", {
     reply_markup: getCancelKeyboard(),
   });
+});
+
+bot.callbackQuery("edit_session_poster", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  const session = await getUpcomingSession();
+  setBotState(userId, {
+    step: "awaiting_upcoming_poster_photo",
+    data: {
+      sessionNumber: session.number,
+      topicEn: session.topicEn,
+      topicFa: session.topicFa,
+      dateFa: session.timeFa,
+    },
+  });
+  await ctx.reply(
+    `تصویر پوستر جدید برای «جلسه ${session.number}» را به صورت عکس ارسال کنید:\n(این تصویر مستقیماً جایگزین پوستر نشست فعلی روی سایت خواهد شد)`,
+    {
+      reply_markup: getCancelKeyboard(),
+    }
+  );
 });
 
 // ----------------------------------------------------
@@ -678,6 +724,31 @@ bot.on("message:text", async (ctx) => {
       break;
     }
 
+    case "awaiting_session_price": {
+      const asciiText = text.replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[,،\s]/g, "");
+      const price = parseInt(asciiText, 10);
+      if (isNaN(price) || price < 0) {
+        await ctx.reply("لطفاً یک مبلغ معتبر به عدد (تومان) ارسال کنید یا «لغو عملیات» را بزنید.");
+        return;
+      }
+      setBotState(userId, null);
+      const feeFa = price === 0 ? "رایگان" : `${price.toLocaleString()} تومان`;
+      await updateUpcomingSession({ feeTomans: price, feeFa });
+      try {
+        const syncRes = await syncSessionUpdateToGitHub({ feeTomans: price, feeFa });
+        await ctx.reply(
+          `مبلغ ورودی جلسه با موفقیت به «${feeFa}» تغییر یافت و در گیت‌هاب ثبت شد.\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        await ctx.reply(`مبلغ ورودی آپدیت شد ولی خطای همگام‌سازی رخ داد:\n${msg}`, {
+          reply_markup: getMainMenuKeyboard(),
+        });
+      }
+      break;
+    }
+
     case "awaiting_session_venue": {
       setBotState(userId, null);
       await updateUpcomingSession({ venueFa: text });
@@ -840,6 +911,52 @@ bot.on("message:photo", async (ctx) => {
     const file = await ctx.api.getFile(bestPhoto.file_id);
     const fileUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${file.file_path}`;
 
+    if (state.step === "awaiting_upcoming_poster_photo") {
+      const { sessionNumber, topicEn, topicFa, dateFa } = state.data;
+      setBotState(userId, null);
+      await ctx.reply("⏳ در حال آپلود و جایگزینی پوستر نشست در گیت‌هاب...", {
+        reply_markup: getMainMenuKeyboard(),
+      });
+
+      try {
+        const imgRes = await fetch(String(fileUrl));
+        if (!imgRes.ok) throw new Error("خطا در دانلود فایل پوستر از تلگرام");
+        const imageBuffer = await imgRes.arrayBuffer();
+
+        const syncResult = await syncPosterToGitHub({
+          sessionNumber: Number(sessionNumber),
+          topicEn: String(topicEn || "English Public Discussion"),
+          topicFa: String(topicFa || ""),
+          dateFa: String(dateFa || ""),
+          imageBuffer,
+        });
+
+        const posterRelPath = `/media/posters/poster-epd${sessionNumber}.jpg`;
+        await addPoster({
+          id: `poster-${sessionNumber}`,
+          sessionNumber: Number(sessionNumber),
+          topicEn: String(topicEn || "English Public Discussion"),
+          dateFa: String(dateFa || ""),
+          image: posterRelPath,
+        });
+        await updateUpcomingSession({
+          number: Number(sessionNumber),
+          posterImage: posterRelPath,
+        });
+
+        await ctx.reply(
+          `پوستر جلسه ${sessionNumber} با موفقیت جایگزین شد و در گیت‌هاب ثبت گردید.\n\nسایت ظرف ۱ الی ۲ دقیقه آینده به‌روزرسانی می‌شود.\nشناسه کامیت: ${syncResult.commitSha.slice(0, 7)}`,
+          { reply_markup: getMainMenuKeyboard() }
+        );
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        await ctx.reply(`خطا در ثبت پوستر جدید:\n${errorMsg}`, {
+          reply_markup: getMainMenuKeyboard(),
+        });
+      }
+      return;
+    }
+
     if (state.step === "awaiting_poster_photo") {
       setBotState(userId, {
         step: "awaiting_poster_session_number",
@@ -876,7 +993,17 @@ export async function notifyAdminsNewRegistration(registration: {
   sessionTitle: string;
   languageLevel?: string;
   topicSuggestion?: string;
+  amountTomans?: number;
+  refId?: string | number;
+  paymentStatus?: string;
 }) {
+  const token = getBotToken();
+  if (!token || token === "placeholder_token_for_build") {
+    console.warn("TELEGRAM_BOT_TOKEN is not set; skipping admin notification");
+    return;
+  }
+
+  const botInstance = new Bot(token);
   const text =
     "ثبتنام جدید در وبسایت EPD\n\n" +
     `نام و نامخانوادگی: ${registration.fullName}\n` +
@@ -884,12 +1011,15 @@ export async function notifyAdminsNewRegistration(registration: {
     `ایمیل: ${registration.email}\n` +
     `سانس انتخابی: ${registration.sessionTitle}\n` +
     (registration.languageLevel ? `سطح زبان: ${registration.languageLevel}\n` : "") +
+    (registration.amountTomans !== undefined ? `مبلغ ورودی: ${registration.amountTomans === 0 ? "رایگان" : registration.amountTomans.toLocaleString() + " تومان"}\n` : "") +
+    (registration.refId ? `کد رهگیری شاپرک (RefID): ${registration.refId}\n` : "") +
+    (registration.paymentStatus ? `وضعیت پرداخت: ${registration.paymentStatus}\n` : "") +
     (registration.topicSuggestion ? `موضوع پیشنهادی: ${registration.topicSuggestion}\n` : "") +
     `زمان ثبت: ${new Date().toLocaleTimeString("fa-IR")}`;
 
   for (const adminId of getAdminIds()) {
     try {
-      await bot.api.sendMessage(adminId, text);
+      await botInstance.api.sendMessage(adminId, text);
     } catch (err) {
       console.error(`Failed to send notification to admin ${adminId}:`, err);
     }

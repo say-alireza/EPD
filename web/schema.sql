@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS sessions (
   venue_en TEXT,
   level_fa TEXT,
   remaining_seats INTEGER,
+  fee_tomans INTEGER DEFAULT 0,
+  fee_fa TEXT DEFAULT 'رایگان',
   poster_image TEXT,
   is_active INTEGER DEFAULT 1,
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
@@ -39,6 +41,11 @@ CREATE TABLE IF NOT EXISTS registrations (
   referral_code TEXT,
   heard_from TEXT,
   social_handle TEXT,
+  payment_status TEXT DEFAULT 'free',
+  payment_authority TEXT,
+  payment_ref_id TEXT,
+  amount_tomans INTEGER DEFAULT 0,
+  paid_at TEXT,
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 

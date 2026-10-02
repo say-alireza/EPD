@@ -144,6 +144,16 @@ export function UpcomingSessionCard({
             {data.timeFa}
           </span>
         </div>
+        <div>
+          <span className="text-ink-muted block">مبلغ ورودی</span>
+          <span className="font-extrabold text-brand-primary">
+            {data.feeFa || (data.feeTomans ? `${data.feeTomans.toLocaleString()} تومان` : "رایگان")}
+          </span>
+        </div>
+        <div>
+          <span className="text-ink-muted block">سطح پیشنهادی</span>
+          <span className="font-bold text-ink">{data.levelFa}</span>
+        </div>
         <div className="sm:col-span-2">
           <span className="text-ink-muted block">{venueLabel}</span>
           <span className="font-bold text-ink">{data.venueFa}</span>
