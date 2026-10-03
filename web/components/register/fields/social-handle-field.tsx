@@ -19,7 +19,7 @@ export function SocialHandleField() {
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={fieldId} className="text-sm font-medium text-ink">
-        {strings.fields.socialHandle.label}
+        {strings.fields.socialHandle.label} <span className="text-brand-accent">*</span>
       </label>
       <Input
 

@@ -70,6 +70,7 @@ export async function GET(request: Request) {
   await notifyAdminsNewRegistration({
     fullName: registration.fullName,
     mobile: registration.mobile,
+    socialHandle: registration.socialHandle,
     email: registration.email,
     sessionTitle,
     languageLevel: registration.languageLevel,

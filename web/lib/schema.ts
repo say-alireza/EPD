@@ -21,7 +21,11 @@ export const registrationSchema = z.object({
     .string()
     .trim()
     .toLowerCase()
-    .email(strings.validation.emailInvalid),
+    .optional()
+    .or(z.literal(""))
+    .refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
+      message: strings.validation.emailInvalid,
+    }),
   sessionId: z
     .string()
     .trim()
@@ -57,9 +61,10 @@ export const registrationSchema = z.object({
   socialHandle: z
     .string()
     .trim()
+    .min(1, strings.validation.socialHandleRequired)
     .max(64, strings.validation.socialHandleMax)
-    .optional()
-    .or(z.literal("")),
+    .regex(/^@?[a-zA-Z0-9_]{3,32}$/, strings.validation.socialHandleInvalid)
+    .transform((val) => (val.startsWith("@") ? val : `@${val}`)),
 });
 
 export type RegistrationFormValues = z.infer<typeof registrationSchema>;

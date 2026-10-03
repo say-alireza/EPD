@@ -21,7 +21,7 @@ export const strings = {
     },
     email: {
       label: "ایمیل",
-      placeholder: "example@domain.com",
+      placeholder: "example@domain.com (اختیاری)",
     },
     sessionId: {
       label: "انتخاب رویداد / جلسه",
@@ -77,6 +77,8 @@ export const strings = {
     acceptTermsRequired: "پذیرش قوانین الزامی است",
     topicSuggestionMax: "موضوع پیشنهادی نمی‌تواند بیش از ۳۰۰ کاراکتر باشد",
     referralCodeMax: "کد معرفی نمی‌تواند بیش از ۳۲ کاراکتر باشد",
+    socialHandleRequired: "وارد کردن شناسه تلگرام الزامی است",
+    socialHandleInvalid: "شناسه تلگرام معتبر نیست (مثال: username@)",
     socialHandleMax: "شناسه کاربری نمی‌تواند بیش از ۶۴ کاراکتر باشد",
   },
   landing: {

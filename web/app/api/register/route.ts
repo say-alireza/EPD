@@ -24,9 +24,9 @@ export async function POST(request: Request) {
       socialHandle,
     } = body || {};
 
-    if (!fullName || !email || !mobile || !sessionId) {
+    if (!fullName || !mobile || !sessionId || !socialHandle) {
       return NextResponse.json(
-        { error: "لطفاً تمام فیلدهای الزامی را پر کنید." },
+        { error: "لطفاً تمام فیلدهای الزامی (نام، شماره تماس، شناسه تلگرام و سانس) را پر کنید." },
         { status: 400 }
       );
     }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         description: `ثبت‌نام ${fullName} در نشست ${session.number} EPD${slotName}`,
         callbackUrl,
         mobile,
-        email,
+        email: email || undefined,
       });
 
       if (!paymentRes.success || !paymentRes.authority || !paymentRes.paymentUrl) {
@@ -87,7 +87,8 @@ export async function POST(request: Request) {
       await notifyAdminsNewRegistration({
         fullName,
         mobile,
-        email,
+        socialHandle,
+        email: email || undefined,
         sessionTitle,
         languageLevel,
         topicSuggestion,
@@ -127,7 +128,8 @@ export async function POST(request: Request) {
     await notifyAdminsNewRegistration({
       fullName,
       mobile,
-      email,
+      socialHandle,
+      email: email || undefined,
       sessionTitle,
       languageLevel,
       topicSuggestion,

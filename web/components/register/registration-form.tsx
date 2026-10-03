@@ -145,7 +145,7 @@ export function RegistrationForm() {
         <div className="space-y-4">
           <FullNameField />
           <MobileField />
-          <EmailField />
+          <SocialHandleField />
           <SessionField sessions={sessions} isLoading={isLoadingSessions} error={sessionError} />
         </div>
 
@@ -153,11 +153,11 @@ export function RegistrationForm() {
           <legend className="px-2 text-sm font-semibold text-ink">
             {strings.form.optionalSectionTitle}
           </legend>
+          <EmailField />
           <LanguageLevelField />
           <FirstTimeField />
           <TopicSuggestionField />
           <HeardFromField />
-          <SocialHandleField />
           {/* <ReferralCodeField /> */}
         </fieldset>
 

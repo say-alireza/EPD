@@ -18,8 +18,9 @@ export function EmailField() {
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={fieldId} className="text-sm font-medium text-ink">
-        {strings.fields.email.label} <span className="text-brand-accent">*</span>
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink flex items-center justify-between">
+        <span>{strings.fields.email.label}</span>
+        <span className="text-xs text-ink-muted font-normal">(اختیاری)</span>
       </label>
       <Input
 

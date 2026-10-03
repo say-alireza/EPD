@@ -145,7 +145,8 @@ bot.hears("لیست ثبتنامها", async (ctx) => {
     const slotName = slot ? slot.title.split(":")[0] : r.sessionId;
     text += `${idx + 1}. ${r.fullName}\n`;
     text += `   شماره تماس: ${r.mobile}\n`;
-    text += `   ایمیل: ${r.email}\n`;
+    if (r.socialHandle) text += `   تلگرام: ${r.socialHandle}\n`;
+    if (r.email) text += `   ایمیل: ${r.email}\n`;
     text += `   سانس: ${slotName}\n`;
     if (r.languageLevel) text += `   سطح زبان: ${r.languageLevel}\n`;
     text += `   تاریخ: ${new Date(r.createdAt).toLocaleDateString("fa-IR")}\n\n`;
@@ -314,7 +315,8 @@ bot.callbackQuery("inline_refresh_registrations", async (ctx) => {
     const slotName = slot ? slot.title.split(":")[0] : r.sessionId;
     text += `${idx + 1}. ${r.fullName}\n`;
     text += `   شماره تماس: ${r.mobile}\n`;
-    text += `   ایمیل: ${r.email}\n`;
+    if (r.socialHandle) text += `   تلگرام: ${r.socialHandle}\n`;
+    if (r.email) text += `   ایمیل: ${r.email}\n`;
     text += `   سانس: ${slotName}\n`;
     if (r.languageLevel) text += `   سطح زبان: ${r.languageLevel}\n`;
     text += `   تاریخ: ${new Date(r.createdAt).toLocaleDateString("fa-IR")}\n\n`;
@@ -1137,7 +1139,8 @@ bot.on("message:photo", async (ctx) => {
 export async function notifyAdminsNewRegistration(registration: {
   fullName: string;
   mobile: string;
-  email: string;
+  socialHandle?: string;
+  email?: string;
   sessionTitle: string;
   languageLevel?: string;
   topicSuggestion?: string;
@@ -1155,7 +1158,8 @@ export async function notifyAdminsNewRegistration(registration: {
     "ثبتنام جدید در وبسایت EPD\n\n" +
     `نام و نامخانوادگی: ${registration.fullName}\n` +
     `شماره تماس: ${registration.mobile}\n` +
-    `ایمیل: ${registration.email}\n` +
+    (registration.socialHandle ? `شناسه تلگرام: ${registration.socialHandle}\n` : "") +
+    (registration.email ? `ایمیل: ${registration.email}\n` : "") +
     `سانس انتخابی: ${registration.sessionTitle}\n` +
     (registration.languageLevel ? `سطح زبان: ${registration.languageLevel}\n` : "") +
     (registration.amountTomans !== undefined ? `مبلغ ورودی: ${registration.amountTomans === 0 ? "رایگان" : registration.amountTomans.toLocaleString("fa-IR") + " تومان"}\n` : "") +
