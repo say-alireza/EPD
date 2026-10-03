@@ -16,7 +16,7 @@ let memoryUpcomingSession: UpcomingSession = {
   levelFa: defaultNextSession.levelFa || "متوسط و پیشرفته (B1+)",
   remainingSeats: defaultNextSession.remainingSeats ?? 6,
   topicEn: defaultNextSession.topicEn || "Upcoming Session",
-  topicFa: defaultNextSession.topicFa || "موضوع جلسه به زودی اعلام میشود",
+  topicFa: defaultNextSession.topicFa || "موضوع جلسه به زودی اعلام می‌شود",
   descriptionFa: (defaultNextSession as { descriptionFa?: string }).descriptionFa || "",
   posterImage: defaultNextSession.posterImage || null,
   feeTomans: (defaultNextSession as { feeTomans?: number }).feeTomans ?? 50000,

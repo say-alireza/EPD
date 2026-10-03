@@ -60,10 +60,10 @@ function isAdmin(userId?: number): boolean {
 
 function getMainMenuKeyboard() {
   return new Keyboard()
-    .text("لیست ثبتنامها")
+    .text("لیست ثبت‌نام‌ها")
     .text("مشخصات نشست جاری")
     .row()
-    .text("مدیریت سانسها و ظرفیت")
+    .text("مدیریت سانس‌ها و ظرفیت")
     .text("مدیریت و آپلود پوستر")
     .row()
     .text("مدیریت و آپلود گالری")
@@ -123,7 +123,7 @@ bot.hears("بازگشت به منوی اصلی", async (ctx) => {
 // ----------------------------------------------------
 
 // 1. Registrations List
-bot.hears("لیست ثبتنامها", async (ctx) => {
+bot.hears("لیست ثبت‌نام‌ها", async (ctx) => {
   const userId = ctx.from?.id;
   if (!isAdmin(userId)) return;
 
@@ -131,13 +131,13 @@ bot.hears("لیست ثبتنامها", async (ctx) => {
   const slots = await getSlots();
 
   if (regs.length === 0) {
-    await ctx.reply("هنوز ثبتنامی در سیستم ثبت نشده است.", {
+    await ctx.reply("هنوز ثبت‌نامی در سیستم ثبت نشده است.", {
       reply_markup: getMainMenuKeyboard(),
     });
     return;
   }
 
-  let text = `گزارش ثبتنامها (تعداد کل: ${regs.length})\n\n`;
+  let text = `گزارش ثبت‌نام‌ها (تعداد کل: ${regs.length})\n\n`;
   const recent = regs.slice(0, 15);
 
   recent.forEach((r, idx) => {
@@ -152,7 +152,7 @@ bot.hears("لیست ثبتنامها", async (ctx) => {
     text += `   تاریخ: ${new Date(r.createdAt).toLocaleDateString("fa-IR")}\n\n`;
   });
 
-  const refreshKb = new InlineKeyboard().text("بهروزرسانی گزارش", "inline_refresh_registrations");
+  const refreshKb = new InlineKeyboard().text("به‌روزرسانی گزارش", "inline_refresh_registrations");
   await ctx.reply(text, { reply_markup: refreshKb });
 });
 
@@ -192,14 +192,14 @@ bot.hears("مشخصات نشست جاری", async (ctx) => {
 });
 
 // 3. Manage Slots & Capacity (Add, Delete, Toggle)
-bot.hears("مدیریت سانسها و ظرفیت", async (ctx) => {
+bot.hears("مدیریت سانس‌ها و ظرفیت", async (ctx) => {
   const userId = ctx.from?.id;
   if (!isAdmin(userId)) return;
 
   const slots = await getSlots();
   const session = await getUpcomingSession();
 
-  let text = "مدیریت سانسها و ظرفیت صندلیها:\n\n";
+  let text = "مدیریت سانس‌ها و ظرفیت صندلی‌ها:\n\n";
   const kb = new InlineKeyboard();
 
   slots.forEach((s) => {
@@ -260,7 +260,7 @@ bot.hears(["مدیریت و آپلود گالری", "آپلود عکس گالر�
   if (!isAdmin(userId)) return;
 
   const gallery = await getGallery();
-  let text = `مدیریت تصاویر گالری (تعداد کل عکسها: ${gallery.length})\n\n`;
+  let text = `مدیریت تصاویر گالری (تعداد کل عکس‌ها: ${gallery.length})\n\n`;
   const recent = gallery.slice(0, 5);
 
   recent.forEach((g, idx) => {
@@ -286,9 +286,9 @@ bot.hears("راهنما", async (ctx) => {
   const text =
     "راهنمای پنل مدیریت EPD:\n\n" +
     "- برای لغو هر فرآیند، دکمه «لغو عملیات» یا دستور /cancel را بزنید.\n" +
-    "- با افزودن یا حذف سانس، لیست بلافاصله در فرم ثبتنام سایت آپدیت میشود.\n" +
+    "- با افزودن یا حذف سانس، لیست بلافاصله در فرم ثبت‌نام سایت آپدیت می‌شود.\n" +
     "- با آپلود پوستر، اطلاعات جلسه جدید روی صفحه اصلی و آرشیو مینشیند.\n" +
-    "- با آپلود عکس گالری، تصویر همراه با برچسب شماره جلسه به گالری اضافه میشود.";
+    "- با آپلود عکس گالری، تصویر همراه با برچسب شماره جلسه به گالری اضافه می‌شود.";
 
   await ctx.reply(text, { reply_markup: getMainMenuKeyboard() });
 });
@@ -298,16 +298,16 @@ bot.hears("راهنما", async (ctx) => {
 // ----------------------------------------------------
 
 bot.callbackQuery("inline_refresh_registrations", async (ctx) => {
-  await ctx.answerCallbackQuery("بهروزرسانی شد");
+  await ctx.answerCallbackQuery("به‌روزرسانی شد");
   const regs = await getRegistrations();
   const slots = await getSlots();
 
   if (regs.length === 0) {
-    await ctx.editMessageText("هنوز ثبتنامی در سیستم ثبت نشده است.");
+    await ctx.editMessageText("هنوز ثبت‌نامی در سیستم ثبت نشده است.");
     return;
   }
 
-  let text = `گزارش ثبتنامها (تعداد کل: ${regs.length})\n\n`;
+  let text = `گزارش ثبت‌نام‌ها (تعداد کل: ${regs.length})\n\n`;
   const recent = regs.slice(0, 15);
 
   recent.forEach((r, idx) => {
@@ -322,7 +322,7 @@ bot.callbackQuery("inline_refresh_registrations", async (ctx) => {
     text += `   تاریخ: ${new Date(r.createdAt).toLocaleDateString("fa-IR")}\n\n`;
   });
 
-  const refreshKb = new InlineKeyboard().text("بهروزرسانی گزارش", "inline_refresh_registrations");
+  const refreshKb = new InlineKeyboard().text("به‌روزرسانی گزارش", "inline_refresh_registrations");
   await ctx.editMessageText(text, { reply_markup: refreshKb });
 });
 
@@ -348,7 +348,7 @@ bot.callbackQuery(/^toggle_slot_(.+)$/, async (ctx) => {
     console.error("Error syncing slots to GitHub:", e);
   }
 
-  let text = "مدیریت سانسها و ظرفیت صندلیها (بهروزرسانی شد):\n\n";
+  let text = "مدیریت سانس‌ها و ظرفیت صندلی‌ها (به‌روزرسانی شد):\n\n";
   const session = await getUpcomingSession();
   const kb = new InlineKeyboard();
 
@@ -390,7 +390,7 @@ bot.callbackQuery(/^delete_slot_(.+)$/, async (ctx) => {
   }
   await ctx.answerCallbackQuery("سانس با موفقیت حذف شد");
 
-  let text = "مدیریت سانسها و ظرفیت صندلیها (سانس حذف شد):\n\n";
+  let text = "مدیریت سانس‌ها و ظرفیت صندلی‌ها (سانس حذف شد):\n\n";
   const session = await getUpcomingSession();
   const kb = new InlineKeyboard();
 
@@ -575,7 +575,7 @@ bot.callbackQuery("edit_session_seats", async (ctx) => {
   if (!userId) return;
 
   setBotState(userId, { step: "awaiting_session_seats", data: {} });
-  await ctx.reply("تعداد صندلیهای باقیمانده را به صورت عدد ارسال کنید (مثال: 8):", {
+  await ctx.reply("تعداد صندلی‌های باقیمانده را به صورت عدد ارسال کنید (مثال: 8):", {
     reply_markup: getCancelKeyboard(),
   });
 });
@@ -1155,8 +1155,8 @@ export async function notifyAdminsNewRegistration(registration: {
   }
 
   const text =
-    "ثبتنام جدید در وبسایت EPD\n\n" +
-    `نام و نامخانوادگی: ${registration.fullName}\n` +
+    "ثبت‌نام جدید در وبسایت EPD\n\n" +
+    `نام و نام‌خانوادگی: ${registration.fullName}\n` +
     `شماره تماس: ${registration.mobile}\n` +
     (registration.socialHandle ? `شناسه تلگرام: ${registration.socialHandle}\n` : "") +
     (registration.email ? `ایمیل: ${registration.email}\n` : "") +
