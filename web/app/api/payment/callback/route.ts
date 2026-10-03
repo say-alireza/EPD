@@ -67,7 +67,7 @@ export async function GET(request: Request) {
   );
   const sessionTitle = slot ? slot.title : registration.sessionId;
 
-  notifyAdminsNewRegistration({
+  await notifyAdminsNewRegistration({
     fullName: registration.fullName,
     mobile: registration.mobile,
     email: registration.email,

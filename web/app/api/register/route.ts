@@ -84,7 +84,7 @@ export async function POST(request: Request) {
       // اطلاع‌رسانی آنی به ادمین‌های تلگرام
       const sessionTitle = selectedSlot ? selectedSlot.title : sessionId;
 
-      notifyAdminsNewRegistration({
+      await notifyAdminsNewRegistration({
         fullName,
         mobile,
         email,
@@ -124,7 +124,7 @@ export async function POST(request: Request) {
 
     const sessionTitle = selectedSlot ? selectedSlot.title : sessionId;
 
-    notifyAdminsNewRegistration({
+    await notifyAdminsNewRegistration({
       fullName,
       mobile,
       email,

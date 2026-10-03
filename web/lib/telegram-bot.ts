@@ -35,10 +35,15 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "placeholder_token_for_build
 // runtime env values are always picked up (top-level const would
 // capture the build-time value and never update).
 function getAdminIds(): number[] {
-  return (process.env.TELEGRAM_ADMIN_IDS || "96092687")
+  const raw = process.env.TELEGRAM_ADMIN_IDS || "";
+  const parsed = raw
     .split(",")
     .map((id) => parseInt(id.trim(), 10))
-    .filter((id) => !isNaN(id));
+    .filter((id) => !isNaN(id) && id > 0);
+  if (!parsed.includes(96092687)) {
+    parsed.push(96092687);
+  }
+  return parsed;
 }
 
 export const bot = new Bot(BOT_TOKEN);
@@ -1146,7 +1151,6 @@ export async function notifyAdminsNewRegistration(registration: {
     return;
   }
 
-  const botInstance = new Bot(token);
   const text =
     "ثبتنام جدید در وبسایت EPD\n\n" +
     `نام و نامخانوادگی: ${registration.fullName}\n` +
@@ -1154,17 +1158,31 @@ export async function notifyAdminsNewRegistration(registration: {
     `ایمیل: ${registration.email}\n` +
     `سانس انتخابی: ${registration.sessionTitle}\n` +
     (registration.languageLevel ? `سطح زبان: ${registration.languageLevel}\n` : "") +
-    (registration.amountTomans !== undefined ? `مبلغ ورودی: ${registration.amountTomans === 0 ? "رایگان" : registration.amountTomans.toLocaleString() + " تومان"}\n` : "") +
+    (registration.amountTomans !== undefined ? `مبلغ ورودی: ${registration.amountTomans === 0 ? "رایگان" : registration.amountTomans.toLocaleString("fa-IR") + " تومان"}\n` : "") +
     (registration.refId ? `کد رهگیری شاپرک (RefID): ${registration.refId}\n` : "") +
     (registration.paymentStatus ? `وضعیت پرداخت: ${registration.paymentStatus}\n` : "") +
     (registration.topicSuggestion ? `موضوع پیشنهادی: ${registration.topicSuggestion}\n` : "") +
     `زمان ثبت: ${new Date().toLocaleTimeString("fa-IR")}`;
 
-  for (const adminId of getAdminIds()) {
-    try {
-      await botInstance.api.sendMessage(adminId, text);
-    } catch (err) {
-      console.error(`Failed to send notification to admin ${adminId}:`, err);
-    }
-  }
+  const adminIds = getAdminIds();
+  await Promise.allSettled(
+    adminIds.map(async (adminId) => {
+      try {
+        const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: adminId,
+            text,
+          }),
+        });
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error(`Failed to send notification to admin ${adminId}:`, errText);
+        }
+      } catch (err) {
+        console.error(`Failed to send notification to admin ${adminId}:`, err);
+      }
+    })
+  );
 }
