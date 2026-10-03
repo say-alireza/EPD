@@ -59,7 +59,7 @@ export function RegistrationForm() {
 
   // دریافت لیست سانس‌ها از API داخلی Next.js
   useEffect(() => {
-    fetch("/api/sessions")
+    fetch("/api/sessions/")
       .then(async (res) => {
         if (!res.ok) throw new Error();
         return res.json();
@@ -73,7 +73,7 @@ export function RegistrationForm() {
         setIsLoadingSessions(false);
       });
 
-    fetch("/api/upcoming")
+    fetch("/api/upcoming/")
       .then(async (res) => {
         if (!res.ok) throw new Error();
         return res.json();
@@ -93,7 +93,7 @@ export function RegistrationForm() {
   const onSubmit = async (values: RegistrationFormValues) => {
     setSubmitError(null);
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch("/api/register/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
