@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS slots (
   capacity INTEGER,
   remaining_seats INTEGER,
   is_full INTEGER DEFAULT 0,
+  fee_tomans INTEGER DEFAULT 0,
+  fee_fa TEXT DEFAULT 'رایگان',
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
