@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { EpdLogo } from "@/components/ui/logo";
+import { DeveloperBadge } from "@/components/ui/developer-badge";
 import { strings } from "@/lib/strings";
 
 function PaymentResultContent() {
@@ -133,9 +134,13 @@ function PaymentResultContent() {
         )}
       </main>
 
-      <footer className="border-t border-border pt-6 text-xs text-ink-muted flex flex-col sm:flex-row items-center justify-between gap-4">
-        <span>EPD English Discussion Club</span>
-        <span>{strings.landing.footer.allRights}</span>
+      <footer className="border-t border-border pt-6 text-xs text-ink-muted flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-start">
+        <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 text-[11px] sm:text-xs">
+          <span className="font-medium text-ink">EPD English Discussion Club</span>
+          <span className="hidden sm:inline text-border">•</span>
+          <span>{strings.landing.footer.allRights}</span>
+        </div>
+        <DeveloperBadge />
       </footer>
     </div>
   );

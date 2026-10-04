@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
+import { DeveloperBadge } from "@/components/ui/developer-badge";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
 import postersData from "@/data/posters.json";
@@ -201,9 +202,13 @@ export default function PostersPage() {
 
       {/* Footer */}
       <footer className="w-full border-t border-border py-6 bg-surface mt-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-ink-muted gap-4">
-          <span>EPD English Discussion Club</span>
-          <span>{strings.landing.footer.allRights}</span>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-ink-muted gap-4 text-center sm:text-start">
+          <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 text-[11px] sm:text-xs">
+            <span className="font-medium text-ink">EPD English Discussion Club</span>
+            <span className="hidden sm:inline text-border">•</span>
+            <span>{strings.landing.footer.allRights}</span>
+          </div>
+          <DeveloperBadge />
         </div>
       </footer>
     </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
 import { Enamad } from "@/components/ui/enamad";
+import { DeveloperBadge } from "@/components/ui/developer-badge";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
 import { UpcomingSessionCard } from "@/components/landing/upcoming-session-card";
@@ -318,64 +319,77 @@ export default function HomePage() {
       </main>
 
       {/* 6. Footer — address, contact channels, social links, link to /terms */}
-      <footer className="w-full bg-surface border-t border-border mt-16 py-12">
-        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12 text-start">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="flex flex-col gap-4">
-              <EpdLogo className="h-9 w-auto self-start" variant="lockup" />
-              <p className="text-xs text-ink-muted leading-relaxed">
+      <footer className="w-full bg-surface border-t border-border mt-12 sm:mt-16 py-8 sm:py-12">
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-8 sm:gap-10 text-start">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Col 1: Brand & About */}
+            <div className="flex flex-col gap-3 sm:gap-4 sm:col-span-2 lg:col-span-1">
+              <EpdLogo className="h-8 sm:h-9 w-auto self-start" variant="lockup" />
+              <p className="text-xs text-ink-muted leading-relaxed max-w-sm">
                 {footer.aboutText}
               </p>
             </div>
 
-            <div className="flex flex-col gap-2 text-xs">
-              <span className="font-bold text-ink">{footer.addressLabel}</span>
-              <p className="text-ink-muted">{footer.addressValue}</p>
-              <div className="pt-2">
-                <span className="font-bold text-ink block">{footer.contactLabel}</span>
-                <p className="text-ink-muted" dir="ltr">{footer.phone}</p>
-                <p className="text-ink-muted" dir="ltr">{footer.email}</p>
+            {/* Col 2: Quick Links */}
+            <div className="flex flex-col gap-2.5 text-xs">
+              <span className="font-bold text-ink">{footer.linksTitle}</span>
+              <div className="flex flex-col gap-2 pt-1">
+                <Link href="/register" className="text-ink-muted hover:text-ink transition-colors">
+                  {hero.cta}
+                </Link>
+                <Link href="/gallery" className="text-ink-muted hover:text-ink transition-colors">
+                  {gallery.title}
+                </Link>
+                <Link href="/posters" className="text-ink-muted hover:text-ink transition-colors">
+                  {pastPosters.title}
+                </Link>
+                <Link href="/terms" className="text-ink-muted hover:text-ink transition-colors">
+                  {footer.terms}
+                </Link>
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 text-xs">
-              <span className="font-bold text-ink">{footer.linksTitle}</span>
-              <Link href="/register" className="text-ink-muted hover:text-ink transition-colors">
-                {hero.cta}
-              </Link>
-              <Link href="/gallery" className="text-ink-muted hover:text-ink transition-colors">
-                {gallery.title}
-              </Link>
-              <Link href="/posters" className="text-ink-muted hover:text-ink transition-colors">
-                {pastPosters.title}
-              </Link>
-              <Link href="/terms" className="text-ink-muted hover:text-ink transition-colors">
-                {footer.terms}
-              </Link>
+            {/* Col 3: Contact & Venue */}
+            <div className="flex flex-col gap-2.5 text-xs">
+              <span className="font-bold text-ink">{footer.contactLabel}</span>
+              <div className="flex flex-col gap-2 pt-1 text-ink-muted">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] text-ink-muted/80">{footer.addressLabel}</span>
+                  <p className="text-ink text-xs leading-relaxed">{footer.addressValue}</p>
+                </div>
+                <div className="flex flex-col gap-0.5 pt-1">
+                  <span className="text-[11px] text-ink-muted/80">راه‌های ارتباطی:</span>
+                  <p className="text-ink-muted text-xs" dir="ltr">{footer.phone}</p>
+                  <p className="text-ink-muted text-xs" dir="ltr">{footer.email}</p>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-4 text-xs">
+            {/* Col 4: Social & Trust (Enamad) */}
+            <div className="flex flex-col gap-4 text-xs sm:col-span-2 lg:col-span-1">
               <div className="flex flex-col gap-2">
                 <span className="font-bold text-ink">{footer.socialTitle}</span>
-                <a
-                  href="https://t.me/EPDCommunity"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-ink-muted hover:text-ink transition-colors"
-                >
-                  {footer.telegram}
-                </a>
-                <a
-                  href="https://www.instagram.com/epdcommunity?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw=="
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-ink-muted hover:text-ink transition-colors"
-                >
-                  {footer.instagram}
-                </a>
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <a
+                    href="https://t.me/EPDCommunity"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ground/60 border border-border/80 text-ink-muted hover:text-ink hover:border-brand-primary/50 transition-colors"
+                  >
+                    <span>{footer.telegram}</span>
+                  </a>
+                  <a
+                    href="https://www.instagram.com/epdcommunity?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw=="
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ground/60 border border-border/80 text-ink-muted hover:text-ink hover:border-brand-primary/50 transition-colors"
+                  >
+                    <span>{footer.instagram}</span>
+                  </a>
+                </div>
               </div>
 
-              <div className="flex flex-col gap-2 pt-2">
+              <div className="flex flex-col gap-2 pt-1">
                 <span className="font-bold text-ink">{footer.trustTitle}</span>
                 <div className="flex items-start">
                   <Enamad />
@@ -384,9 +398,16 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-ink-muted gap-4">
-            <span>EPD English Discussion Club</span>
-            <span>{footer.allRights}</span>
+          {/* Sub-footer Bar with Developer Signature */}
+          <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-ink-muted gap-4 text-center sm:text-start">
+            <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 text-[11px] sm:text-xs">
+              <span className="font-medium text-ink">EPD English Discussion Club</span>
+              <span className="hidden sm:inline text-border">•</span>
+              <span>{footer.allRights}</span>
+            </div>
+
+            {/* Developer Terminal Signature */}
+            <DeveloperBadge />
           </div>
         </div>
       </footer>
