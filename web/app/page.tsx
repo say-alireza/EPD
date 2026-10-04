@@ -64,15 +64,15 @@ export default function HomePage() {
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-start">
           {/* Right Column (lg:col-span-7) */}
           <div className="lg:col-span-7 flex flex-col items-start gap-6">
-            {/* Main Headline & Slogan */}
-            <div className="space-y-3.5 w-full">
-              <span className="block font-mono font-extrabold text-brand-primary text-sm sm:text-base tracking-wider uppercase" dir="ltr">
+            {/* Main Headline & Description */}
+            <div className="space-y-4 w-full">
+              <h1
+                className="text-3xl sm:text-5xl lg:text-6xl font-black text-brand-primary leading-tight tracking-tight uppercase"
+                dir="ltr"
+              >
                 {hero.sloganEn}
-              </span>
-              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-ink leading-tight tracking-tight">
-                {hero.headlineFa}
               </h1>
-              <p className="text-base sm:text-lg font-normal text-ink-muted leading-relaxed max-w-xl pt-2">
+              <p className="text-base sm:text-lg font-normal text-ink-muted leading-relaxed max-w-xl">
                 {hero.subtitle}
               </p>
             </div>

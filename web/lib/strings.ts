@@ -86,9 +86,9 @@ export const strings = {
       register: "ثبت‌نام نشست",
     },
     hero: {
-      sloganEn: "EPD — An Excuse for Speaking",
-      headline: "EPD Community — مکانی برای مکالمه واقعی",
-      headlineFa: "مکالمه واقعی انگلیسی در جمعی که حرفی برای گفتن دارد",
+      sloganEn: "EPD — AN EXCUSE FOR SPEAKING",
+      headline: "EPD — AN EXCUSE FOR SPEAKING",
+      headlineFa: "EPD — AN EXCUSE FOR SPEAKING",
       factLine: "مشهد · پنجشنبه‌ها ساعت ۱۰ تا ۱۲ (Free Discussion)",
       subtitle: "بستری هفتگی و منظم برای تمرین مداوم اسپیکینگ، تبادل آزاد دیدگاه‌ها و ارتباط با افرادی که به یادگیری و توسعه فردی اهمیت می‌دهند.",
       cta: "ثبت‌نام در نشست این هفته",
