@@ -60,19 +60,13 @@ export default function HomePage() {
       </header>
 
       <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col gap-14 sm:gap-24">
-        {/* 2. Hero — Option 2: Human-Centered, High-Impact Design */}
+        {/* 2. Hero — Clean, High-Impact Design */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-start">
           {/* Right Column (lg:col-span-7) */}
           <div className="lg:col-span-7 flex flex-col items-start gap-6">
-            {/* Community & Experience Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-xs sm:text-sm font-bold">
-              <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse" />
-              <span>{hero.badge}</span>
-            </div>
-
-            {/* Main Headline */}
-            <div className="space-y-3 w-full">
-              <span className="block font-mono font-extrabold text-brand-accent text-base sm:text-lg tracking-wider uppercase" dir="ltr">
+            {/* Main Headline & Slogan */}
+            <div className="space-y-3.5 w-full">
+              <span className="block font-mono font-extrabold text-brand-primary text-sm sm:text-base tracking-wider uppercase" dir="ltr">
                 {hero.sloganEn}
               </span>
               <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-ink leading-tight tracking-tight">
@@ -96,7 +90,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-3 w-full sm:w-auto">
               <Link
                 href="/register"
-                className="inline-flex items-center justify-center px-8 py-4 bg-brand-accent text-surface font-extrabold text-base transition-all hover:opacity-90 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded-xl shadow-xs"
+                className="inline-flex items-center justify-center px-8 py-4 bg-brand-primary text-surface font-extrabold text-base transition-all hover:bg-brand-primary/90 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded-xl shadow-xs"
               >
                 {hero.cta}
               </Link>
@@ -117,7 +111,7 @@ export default function HomePage() {
                 className="inline-flex items-center gap-2.5 text-xs font-medium text-ink-muted hover:text-ink transition-colors bg-surface border border-border px-3.5 py-2 rounded-lg shadow-2xs hover:border-brand-primary"
               >
                 <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
-                <span>اطلاعرسانی کافه، موضوعات و ایونتهای هفتگی در کانال تلگرام EPD</span>
+                <span>اطلاع‌رسانی کافه، موضوعات و رویدادهای هفتگی در کانال تلگرام EPD</span>
               </a>
             </div>
           </div>
