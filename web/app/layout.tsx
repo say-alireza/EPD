@@ -8,13 +8,8 @@ export const metadata: Metadata = {
   },
   description: "باشگاه هفتگی گفت‌وگوی آزاد انگلیسی EPD در مشهد",
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.png", type: "image/png", sizes: "32x32" },
-    ],
-    apple: [
-      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
-    ],
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
   },
   other: {
     enamad: "7474898",
