@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import { strings } from "@/lib/strings";
 import Link from "next/link";
 import { EpdLogo } from "@/components/ui/logo";
 import { DeveloperBadge } from "@/components/ui/developer-badge";
+
+export const metadata: Metadata = {
+  title: "قوانین و مقررات",
+};
 
 export default function TermsPage() {
   return (
