@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import localFont from "next/font/local";
 import { EpdLogo } from "@/components/ui/logo";
 import { Enamad } from "@/components/ui/enamad";
 import { DeveloperBadge } from "@/components/ui/developer-badge";
@@ -10,6 +11,11 @@ import { UpcomingSessionCard } from "@/components/landing/upcoming-session-card"
 import nextSessionData from "@/data/next-session.json";
 import galleryData from "@/data/gallery.json";
 import postersData from "@/data/posters.json";
+
+const boldUo = localFont({
+  src: "../public/fonts/BoldodemoRegular.otf",
+  display: "swap",
+});
 
 export default function HomePage() {
   const { hero, nextSessionPoster, gallery, pastPosters, faq, footer } =
@@ -67,10 +73,10 @@ export default function HomePage() {
             {/* Main Headline & Description */}
             <div className="space-y-4 w-full">
               <h1
-                className="text-3xl sm:text-5xl lg:text-6xl font-black text-brand-primary leading-tight tracking-tight uppercase"
+                className={`text-4xl sm:text-6xl lg:text-7xl text-brand-primary leading-[1.15] tracking-wide uppercase ${boldUo.className}`}
                 dir="ltr"
               >
-                {hero.sloganEn}
+                EPD - AN EXCUSE FOR SPEAKING
               </h1>
               <p className="text-base sm:text-lg font-normal text-ink-muted leading-relaxed max-w-xl">
                 {hero.subtitle}
