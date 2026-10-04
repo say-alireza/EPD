@@ -357,10 +357,17 @@ export default function HomePage() {
                   <span className="text-[11px] text-ink-muted/80">{footer.addressLabel}</span>
                   <p className="text-ink text-xs leading-relaxed">{footer.addressValue}</p>
                 </div>
-                <div className="flex flex-col gap-0.5 pt-1">
-                  <span className="text-[11px] text-ink-muted/80">راه‌های ارتباطی:</span>
-                  <p className="text-ink-muted text-xs" dir="ltr">{footer.phone}</p>
-                  <p className="text-ink-muted text-xs" dir="ltr">{footer.email}</p>
+                <div className="flex flex-col gap-1 pt-1">
+                  <span className="text-[11px] text-ink-muted/80">{footer.supportLabel}</span>
+                  <a
+                    href="https://t.me/EPDsupport"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-primary hover:text-brand-accent transition-colors self-start"
+                  >
+                    <span className="font-mono" dir="ltr">{footer.supportHandle}</span>
+                    <span className="text-[10px] text-ink-muted">({footer.telegram.split(" ")[0]})</span>
+                  </a>
                 </div>
               </div>
             </div>
