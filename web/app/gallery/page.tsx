@@ -91,14 +91,14 @@ export default function GalleryPage() {
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex flex-wrap items-center gap-2 border-b border-border pb-4">
+          <div className="flex items-center gap-2 border-b border-border pb-4 overflow-x-auto scrollbar-none sm:flex-wrap -mx-4 px-4 sm:mx-0 sm:px-0">
             {categories.map((cat) => {
               const active = activeCategory === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-2 ${
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-2 shrink-0 ${
                     active
                       ? "bg-brand-primary text-surface shadow-2xs"
                       : "bg-surface text-ink-muted border border-border hover:text-ink hover:border-brand-primary"

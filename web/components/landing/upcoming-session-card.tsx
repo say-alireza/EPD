@@ -133,29 +133,29 @@ export function UpcomingSessionCard({
       </div>
 
       {/* Time and location details */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-border pt-4 text-xs">
+      <div className="grid grid-cols-2 gap-3.5 border-t border-border pt-4 text-xs">
         <div>
-          <span className="text-ink-muted block">{dateLabel}</span>
+          <span className="text-ink-muted block text-[11px]">{dateLabel}</span>
           <span className="font-bold text-ink">{formattedDate}</span>
         </div>
         <div>
-          <span className="text-ink-muted block">{timeLabel}</span>
+          <span className="text-ink-muted block text-[11px]">{timeLabel}</span>
           <span className="font-bold text-ink" dir="ltr">
             {data.timeFa}
           </span>
         </div>
         <div>
-          <span className="text-ink-muted block">مبلغ ورودی</span>
+          <span className="text-ink-muted block text-[11px]">مبلغ ورودی</span>
           <span className="font-extrabold text-brand-primary">
-            {data.feeFa || (data.feeTomans ? `${data.feeTomans.toLocaleString()} تومان` : "رایگان")}
+            {data.feeFa || (data.feeTomans ? `${data.feeTomans.toLocaleString("fa-IR")} تومان` : "رایگان")}
           </span>
         </div>
         <div>
-          <span className="text-ink-muted block">سطح پیشنهادی</span>
+          <span className="text-ink-muted block text-[11px]">سطح پیشنهادی</span>
           <span className="font-bold text-ink">{data.levelFa}</span>
         </div>
-        <div className="sm:col-span-2">
-          <span className="text-ink-muted block">{venueLabel}</span>
+        <div className="col-span-2 bg-ground/60 border border-border/60 rounded-lg p-2.5">
+          <span className="text-ink-muted block text-[11px]">{venueLabel}</span>
           <span className="font-bold text-ink">{data.venueFa}</span>
         </div>
       </div>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
 import { Enamad } from "@/components/ui/enamad";
 import { DeveloperBadge } from "@/components/ui/developer-badge";
+import { TelegramIcon, InstagramIcon } from "@/components/ui/icons";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
 import { UpcomingSessionCard } from "@/components/landing/upcoming-session-card";
@@ -18,43 +19,47 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-ground text-ink flex flex-col selection:bg-brand-teal selection:text-ink">
-      {/* 1. Header — logo, social links & primary CTA */}
-      <header className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between border-b border-border">
+      {/* 1. Header — logo, social icon links & primary CTA */}
+      <header className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex items-center justify-between border-b border-border">
         <Link
           href="/"
-          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal"
+          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal shrink-0"
         >
-          <EpdLogo className="h-12 w-auto" variant="lockup" />
+          <EpdLogo className="h-9 sm:h-11 w-auto" variant="lockup" />
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <a
             href="https://t.me/EPDCommunity"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs sm:text-sm font-bold text-ink-muted hover:text-ink transition-colors px-3 py-1.5 border border-border rounded-lg hover:border-brand-primary"
+            className="p-2 sm:px-3 sm:py-2 text-ink-muted hover:text-[#229ED9] border border-border hover:border-[#229ED9]/60 rounded-xl transition-all flex items-center gap-2 bg-surface/80 shadow-2xs hover:shadow-xs"
             title="کانال تلگرام EPD"
+            aria-label="کانال تلگرام EPD"
           >
-            کانال تلگرام
+            <TelegramIcon className="w-4 h-4 shrink-0 text-[#229ED9]" />
+            <span className="text-xs font-bold hidden md:inline">تلگرام</span>
           </a>
           <a
             href="https://www.instagram.com/epdcommunity?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw=="
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs sm:text-sm font-bold text-ink-muted hover:text-ink transition-colors px-3 py-1.5 border border-border rounded-lg hover:border-brand-primary hidden sm:inline-flex"
+            className="p-2 sm:px-3 sm:py-2 text-ink-muted hover:text-[#E4405F] border border-border hover:border-[#E4405F]/60 rounded-xl transition-all flex items-center gap-2 bg-surface/80 shadow-2xs hover:shadow-xs"
             title="صفحه اینستاگرام EPD"
+            aria-label="صفحه اینستاگرام EPD"
           >
-            اینستاگرام
+            <InstagramIcon className="w-4 h-4 shrink-0 text-[#E4405F]" />
+            <span className="text-xs font-bold hidden md:inline">اینستاگرام</span>
           </a>
           <Link
             href="/register"
-            className="text-xs sm:text-sm font-extrabold text-surface bg-brand-primary hover:bg-brand-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal px-4 py-1.5 rounded-lg shadow-2xs"
+            className="text-xs sm:text-sm font-extrabold text-surface bg-brand-primary hover:bg-brand-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal px-3.5 sm:px-4 py-2 rounded-xl shadow-2xs shrink-0"
           >
             {strings.landing.nav.register}
           </Link>
         </div>
       </header>
 
-      <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-24">
+      <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col gap-14 sm:gap-24">
         {/* 2. Hero — Option 2: Human-Centered, High-Impact Design */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-start">
           {/* Right Column (lg:col-span-7) */}
@@ -381,17 +386,21 @@ export default function HomePage() {
                     href="https://t.me/EPDCommunity"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ground/60 border border-border/80 text-ink-muted hover:text-ink hover:border-brand-primary/50 transition-colors"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-ground/80 border border-border text-ink-muted hover:text-[#229ED9] hover:border-[#229ED9]/50 hover:bg-surface transition-all shadow-2xs group"
+                    title="کانال تلگرام EPD"
                   >
-                    <span>{footer.telegram}</span>
+                    <TelegramIcon className="w-4 h-4 text-[#229ED9] transition-transform group-hover:scale-110" />
+                    <span className="font-semibold text-xs text-ink group-hover:text-[#229ED9] transition-colors">{footer.telegram}</span>
                   </a>
                   <a
                     href="https://www.instagram.com/epdcommunity?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw=="
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ground/60 border border-border/80 text-ink-muted hover:text-ink hover:border-brand-primary/50 transition-colors"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-ground/80 border border-border text-ink-muted hover:text-[#E4405F] hover:border-[#E4405F]/50 hover:bg-surface transition-all shadow-2xs group"
+                    title="صفحه اینستاگرام EPD"
                   >
-                    <span>{footer.instagram}</span>
+                    <InstagramIcon className="w-4 h-4 text-[#E4405F] transition-transform group-hover:scale-110" />
+                    <span className="font-semibold text-xs text-ink group-hover:text-[#E4405F] transition-colors">{footer.instagram}</span>
                   </a>
                 </div>
               </div>
