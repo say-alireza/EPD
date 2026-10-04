@@ -76,7 +76,7 @@ export default function HomePage() {
                 className={`text-4xl sm:text-6xl lg:text-7xl text-brand-primary leading-[1.15] tracking-wide uppercase ${boldUo.className}`}
                 dir="ltr"
               >
-                EPD - AN EXCUSE FOR SPEAKING
+                EPD <span className="font-sans font-light select-none text-brand-primary/60 mx-1.5 sm:mx-2">-</span> AN EXCUSE FOR SPEAKING
               </h1>
               <p className="text-base sm:text-lg font-normal text-ink-muted leading-relaxed max-w-xl">
                 {hero.subtitle}
