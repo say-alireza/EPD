@@ -25,9 +25,9 @@ export default function RootLayout({
     <html
       lang="fa"
       dir="rtl"
-      className="font-sans h-full antialiased overflow-x-hidden"
+      className="font-sans h-full antialiased"
     >
-      <body className="min-h-full flex flex-col bg-ground text-ink selection:bg-brand-teal selection:text-ink overflow-x-hidden">
+      <body className="min-h-full flex flex-col bg-ground text-ink selection:bg-brand-teal selection:text-ink">
         {children}
       </body>
     </html>

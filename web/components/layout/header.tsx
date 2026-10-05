@@ -48,7 +48,7 @@ export function Header({ className = "" }: HeaderProps) {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 w-full bg-ground/80 backdrop-blur-xl border-b border-border/60 transition-all ${className}`}
+        className={`sticky top-0 z-50 w-full bg-ground/70 backdrop-blur-2xl backdrop-saturate-150 border-b border-border/50 shadow-[0_4px_24px_rgba(0,0,0,0.03)] transition-all ${className}`}
       >
         <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           {/* 1. Brand Logo (Start Edge / Right in RTL) */}
@@ -67,21 +67,21 @@ export function Header({ className = "" }: HeaderProps) {
           >
             {navLinks.map((link) => {
               const isActive =
-                link.href === pathname ||
-                (link.href.startsWith("/#") && pathname === "/");
+                pathname === link.href ||
+                (pathname === "/" && link.href === "/#session");
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-xs sm:text-sm lg:text-base font-bold transition-colors relative py-1.5 ${
+                  className={`text-xs sm:text-sm lg:text-base font-bold transition-all relative py-1.5 px-1 rounded-md hover:text-ink ${
                     isActive
                       ? "text-brand-primary"
-                      : "text-ink-muted hover:text-ink"
+                      : "text-ink-muted"
                   }`}
                 >
                   {link.label}
                   {isActive && (
-                    <span className="absolute bottom-0 inset-x-0 h-0.5 bg-brand-primary rounded-full" />
+                    <span className="absolute bottom-0 inset-x-1 h-0.5 bg-brand-primary rounded-full animate-in fade-in" />
                   )}
                 </Link>
               );
