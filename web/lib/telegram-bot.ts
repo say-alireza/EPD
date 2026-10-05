@@ -7,6 +7,7 @@ import {
   addSlot,
   deleteSlot,
   getRegistrations,
+  deleteRegistration,
   getPosters,
   addPoster,
   deletePoster,
@@ -122,6 +123,46 @@ bot.hears("بازگشت به منوی اصلی", async (ctx) => {
 // MAIN MENU HEARS
 // ----------------------------------------------------
 
+function formatRegistrationsReport(
+  regs: Awaited<ReturnType<typeof getRegistrations>>,
+  slots: Awaited<ReturnType<typeof getSlots>>
+): string {
+  let text = `گزارش ثبت‌نام‌ها (تعداد کل: ${regs.length})\n\n`;
+  const recent = regs.slice(0, 15);
+
+  recent.forEach((r, idx) => {
+    const slot = slots.find((s) => s.id === r.sessionId);
+    const slotName = slot ? slot.title.split(":")[0] : r.sessionId;
+    text += `${idx + 1}. ${r.fullName}\n`;
+    text += `   شماره تماس: ${r.mobile}\n`;
+    if (r.socialHandle) text += `   تلگرام: ${r.socialHandle}\n`;
+    if (r.email) text += `   ایمیل: ${r.email}\n`;
+    text += `   سانس: ${slotName}\n`;
+    if (r.languageLevel) text += `   سطح زبان: ${r.languageLevel}\n`;
+
+    let statusText = "ثبت‌نام رایگان";
+    if (r.paymentStatus === "paid") {
+      statusText = `پرداخت قطعی شاپرک (کد: ${r.paymentRefId || "تأییدشده"})`;
+    } else if (r.paymentStatus === "pending") {
+      statusText = "در انتظار پرداخت درگاه (تکمیل‌نشده)";
+    } else if (r.paymentStatus === "failed") {
+      statusText = "پرداخت لغوشده / ناموفق";
+    }
+    text += `   وضعیت: ${statusText}\n`;
+    text += `   تاریخ: ${new Date(r.createdAt).toLocaleDateString("fa-IR")}\n\n`;
+  });
+
+  return text;
+}
+
+function getRegistrationsKeyboard(regs: Awaited<ReturnType<typeof getRegistrations>>): InlineKeyboard {
+  const kb = new InlineKeyboard().text("به‌روزرسانی گزارش", "inline_refresh_registrations");
+  if (regs.length > 0) {
+    kb.row().text("حذف یکی از ثبت‌نام‌ها", "menu_delete_registration");
+  }
+  return kb;
+}
+
 // 1. Registrations List
 bot.hears("لیست ثبت‌نام‌ها", async (ctx) => {
   const userId = ctx.from?.id;
@@ -137,23 +178,9 @@ bot.hears("لیست ثبت‌نام‌ها", async (ctx) => {
     return;
   }
 
-  let text = `گزارش ثبت‌نام‌ها (تعداد کل: ${regs.length})\n\n`;
-  const recent = regs.slice(0, 15);
-
-  recent.forEach((r, idx) => {
-    const slot = slots.find((s) => s.id === r.sessionId);
-    const slotName = slot ? slot.title.split(":")[0] : r.sessionId;
-    text += `${idx + 1}. ${r.fullName}\n`;
-    text += `   شماره تماس: ${r.mobile}\n`;
-    if (r.socialHandle) text += `   تلگرام: ${r.socialHandle}\n`;
-    if (r.email) text += `   ایمیل: ${r.email}\n`;
-    text += `   سانس: ${slotName}\n`;
-    if (r.languageLevel) text += `   سطح زبان: ${r.languageLevel}\n`;
-    text += `   تاریخ: ${new Date(r.createdAt).toLocaleDateString("fa-IR")}\n\n`;
-  });
-
-  const refreshKb = new InlineKeyboard().text("به‌روزرسانی گزارش", "inline_refresh_registrations");
-  await ctx.reply(text, { reply_markup: refreshKb });
+  const text = formatRegistrationsReport(regs, slots);
+  const kb = getRegistrationsKeyboard(regs);
+  await ctx.reply(text, { reply_markup: kb });
 });
 
 // 2. Current Session Details
@@ -307,23 +334,87 @@ bot.callbackQuery("inline_refresh_registrations", async (ctx) => {
     return;
   }
 
-  let text = `گزارش ثبت‌نام‌ها (تعداد کل: ${regs.length})\n\n`;
-  const recent = regs.slice(0, 15);
+  const text = formatRegistrationsReport(regs, slots);
+  const kb = getRegistrationsKeyboard(regs);
+  await ctx.editMessageText(text, { reply_markup: kb });
+});
 
-  recent.forEach((r, idx) => {
-    const slot = slots.find((s) => s.id === r.sessionId);
-    const slotName = slot ? slot.title.split(":")[0] : r.sessionId;
-    text += `${idx + 1}. ${r.fullName}\n`;
-    text += `   شماره تماس: ${r.mobile}\n`;
-    if (r.socialHandle) text += `   تلگرام: ${r.socialHandle}\n`;
-    if (r.email) text += `   ایمیل: ${r.email}\n`;
-    text += `   سانس: ${slotName}\n`;
-    if (r.languageLevel) text += `   سطح زبان: ${r.languageLevel}\n`;
-    text += `   تاریخ: ${new Date(r.createdAt).toLocaleDateString("fa-IR")}\n\n`;
+bot.callbackQuery("menu_delete_registration", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!isAdmin(userId)) return;
+
+  const regs = await getRegistrations();
+  if (regs.length === 0) {
+    await ctx.answerCallbackQuery("هیچ ثبت‌نامی در سیستم وجود ندارد.");
+    return;
+  }
+
+  const kb = new InlineKeyboard();
+  regs.slice(0, 10).forEach((r, idx) => {
+    const shortName = r.fullName.length > 20 ? r.fullName.substring(0, 18) + "..." : r.fullName;
+    kb.text(`حذف: ${idx + 1}. ${shortName}`, `del_ask_${r.id}`).row();
   });
+  kb.text("بازگشت به گزارش", "inline_refresh_registrations");
 
-  const refreshKb = new InlineKeyboard().text("به‌روزرسانی گزارش", "inline_refresh_registrations");
-  await ctx.editMessageText(text, { reply_markup: refreshKb });
+  await ctx.editMessageText("ثبت‌نام مورد نظر برای حذف را انتخاب کنید:", {
+    reply_markup: kb,
+  });
+  await ctx.answerCallbackQuery();
+});
+
+bot.callbackQuery(/^del_ask_(.+)$/, async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!isAdmin(userId)) return;
+
+  const regId = ctx.match[1];
+  const regs = await getRegistrations();
+  const target = regs.find((r) => r.id === regId);
+
+  if (!target) {
+    await ctx.answerCallbackQuery("ثبت‌نام مورد نظر یافت نشد.");
+    return;
+  }
+
+  const kb = new InlineKeyboard()
+    .text("بله، حذف شود", `del_confirm_${regId}`)
+    .text("انصراف", "menu_delete_registration");
+
+  await ctx.editMessageText(
+    `آیا از حذف ثبت‌نام «${target.fullName}» (${target.mobile}) اطمینان دارید؟\n\nدر صورت تأیید، این رکورد به‌طور کامل از دیتابیس پاک شده و در صورت کسر صندلی، ظرفیت آزاد خواهد شد.`,
+    { reply_markup: kb }
+  );
+  await ctx.answerCallbackQuery();
+});
+
+bot.callbackQuery(/^del_confirm_(.+)$/, async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!isAdmin(userId)) return;
+
+  const regId = ctx.match[1];
+  const regs = await getRegistrations();
+  const target = regs.find((r) => r.id === regId);
+  const targetName = target ? target.fullName : "کاربر";
+
+  await deleteRegistration(regId);
+  await ctx.answerCallbackQuery("ثبت‌نام حذف شد.");
+
+  const updatedRegs = await getRegistrations();
+  const slots = await getSlots();
+
+  if (updatedRegs.length === 0) {
+    await ctx.editMessageText(
+      `ثبت‌نام «${targetName}» با موفقیت حذف شد.\n\nدر حال حاضر هیچ ثبت‌نام دیگری وجود ندارد.`
+    );
+    return;
+  }
+
+  const text = formatRegistrationsReport(updatedRegs, slots);
+  const kb = getRegistrationsKeyboard(updatedRegs);
+
+  await ctx.editMessageText(
+    `ثبت‌نام «${targetName}» با موفقیت حذف شد.\n\n${text}`,
+    { reply_markup: kb }
+  );
 });
 
 // Slot Toggle

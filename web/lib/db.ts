@@ -411,6 +411,71 @@ export async function addRegistration(
   return record;
 }
 
+export async function deleteRegistration(id: string): Promise<boolean> {
+  const index = memoryRegistrations.findIndex((r) => r.id === id);
+  let reg = index !== -1 ? memoryRegistrations[index] : null;
+
+  const d1 = getD1();
+  if (d1) {
+    try {
+      if (!reg) {
+        const found = await d1
+          .prepare("SELECT * FROM registrations WHERE id = ? LIMIT 1")
+          .bind(id)
+          .first<{
+            id: string;
+            session_id: string;
+            payment_status: string;
+          }>();
+        if (found) {
+          reg = {
+            id: found.id,
+            sessionId: found.session_id,
+            paymentStatus: found.payment_status as RegistrationRecord["paymentStatus"],
+          } as RegistrationRecord;
+        }
+      }
+
+      await d1.prepare("DELETE FROM registrations WHERE id = ?").bind(id).run();
+
+      if (reg && (reg.paymentStatus === "paid" || reg.paymentStatus === "free")) {
+        await d1
+          .prepare(
+            `UPDATE slots 
+             SET remaining_seats = remaining_seats + 1, 
+                 is_full = 0 
+             WHERE id = ?`
+          )
+          .bind(reg.sessionId)
+          .run();
+
+        await d1
+          .prepare(
+            "UPDATE sessions SET remaining_seats = remaining_seats + 1 WHERE is_active = 1"
+          )
+          .run();
+      }
+    } catch (e) {
+      console.error("D1 deleteRegistration error:", e);
+    }
+  }
+
+  if (index !== -1) {
+    const memoryReg = memoryRegistrations[index];
+    if (memoryReg.paymentStatus === "paid" || memoryReg.paymentStatus === "free") {
+      const slot = memorySlots.find((s) => s.id === memoryReg.sessionId);
+      if (slot) {
+        slot.remainingSeats += 1;
+        slot.isFull = false;
+      }
+      memoryUpcomingSession.remainingSeats += 1;
+    }
+    memoryRegistrations.splice(index, 1);
+  }
+
+  return true;
+}
+
 // ---------------------------------------------
 // POSTERS & GALLERY
 // ---------------------------------------------
