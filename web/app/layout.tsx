@@ -113,19 +113,23 @@ export default function RootLayout({
         ],
       },
       {
-        "@type": "SocialEvent",
+        "@type": "Event",
         "@id": `${siteUrl}/#event`,
         name: "دورهمی هفتگی فری دیسکاشن EPD مشهد",
-        alternateName: "Weekly English Discussion Meetup in Mashhad",
-        description:
-          "دورهمی هفتگی گفتگوی آزاد انگلیسی (Free Discussion) و تمرین مکالمه زبان در کافه‌های منتخب مشهد.",
+        alternateName: "EPD Weekly English Discussion Club Mashhad",
+        startDate: "2026-10-08T18:00:00+03:30",
+        endDate: "2026-10-08T20:00:00+03:30",
         eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
         eventStatus: "https://schema.org/EventScheduled",
+        image: [`${siteUrl}/og-image.png`],
+        description:
+          "دورهمی هفتگی گفتگوی آزاد انگلیسی (Free Discussion) و تمرین مکالمه زبان در کافه‌های منتخب مشهد.",
         location: {
           "@type": "Place",
-          name: "مشهد، کافه‌های دورهمی EPD",
+          name: "مشهد، کافه‌های منتخب دورهمی EPD",
           address: {
             "@type": "PostalAddress",
+            streetAddress: "مشهد، بلوار وکیل آباد، بین ۱۰ و ۱۲",
             addressLocality: "مشهد",
             addressRegion: "خراسان رضوی",
             addressCountry: "IR",
@@ -138,8 +142,9 @@ export default function RootLayout({
           "@type": "Offer",
           url: `${siteUrl}/register`,
           price: "50000",
-          priceCurrency: "IRT",
+          priceCurrency: "IRR",
           availability: "https://schema.org/InStock",
+          validFrom: "2026-01-01T00:00:00+03:30",
         },
       },
       {
