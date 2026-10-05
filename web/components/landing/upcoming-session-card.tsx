@@ -9,6 +9,22 @@ function getFormattedJalaliDate(isoString: string): string {
   try {
     const date = new Date(isoString);
     if (isNaN(date.getTime())) return isoString;
+    const parts = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).formatToParts(date);
+
+    const weekday = parts.find((p) => p.type === "weekday")?.value;
+    const day = parts.find((p) => p.type === "day")?.value;
+    const month = parts.find((p) => p.type === "month")?.value;
+    const year = parts.find((p) => p.type === "year")?.value;
+
+    if (weekday && day && month && year) {
+      return `${weekday}، ${day} ${month} ${year}`;
+    }
+
     return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
       weekday: "long",
       day: "numeric",
@@ -140,8 +156,8 @@ export function UpcomingSessionCard({
         </div>
         <div>
           <span className="text-ink-muted block text-[11px]">{timeLabel}</span>
-          <span className="font-bold text-ink" dir="ltr">
-            {data.timeFa}
+          <span className="font-bold text-ink" dir="rtl">
+            <bdi>{data.timeFa}</bdi>
           </span>
         </div>
         <div>

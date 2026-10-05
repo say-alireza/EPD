@@ -6,12 +6,27 @@ import { EpdLogo } from "@/components/ui/logo";
 import { strings } from "@/lib/strings";
 
 function getFormattedJalaliDate(date: Date = new Date("2026-08-20T18:00:00")): string {
-  return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
+  try {
+    const parts = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).formatToParts(date);
+    const weekday = parts.find((p) => p.type === "weekday")?.value;
+    const day = parts.find((p) => p.type === "day")?.value;
+    const month = parts.find((p) => p.type === "month")?.value;
+    const year = parts.find((p) => p.type === "year")?.value;
+    if (weekday && day && month && year) return `${weekday}، ${day} ${month} ${year}`;
+    return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  } catch {
+    return "";
+  }
 }
 
 export default function HeroBVariant() {
