@@ -74,6 +74,9 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",
   },
+  verification: {
+    google: "google278cad6e1d517435",
+  },
   other: {
     enamad: "7474898",
   },
