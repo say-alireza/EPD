@@ -11,30 +11,39 @@ interface HeaderProps {
   className?: string;
 }
 
+type SectionKey = "session" | "gallery" | "posters" | "about";
+
 export function Header({ className = "" }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>("#session");
+  const [activeSection, setActiveSection] = useState<SectionKey>("session");
   const pathname = usePathname();
   const { nav } = strings.landing;
 
-  // Scroll spy to highlight active section on home page
+  const navItems: { id: SectionKey; label: string; pageHref: string }[] = [
+    { id: "session", label: nav.currentSession, pageHref: "/#session" },
+    { id: "gallery", label: nav.gallery, pageHref: "/gallery" },
+    { id: "posters", label: nav.posters, pageHref: "/posters" },
+    { id: "about", label: nav.about, pageHref: "/#about" },
+  ];
+
+  // Scroll spy: dynamically track which section the user is currently viewing
   useEffect(() => {
     if (pathname !== "/") return;
 
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const headerOffset = 180;
-      const aboutEl = document.getElementById("about");
+    const sections: SectionKey[] = ["session", "gallery", "posters", "about"];
 
-      if (aboutEl) {
-        const aboutTop = aboutEl.offsetTop - headerOffset;
-        if (scrollY >= aboutTop) {
-          setActiveSection("#about");
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 220; // Trigger line below sticky header
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const id = sections[i];
+        const el = document.getElementById(id);
+        if (el && scrollPos >= el.offsetTop) {
+          setActiveSection(id);
           return;
         }
       }
-
-      setActiveSection("#session");
+      setActiveSection("session");
     };
 
     handleScroll();
@@ -42,13 +51,18 @@ export function Header({ className = "" }: HeaderProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname]);
 
-  const isLinkActive = (linkHref: string) => {
+  const isItemActive = (id: SectionKey, pageHref: string) => {
     if (pathname === "/") {
-      if (linkHref === "/#session") return activeSection === "#session";
-      if (linkHref === "/#about") return activeSection === "#about";
-      return false;
+      return activeSection === id;
     }
-    return pathname === linkHref;
+    return pathname === pageHref;
+  };
+
+  const getItemHref = (id: SectionKey, pageHref: string) => {
+    if (pathname === "/") {
+      return `/#${id}`;
+    }
+    return pageHref;
   };
 
   // Close drawer on escape key
@@ -73,13 +87,6 @@ export function Header({ className = "" }: HeaderProps) {
     setIsOpen(false);
   }, [pathname]);
 
-  const navLinks = [
-    { label: nav.currentSession, href: "/#session" },
-    { label: nav.posters, href: "/posters" },
-    { label: nav.gallery, href: "/gallery" },
-    { label: nav.about, href: "/#about" },
-  ];
-
   return (
     <>
       <header
@@ -100,19 +107,20 @@ export function Header({ className = "" }: HeaderProps) {
             className="hidden md:flex items-center gap-6 lg:gap-8"
             aria-label="منوی اصلی"
           >
-            {navLinks.map((link) => {
-              const isActive = isLinkActive(link.href);
+            {navItems.map((item) => {
+              const isActive = isItemActive(item.id, item.pageHref);
+              const href = getItemHref(item.id, item.pageHref);
               return (
                 <Link
-                  key={link.href}
-                  href={link.href}
+                  key={item.id}
+                  href={href}
                   className={`text-xs sm:text-sm lg:text-base font-bold transition-all relative py-1.5 px-1 rounded-md hover:text-ink ${
                     isActive
                       ? "text-brand-primary"
                       : "text-ink-muted"
                   }`}
                 >
-                  {link.label}
+                  {item.label}
                   {isActive && (
                     <span className="absolute bottom-0 inset-x-1 h-0.5 bg-brand-primary rounded-full animate-in fade-in" />
                   )}
@@ -232,12 +240,13 @@ export function Header({ className = "" }: HeaderProps) {
 
             {/* Navigation Links */}
             <nav className="flex flex-col gap-1.5" aria-label="لینک‌های ناوبری موبایل">
-              {navLinks.map((link) => {
-                const isActive = isLinkActive(link.href);
+              {navItems.map((item) => {
+                const isActive = isItemActive(item.id, item.pageHref);
+                const href = getItemHref(item.id, item.pageHref);
                 return (
                   <Link
-                    key={link.href}
-                    href={link.href}
+                    key={item.id}
+                    href={href}
                     onClick={() => setIsOpen(false)}
                     className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                       isActive
@@ -245,7 +254,7 @@ export function Header({ className = "" }: HeaderProps) {
                         : "text-ink hover:bg-ground"
                     }`}
                   >
-                    <span>{link.label}</span>
+                    <span>{item.label}</span>
                     <span className="text-xs text-ink-muted">←</span>
                   </Link>
                 );

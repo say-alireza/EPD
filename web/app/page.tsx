@@ -101,7 +101,7 @@ export default function HomePage() {
         </section>
 
         {/* 3. Weekly photo gallery — clean compact badge with session tag */}
-        <section id="gallery" className="flex flex-col gap-8 text-start">
+        <section id="gallery" className="flex flex-col gap-8 text-start scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
               <span className="text-xs font-bold text-brand-teal tracking-wider uppercase">
@@ -202,7 +202,7 @@ export default function HomePage() {
         </section>
 
         {/* 5. Past posters — compact strip, link to /posters */}
-        <section id="posters" className="flex flex-col gap-8 text-start">
+        <section id="posters" className="flex flex-col gap-8 text-start scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
               <span className="text-xs font-bold text-brand-teal tracking-wider uppercase">
