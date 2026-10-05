@@ -169,13 +169,13 @@ export default function BackgroundsLabPage() {
       {(selectedBg === "particles" || selectedBg === "waves") && (
         <canvas
           ref={canvasRef}
-          className="fixed inset-0 -z-10 pointer-events-none bg-[#F8F9FA]"
+          className="fixed inset-0 z-0 pointer-events-none bg-[#F8F9FA]"
         />
       )}
 
       {/* Option A: Animated Mesh Glow (گرادیانت نوری زنده و روان) */}
       {selectedBg === "mesh" && (
-        <div className="fixed inset-0 -z-10 bg-[#F4F6F9] overflow-hidden">
+        <div className="fixed inset-0 z-0 pointer-events-none bg-[#F4F6F9] overflow-hidden">
           {/* Cyan / Teal Orb */}
           <div
             className="absolute -top-24 -right-24 w-[500px] h-[500px] rounded-full blur-[90px] animate-pulse"
@@ -214,7 +214,7 @@ export default function BackgroundsLabPage() {
 
       {/* Option B: Clear Blueprint Grid with Light Beam (گرید مشخص و خطوط شیک مهندسی) */}
       {selectedBg === "grid-beam" && (
-        <div className="fixed inset-0 -z-10 bg-[#F8F9FA]">
+        <div className="fixed inset-0 z-0 pointer-events-none bg-[#F8F9FA]">
           <div
             className="absolute inset-0"
             style={{
@@ -238,7 +238,7 @@ export default function BackgroundsLabPage() {
 
       {/* Option C: High-Contrast Clean Dot Matrix (نقاط ماتریس مشخص و تمیز) */}
       {selectedBg === "dots" && (
-        <div className="fixed inset-0 -z-10 bg-[#F6F8FA]">
+        <div className="fixed inset-0 z-0 pointer-events-none bg-[#F6F8FA]">
           <div
             className="absolute inset-0"
             style={{
@@ -257,7 +257,7 @@ export default function BackgroundsLabPage() {
       )}
 
       {/* ==================== 2. CONTROL HEADER ==================== */}
-      <header className="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-border shadow-xs">
+      <header className="sticky top-0 z-30 bg-surface/90 backdrop-blur-md border-b border-border shadow-xs">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link href="/" className="shrink-0">
@@ -309,7 +309,7 @@ export default function BackgroundsLabPage() {
       </header>
 
       {/* ==================== 3. CONTENT ON TOP OF BACKGROUND ==================== */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 flex flex-col items-center text-center gap-8">
+      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 flex flex-col items-center text-center gap-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-teal/40 bg-surface/80 backdrop-blur-xs text-brand-teal text-xs font-bold shadow-2xs">
           <span className="w-2 h-2 rounded-full bg-brand-teal animate-ping" />
           <span>پیش‌نمایش فعال: {selectedBg}</span>
