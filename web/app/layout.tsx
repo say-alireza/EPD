@@ -138,6 +138,10 @@ export default function RootLayout({
         organizer: {
           "@id": `${siteUrl}/#organization`,
         },
+        performer: {
+          "@type": "Organization",
+          name: "باشگاه EPD مشهد",
+        },
         offers: {
           "@type": "Offer",
           url: `${siteUrl}/register`,
