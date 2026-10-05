@@ -13,8 +13,43 @@ interface HeaderProps {
 
 export function Header({ className = "" }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("#session");
   const pathname = usePathname();
   const { nav } = strings.landing;
+
+  // Scroll spy to highlight active section on home page
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const headerOffset = 180;
+      const aboutEl = document.getElementById("about");
+
+      if (aboutEl) {
+        const aboutTop = aboutEl.offsetTop - headerOffset;
+        if (scrollY >= aboutTop) {
+          setActiveSection("#about");
+          return;
+        }
+      }
+
+      setActiveSection("#session");
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
+
+  const isLinkActive = (linkHref: string) => {
+    if (pathname === "/") {
+      if (linkHref === "/#session") return activeSection === "#session";
+      if (linkHref === "/#about") return activeSection === "#about";
+      return false;
+    }
+    return pathname === linkHref;
+  };
 
   // Close drawer on escape key
   useEffect(() => {
@@ -66,9 +101,7 @@ export function Header({ className = "" }: HeaderProps) {
             aria-label="منوی اصلی"
           >
             {navLinks.map((link) => {
-              const isActive =
-                pathname === link.href ||
-                (pathname === "/" && link.href === "/#session");
+              const isActive = isLinkActive(link.href);
               return (
                 <Link
                   key={link.href}
@@ -200,9 +233,7 @@ export function Header({ className = "" }: HeaderProps) {
             {/* Navigation Links */}
             <nav className="flex flex-col gap-1.5" aria-label="لینک‌های ناوبری موبایل">
               {navLinks.map((link) => {
-                const isActive =
-                  link.href === pathname ||
-                  (link.href.startsWith("/#") && pathname === "/");
+                const isActive = isLinkActive(link.href);
                 return (
                   <Link
                     key={link.href}
