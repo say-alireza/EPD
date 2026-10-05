@@ -48,9 +48,9 @@ export function Header({ className = "" }: HeaderProps) {
   return (
     <>
       <header
-        className={`sticky top-0 z-40 w-full bg-ground/90 backdrop-blur-md border-b border-border transition-all ${className}`}
+        className={`sticky top-0 z-50 w-full bg-ground/80 backdrop-blur-xl border-b border-border/60 transition-all ${className}`}
       >
-        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between">
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           {/* 1. Brand Logo (Start Edge / Right in RTL) */}
           <Link
             href="/"
@@ -60,9 +60,9 @@ export function Header({ className = "" }: HeaderProps) {
             <EpdLogo className="h-9 sm:h-11 w-auto" variant="lockup" />
           </Link>
 
-          {/* 2. Desktop Navigation (Center) */}
+          {/* 2. Desktop Navigation (Center) - Clean, borderless text links */}
           <nav
-            className="hidden md:flex items-center gap-1 lg:gap-2 bg-surface/70 border border-border/80 px-3 py-1.5 rounded-full shadow-2xs"
+            className="hidden md:flex items-center gap-6 lg:gap-8"
             aria-label="منوی اصلی"
           >
             {navLinks.map((link) => {
@@ -73,13 +73,16 @@ export function Header({ className = "" }: HeaderProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-1 text-xs lg:text-sm font-semibold rounded-full transition-colors ${
+                  className={`text-xs sm:text-sm lg:text-base font-bold transition-colors relative py-1.5 ${
                     isActive
-                      ? "text-brand-primary bg-brand-primary/10"
-                      : "text-ink-muted hover:text-ink hover:bg-ground"
+                      ? "text-brand-primary"
+                      : "text-ink-muted hover:text-ink"
                   }`}
                 >
                   {link.label}
+                  {isActive && (
+                    <span className="absolute bottom-0 inset-x-0 h-0.5 bg-brand-primary rounded-full" />
+                  )}
                 </Link>
               );
             })}
