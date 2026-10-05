@@ -318,6 +318,11 @@ export async function getRegistrations(): Promise<RegistrationRecord[]> {
           referralCode: r.referral_code ? String(r.referral_code) : undefined,
           heardFrom: r.heard_from as RegistrationRecord["heardFrom"],
           socialHandle: r.social_handle ? String(r.social_handle) : undefined,
+          paymentStatus: r.payment_status as RegistrationRecord["paymentStatus"],
+          paymentAuthority: r.payment_authority ? String(r.payment_authority) : undefined,
+          paymentRefId: r.payment_ref_id ? String(r.payment_ref_id) : undefined,
+          amountTomans: typeof r.amount_tomans === "number" ? r.amount_tomans : undefined,
+          paidAt: r.paid_at ? String(r.paid_at) : undefined,
           createdAt: String(r.created_at),
         }));
       }
@@ -340,16 +345,20 @@ export async function addRegistration(
 
   memoryRegistrations.unshift(record);
 
-  // Decrement slot remaining seats
-  const slot = memorySlots.find((s) => s.id === reg.sessionId);
-  if (slot && slot.remainingSeats > 0) {
-    slot.remainingSeats -= 1;
-    if (slot.remainingSeats === 0) slot.isFull = true;
-  }
+  const isPaid = record.paymentStatus === "pending" || record.paymentStatus === "paid";
 
-  // Also decrement global remainingSeats if available
-  if (memoryUpcomingSession.remainingSeats > 0) {
-    memoryUpcomingSession.remainingSeats -= 1;
+  // Only decrement remaining seats immediately if free registration.
+  // Paid registrations decrement seats on verified payment callback.
+  if (!isPaid) {
+    const slot = memorySlots.find((s) => s.id === reg.sessionId);
+    if (slot && slot.remainingSeats > 0) {
+      slot.remainingSeats -= 1;
+      if (slot.remainingSeats === 0) slot.isFull = true;
+    }
+
+    if (memoryUpcomingSession.remainingSeats > 0) {
+      memoryUpcomingSession.remainingSeats -= 1;
+    }
   }
 
   const d1 = getD1();
@@ -357,14 +366,14 @@ export async function addRegistration(
     try {
       await d1
         .prepare(
-          `INSERT INTO registrations (id, full_name, mobile, email, session_id, language_level, first_time, topic_suggestion, referral_code, heard_from, social_handle, created_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          `INSERT INTO registrations (id, full_name, mobile, email, session_id, language_level, first_time, topic_suggestion, referral_code, heard_from, social_handle, payment_status, payment_authority, amount_tomans, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         )
         .bind(
           record.id,
           record.fullName,
           record.mobile,
-          record.email,
+          record.email || null,
           record.sessionId,
           record.languageLevel || null,
           record.firstTime ? 1 : 0,
@@ -372,22 +381,27 @@ export async function addRegistration(
           record.referralCode || null,
           record.heardFrom || null,
           record.socialHandle || null,
+          record.paymentStatus || "free",
+          record.paymentAuthority || null,
+          record.amountTomans || 0,
           record.createdAt
         )
         .run();
 
-      await d1
-        .prepare(
-          `UPDATE slots SET remaining_seats = MAX(0, remaining_seats - 1), is_full = CASE WHEN remaining_seats <= 1 THEN 1 ELSE is_full END WHERE id = ?`
-        )
-        .bind(record.sessionId)
-        .run();
+      if (!isPaid) {
+        await d1
+          .prepare(
+            `UPDATE slots SET remaining_seats = MAX(0, remaining_seats - 1), is_full = CASE WHEN remaining_seats <= 1 THEN 1 ELSE is_full END WHERE id = ?`
+          )
+          .bind(record.sessionId)
+          .run();
 
-      await d1
-        .prepare(
-          `UPDATE sessions SET remaining_seats = MAX(0, remaining_seats - 1) WHERE is_active = 1`
-        )
-        .run();
+        await d1
+          .prepare(
+            `UPDATE sessions SET remaining_seats = MAX(0, remaining_seats - 1) WHERE is_active = 1`
+          )
+          .run();
+      }
     } catch (e) {
       console.error("D1 addRegistration error:", e);
     }
@@ -593,6 +607,15 @@ export async function confirmRegistrationPayment(
   const d1 = getD1();
   if (d1) {
     try {
+      let targetSessionId = reg?.sessionId;
+      if (!targetSessionId) {
+        const existing = await d1
+          .prepare("SELECT session_id FROM registrations WHERE payment_authority = ? LIMIT 1")
+          .bind(authority)
+          .first<{ session_id: string }>();
+        if (existing) targetSessionId = existing.session_id;
+      }
+
       await d1
         .prepare(
           `UPDATE registrations 
@@ -602,7 +625,7 @@ export async function confirmRegistrationPayment(
         .bind(String(refId), now, authority)
         .run();
 
-      if (reg?.sessionId) {
+      if (targetSessionId) {
         await d1
           .prepare(
             `UPDATE slots 
@@ -610,7 +633,7 @@ export async function confirmRegistrationPayment(
                  is_full = CASE WHEN remaining_seats <= 1 THEN 1 ELSE is_full END 
              WHERE id = ?`
           )
-          .bind(reg.sessionId)
+          .bind(targetSessionId)
           .run();
       }
 

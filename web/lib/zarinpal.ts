@@ -113,6 +113,7 @@ export async function verifyZarinpalPayment(
     const payload = {
       merchant_id: ZARINPAL_MERCHANT_ID,
       amount: amountTomans,
+      currency: "IRT",
       authority,
     };
 

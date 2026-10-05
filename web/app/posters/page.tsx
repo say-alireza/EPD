@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { EpdLogo } from "@/components/ui/logo";
+import { Header } from "@/components/layout/header";
 import { DeveloperBadge } from "@/components/ui/developer-badge";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
@@ -51,23 +52,8 @@ export default function PostersPage() {
 
   return (
     <div className="min-h-screen bg-ground text-ink flex flex-col justify-between selection:bg-brand-teal selection:text-ink">
+      <Header />
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Header */}
-        <header className="flex items-center justify-between border-b border-border pb-6">
-          <Link
-            href="/"
-            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal"
-          >
-            <EpdLogo className="h-10 w-auto" variant="lockup" />
-          </Link>
-          <Link
-            href="/"
-            className="text-xs sm:text-sm font-bold text-ink-muted hover:text-ink transition-colors px-3 py-1.5 border border-border rounded-lg hover:border-brand-primary"
-          >
-            بازگشت به صفحه اصلی
-          </Link>
-        </header>
-
         {/* Main Posters Archive */}
         <main className="my-12 space-y-8 text-start">
           <div className="space-y-3 max-w-3xl">

@@ -84,6 +84,10 @@ export const strings = {
   landing: {
     nav: {
       register: "ثبت‌نام نشست",
+      currentSession: "نشست جاری",
+      posters: "آرشیو پوسترها",
+      gallery: "گالری دورهمی‌ها",
+      about: "درباره EPD",
     },
     hero: {
       sloganEn: "EPD — AN EXCUSE FOR SPEAKING",

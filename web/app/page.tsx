@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { EpdLogo } from "@/components/ui/logo";
 import { Enamad } from "@/components/ui/enamad";
 import { DeveloperBadge } from "@/components/ui/developer-badge";
+import { Header } from "@/components/layout/header";
 import { TelegramIcon, InstagramIcon } from "@/components/ui/icons";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
@@ -25,49 +26,12 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-ground text-ink flex flex-col selection:bg-brand-teal selection:text-ink">
-      {/* 1. Header — logo, social icon links & primary CTA */}
-      <header className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex items-center justify-between border-b border-border">
-        <Link
-          href="/"
-          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal shrink-0"
-        >
-          <EpdLogo className="h-9 sm:h-11 w-auto" variant="lockup" />
-        </Link>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <a
-            href="https://t.me/EPDCommunity"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 sm:px-3 sm:py-2 text-ink-muted hover:text-[#229ED9] border border-border hover:border-[#229ED9]/60 rounded-xl transition-all flex items-center gap-2 bg-surface/80 shadow-2xs hover:shadow-xs"
-            title="کانال تلگرام EPD"
-            aria-label="کانال تلگرام EPD"
-          >
-            <TelegramIcon className="w-4 h-4 shrink-0 text-[#229ED9]" />
-            <span className="text-xs font-bold hidden md:inline">تلگرام</span>
-          </a>
-          <a
-            href="https://www.instagram.com/epdcommunity?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw=="
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 sm:px-3 sm:py-2 text-ink-muted hover:text-[#E4405F] border border-border hover:border-[#E4405F]/60 rounded-xl transition-all flex items-center gap-2 bg-surface/80 shadow-2xs hover:shadow-xs"
-            title="صفحه اینستاگرام EPD"
-            aria-label="صفحه اینستاگرام EPD"
-          >
-            <InstagramIcon className="w-4 h-4 shrink-0 text-[#E4405F]" />
-            <span className="text-xs font-bold hidden md:inline">اینستاگرام</span>
-          </a>
-          <Link
-            href="/register"
-            className="text-xs sm:text-sm font-extrabold text-surface bg-brand-primary hover:bg-brand-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal px-3.5 sm:px-4 py-2 rounded-xl shadow-2xs shrink-0"
-          >
-            {strings.landing.nav.register}
-          </Link>
-        </div>
-      </header>
+      {/* 1. Header with responsive desktop nav and mobile drawer */}
+      <Header />
 
       <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col gap-14 sm:gap-24">
         {/* 2. Hero — Clean, High-Impact Design */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-start">
+        <section id="session" className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-start">
           {/* Right Column (lg:col-span-7) */}
           <div className="lg:col-span-7 flex flex-col items-start gap-6">
             {/* Main Headline & Description */}
@@ -137,7 +101,7 @@ export default function HomePage() {
         </section>
 
         {/* 3. Weekly photo gallery — clean compact badge with session tag */}
-        <section className="flex flex-col gap-8 text-start">
+        <section id="gallery" className="flex flex-col gap-8 text-start">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
               <span className="text-xs font-bold text-brand-teal tracking-wider uppercase">
@@ -185,7 +149,7 @@ export default function HomePage() {
         </section>
 
         {/* 4. EPD Quest for Victory — Game League & Scoreboard */}
-        <section className="bg-surface border border-border rounded-2xl p-6 sm:p-10 flex flex-col lg:flex-row gap-8 items-center text-start">
+        <section id="about" className="bg-surface border border-border rounded-2xl p-6 sm:p-10 flex flex-col lg:flex-row gap-8 items-center text-start">
           <div className="flex-1 flex flex-col gap-4">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-brand-primary">
               <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
@@ -238,7 +202,7 @@ export default function HomePage() {
         </section>
 
         {/* 5. Past posters — compact strip, link to /posters */}
-        <section className="flex flex-col gap-8 text-start">
+        <section id="posters" className="flex flex-col gap-8 text-start">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
               <span className="text-xs font-bold text-brand-teal tracking-wider uppercase">
