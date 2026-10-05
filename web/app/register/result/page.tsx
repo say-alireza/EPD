@@ -106,6 +106,8 @@ function PaymentResultContent() {
               <p className="text-xs sm:text-sm text-ink-muted leading-relaxed">
                 {errorParam === "user_canceled"
                   ? "تراکنش توسط شما در درگاه لغو شد."
+                  : errorParam === "not_found"
+                  ? "اطلاعات نشست پرداخت یافت نشد. در صورت کسر وجه، مبلغ توسط بانک ظرف ۷۲ ساعت عودت داده می‌شود."
                   : errorParam
                   ? decodeURIComponent(errorParam)
                   : "ارتباط با درگاه بانکی برقرار نشد یا پرداخت با خطا مواجه گردید."}

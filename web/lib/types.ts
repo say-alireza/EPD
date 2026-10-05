@@ -53,7 +53,7 @@ export interface RegistrationRecord {
   id: string;
   fullName: string;
   mobile: string;
-  email: string;
+  email?: string;
   sessionId: string;
   sessionTitle?: string;
   languageLevel?: "beginner" | "intermediate" | "advanced";

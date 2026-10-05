@@ -25,6 +25,7 @@ let memoryUpcomingSession: UpcomingSession = {
 
 const memorySlots: Session[] = [...(defaultSlots as Session[])];
 
+export type { RegistrationRecord };
 const memoryRegistrations: RegistrationRecord[] = [];
 const memoryPosters: PosterItem[] = [...(defaultPosters as PosterItem[])];
 const memoryGallery: GalleryItem[] = [...(defaultGallery as GalleryItem[])];

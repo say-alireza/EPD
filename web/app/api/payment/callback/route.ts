@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { getRegistrationByAuthority, confirmRegistrationPayment, getSlots } from "@/lib/db";
+import {
+  getRegistrationByAuthority,
+  confirmRegistrationPayment,
+  getSlots,
+  addRegistration,
+  RegistrationRecord,
+} from "@/lib/db";
 import { verifyZarinpalPayment } from "@/lib/zarinpal";
 import { notifyAdminsNewRegistration } from "@/lib/telegram-bot";
 
@@ -20,15 +26,10 @@ export async function GET(request: Request) {
   }
 
   // ۱. یافتن رکورد ثبت‌نام مرتبط با شناسه authority
-  const registration = await getRegistrationByAuthority(authority);
-  if (!registration) {
-    return NextResponse.redirect(
-      `${url.origin}/register/result?status=failed&error=not_found&authority=${authority}`
-    );
-  }
+  let registration: RegistrationRecord | null = await getRegistrationByAuthority(authority);
 
   // ۲. اگر قبلاً پرداخت و تایید شده، مستقیماً به صفحه رسید موفق برود (جلوگیری از دوباره‌کاری)
-  if (registration.paymentStatus === "paid" && registration.paymentRefId) {
+  if (registration && registration.paymentStatus === "paid" && registration.paymentRefId) {
     return NextResponse.redirect(
       `${url.origin}/register/result?status=success&refId=${registration.paymentRefId}&sessionId=${registration.sessionId}`
     );
@@ -42,7 +43,7 @@ export async function GET(request: Request) {
   }
 
   // ۴. وریفای نهایی تراکنش با API رسمی زرین‌پال
-  const amountTomans = registration.amountTomans || 50000;
+  const amountTomans = registration?.amountTomans || 50000;
   const verifyResult = await verifyZarinpalPayment({
     amountTomans,
     authority,
@@ -56,25 +57,42 @@ export async function GET(request: Request) {
     );
   }
 
-  // ۵. تایید قطعی پرداخت و کسر صندلی در دیتابیس
   const refId = String(verifyResult.refId);
+
+  // اگر به هر دلیلی رکورد قبلی در دیتابیس نبود، یک رکورد ریکاوری بساز تا تراکنش نسوزد
+  if (!registration) {
+    registration = await addRegistration({
+      fullName: "کاربر ثبت‌نامی",
+      mobile: "ثبت‌شده از درگاه",
+      sessionId: "session-upcoming",
+      languageLevel: "intermediate",
+      firstTime: false,
+      heardFrom: "telegram",
+      amountTomans,
+      paymentStatus: "paid",
+      paymentAuthority: authority,
+      paymentRefId: refId,
+      paidAt: new Date().toISOString(),
+    });
+  }
+
+  // ۵. تایید قطعی پرداخت و کسر صندلی در دیتابیس
   const updatedReg = await confirmRegistrationPayment(authority, refId);
+  const activeReg = updatedReg || registration;
 
   // ۶. ارسال نوتیفیکیشن اختصاصی به ادمین‌های تلگرام
   const slots = await getSlots();
-  const slot = slots.find(
-    (s) => s.id === (updatedReg?.sessionId || registration.sessionId)
-  );
-  const sessionTitle = slot ? slot.title : registration.sessionId;
+  const slot = slots.find((s) => s.id === activeReg.sessionId);
+  const sessionTitle = slot ? slot.title : activeReg.sessionId;
 
   await notifyAdminsNewRegistration({
-    fullName: registration.fullName,
-    mobile: registration.mobile,
-    socialHandle: registration.socialHandle,
-    email: registration.email,
+    fullName: activeReg.fullName,
+    mobile: activeReg.mobile,
+    socialHandle: activeReg.socialHandle,
+    email: activeReg.email,
     sessionTitle,
-    languageLevel: registration.languageLevel,
-    topicSuggestion: registration.topicSuggestion,
+    languageLevel: activeReg.languageLevel,
+    topicSuggestion: activeReg.topicSuggestion,
     amountTomans,
     refId,
     paymentStatus: "paid",
@@ -85,10 +103,10 @@ export async function GET(request: Request) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      fullName: registration.fullName,
-      email: registration.email,
-      mobile: registration.mobile,
-      sessionId: registration.sessionId,
+      fullName: activeReg.fullName,
+      email: activeReg.email,
+      mobile: activeReg.mobile,
+      sessionId: activeReg.sessionId,
       refId,
       amountTomans,
       status: "paid",
@@ -98,7 +116,7 @@ export async function GET(request: Request) {
   // ۸. هدایت کاربر به صفحه رسید نهایی پرداخت با کد پیگیری
   return NextResponse.redirect(
     `${url.origin}/register/result?status=success&refId=${refId}&sessionId=${
-      registration.sessionId
-    }&name=${encodeURIComponent(registration.fullName)}`
+      activeReg.sessionId
+    }&name=${encodeURIComponent(activeReg.fullName)}`
   );
 }
