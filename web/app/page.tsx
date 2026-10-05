@@ -31,7 +31,7 @@ export default function HomePage() {
 
       <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col gap-14 sm:gap-24">
         {/* 2. Hero — Clean, High-Impact Design */}
-        <section id="session" className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-start">
+        <section id="session" className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-start scroll-mt-24">
           {/* Right Column (lg:col-span-7) */}
           <div className="lg:col-span-7 flex flex-col items-start gap-6">
             {/* Main Headline & Description */}
@@ -149,7 +149,7 @@ export default function HomePage() {
         </section>
 
         {/* 4. EPD Quest for Victory — Game League & Scoreboard */}
-        <section id="about" className="bg-surface border border-border rounded-2xl p-6 sm:p-10 flex flex-col lg:flex-row gap-8 items-center text-start">
+        <section className="bg-surface border border-border rounded-2xl p-6 sm:p-10 flex flex-col lg:flex-row gap-8 items-center text-start">
           <div className="flex-1 flex flex-col gap-4">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-brand-primary">
               <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
@@ -252,11 +252,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 5. FAQ — six questions as native <details> elements */}
-        <section className="flex flex-col gap-8 text-start max-w-4xl mx-auto w-full">
+        {/* 5. About & FAQ — Questions and Information */}
+        <section id="about" className="flex flex-col gap-8 text-start max-w-4xl mx-auto w-full scroll-mt-24">
           <div className="flex flex-col gap-2">
             <span className="text-xs font-bold text-brand-teal tracking-wider uppercase">
-              {faq.eyebrow}
+              درباره EPD و پرسش‌های متداول
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-ink">
               {faq.title}
