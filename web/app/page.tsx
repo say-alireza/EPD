@@ -5,6 +5,7 @@ import { EpdLogo } from "@/components/ui/logo";
 import { Enamad } from "@/components/ui/enamad";
 import { DeveloperBadge } from "@/components/ui/developer-badge";
 import { Header } from "@/components/layout/header";
+import { InteractiveWaves } from "@/components/ui/interactive-waves";
 import { TelegramIcon, InstagramIcon } from "@/components/ui/icons";
 import { strings } from "@/lib/strings";
 import { assetPath } from "@/lib/asset";
@@ -25,11 +26,14 @@ export default function HomePage() {
   const galleryItems = galleryData.slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-ground text-ink flex flex-col selection:bg-brand-teal selection:text-ink">
+    <div className="relative min-h-screen bg-ground text-ink flex flex-col selection:bg-brand-teal selection:text-ink">
+      {/* Dynamic interactive background waves reacting smoothly to cursor movement */}
+      <InteractiveWaves />
+
       {/* 1. Header with responsive desktop nav and mobile drawer */}
       <Header />
 
-      <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col gap-14 sm:gap-24">
+      <main className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col gap-14 sm:gap-24">
         {/* 2. Hero — Clean, High-Impact Design */}
         <section id="session" className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-start scroll-mt-24">
           {/* Right Column (lg:col-span-7) */}
@@ -288,7 +292,7 @@ export default function HomePage() {
       </main>
 
       {/* 6. Footer — address, contact channels, social links, link to /terms */}
-      <footer className="w-full bg-surface border-t border-border mt-12 sm:mt-16 py-8 sm:py-12">
+      <footer className="relative z-10 w-full bg-surface border-t border-border mt-12 sm:mt-16 py-8 sm:py-12">
         <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-8 sm:gap-10 text-start">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Col 1: Brand & About */}
