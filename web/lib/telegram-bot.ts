@@ -7,6 +7,7 @@ import {
   addSlot,
   deleteSlot,
   getRegistrations,
+  addRegistration,
   deleteRegistration,
   getPosters,
   addPoster,
@@ -16,6 +17,7 @@ import {
   getBotState,
   setBotState,
 } from "./db";
+import { requestZarinpalPayment } from "./zarinpal";
 import {
   syncPosterToGitHub,
   syncGalleryPhotoToGitHub,
@@ -77,45 +79,140 @@ function getCancelKeyboard() {
   return new Keyboard().text("لغو عملیات").resized().persistent();
 }
 
+function getUserMainMenuKeyboard() {
+  return new Keyboard()
+    .text("رزرو صندلی / ثبت‌نام")
+    .row()
+    .text("مشخصات نشست جاری")
+    .text("ارتباط با پشتیبانی")
+    .resized()
+    .persistent();
+}
+
+function getUserCancelKeyboard() {
+  return new Keyboard().text("لغو عملیات").resized().persistent();
+}
+
+function getUserPhoneKeyboard() {
+  return new Keyboard()
+    .requestContact("ارسال شماره موبایل")
+    .row()
+    .text("لغو عملیات")
+    .resized()
+    .persistent();
+}
+
+function cleanPhoneNumber(raw: string): string {
+  const ascii = raw
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1776))
+    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632))
+    .replace(/[^\d+]/g, "");
+  let phone = ascii;
+  if (phone.startsWith("+98")) {
+    phone = "0" + phone.slice(3);
+  } else if (phone.startsWith("98") && phone.length === 12) {
+    phone = "0" + phone.slice(2);
+  }
+  return phone;
+}
+
+async function formatUserSessionOverview(): Promise<string> {
+  const session = await getUpcomingSession();
+  const slots = await getSlots();
+  let text = "باشگاه گفتگوی انگلیسی EPD مشهد\n\n";
+  text += `نشست شماره ${session.number}: ${session.topicEn || ""}\n`;
+  if (session.topicFa) text += `${session.topicFa}\n`;
+  text += "\n";
+  if (session.dateIso) {
+    try {
+      const d = new Date(session.dateIso);
+      const faDate = !isNaN(d.getTime())
+        ? new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+          }).format(d)
+        : session.dateIso;
+      text += `تاریخ: ${faDate}\n`;
+    } catch {
+      text += `تاریخ: ${session.dateIso}\n`;
+    }
+  }
+  if (session.timeFa) text += `ساعت: ${session.timeFa}\n`;
+  text += `محل برگزاری: ${session.venueFa || "مشهد (کافه منتخب)"}\n`;
+  const feeLabel = session.feeTomans
+    ? `${session.feeTomans.toLocaleString("fa-IR")} تومان`
+    : "رایگان";
+  text += `مبلغ ورودی: ${feeLabel}\n`;
+  text += `ظرفیت کل باقیمانده: ${session.remainingSeats.toLocaleString("fa-IR")} صندلی\n\n`;
+
+  text += "سانس‌های فعال این هفته:\n";
+  if (slots.length === 0) {
+    text += "• هنوز سانسی تعریف نشده است.\n";
+  } else {
+    slots.forEach((s) => {
+      const status = s.remainingSeats > 0 ? `${s.remainingSeats} صندلی خالی` : "تکمیل ظرفیت";
+      const feeText =
+        s.feeTomans !== undefined
+          ? s.feeTomans === 0
+            ? "رایگان"
+            : `${s.feeTomans.toLocaleString("fa-IR")} تومان`
+          : "";
+      text += `• ${s.title} — ${status}${feeText ? ` (${feeText})` : ""}\n`;
+    });
+  }
+
+  return text;
+}
+
 // ----------------------------------------------------
 // BOT COMMANDS & HANDLERS
 // ----------------------------------------------------
 
 bot.command("start", async (ctx) => {
   const userId = ctx.from?.id;
-  if (!isAdmin(userId)) {
-    await ctx.reply(`دسترسی غیرمجاز. شناسه عددی تلگرام شما (${userId}) در لیست مدیران تعریف نشده است.`);
-    return;
-  }
+  if (!userId) return;
 
-  setBotState(userId!, null);
-  await ctx.reply(
-    "پنل مدیریت باشگاه EPD\n\nبرای دسترسی به بخشهای مختلف از دکمههای کیبورد زیر استفاده کنید:",
-    { reply_markup: getMainMenuKeyboard() }
-  );
+  setBotState(userId, null);
+
+  if (isAdmin(userId)) {
+    await ctx.reply(
+      "پنل مدیریت باشگاه EPD\n\nبرای دسترسی به بخش‌های مختلف از دکمه‌های کیبورد زیر استفاده کنید:",
+      { reply_markup: getMainMenuKeyboard() }
+    );
+  } else {
+    const overview = await formatUserSessionOverview();
+    await ctx.reply(
+      `سلام! به ربات باشگاه گفتگوی انگلیسی EPD خوش آمدید.\n\n${overview}\nجهت حضور در این نشست، دکمه «رزرو صندلی / ثبت‌نام» را لمس کنید:`,
+      { reply_markup: getUserMainMenuKeyboard() }
+    );
+  }
 });
 
 bot.command("cancel", async (ctx) => {
   const userId = ctx.from?.id;
   if (userId) setBotState(userId, null);
+  const kb = isAdmin(userId) ? getMainMenuKeyboard() : getUserMainMenuKeyboard();
   await ctx.reply("عملیات جاری لغو شد.", {
-    reply_markup: getMainMenuKeyboard(),
+    reply_markup: kb,
   });
 });
 
 bot.hears("لغو عملیات", async (ctx) => {
   const userId = ctx.from?.id;
   if (userId) setBotState(userId, null);
+  const kb = isAdmin(userId) ? getMainMenuKeyboard() : getUserMainMenuKeyboard();
   await ctx.reply("عملیات جاری لغو شد.", {
-    reply_markup: getMainMenuKeyboard(),
+    reply_markup: kb,
   });
 });
 
 bot.hears("بازگشت به منوی اصلی", async (ctx) => {
   const userId = ctx.from?.id;
   if (userId) setBotState(userId, null);
-  await ctx.reply("منوی اصلی مدیریت EPD:", {
-    reply_markup: getMainMenuKeyboard(),
+  const kb = isAdmin(userId) ? getMainMenuKeyboard() : getUserMainMenuKeyboard();
+  await ctx.reply("منوی اصلی:", {
+    reply_markup: kb,
   });
 });
 
@@ -186,7 +283,11 @@ bot.hears("لیست ثبت‌نام‌ها", async (ctx) => {
 // 2. Current Session Details
 bot.hears("مشخصات نشست جاری", async (ctx) => {
   const userId = ctx.from?.id;
-  if (!isAdmin(userId)) return;
+  if (!isAdmin(userId)) {
+    const overview = await formatUserSessionOverview();
+    await ctx.reply(overview, { reply_markup: getUserMainMenuKeyboard() });
+    return;
+  }
 
   const session = await getUpcomingSession();
 
@@ -216,6 +317,42 @@ bot.hears("مشخصات نشست جاری", async (ctx) => {
     .text("تغییر پوستر نشست", "edit_session_poster");
 
   await ctx.reply(text, { reply_markup: kb });
+});
+
+// 2.1 User Registration Flow Initiation
+bot.hears("رزرو صندلی / ثبت‌نام", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  const session = await getUpcomingSession();
+  const slots = await getSlots();
+  const availableSlots = slots.filter((s) => s.remainingSeats > 0 && !s.isFull);
+
+  if (availableSlots.length === 0 || session.remainingSeats <= 0) {
+    await ctx.reply(
+      "متأسفانه ظرفیت صندلی‌های نشست جاری به پایان رسیده است.\nاطلاعیه نشست‌های بعدی در کانال تلگرام @EPDCommunity اعلام خواهد شد.",
+      { reply_markup: getUserMainMenuKeyboard() }
+    );
+    return;
+  }
+
+  setBotState(userId, { step: "user_reg_name", data: {} });
+  await ctx.reply(
+    "فرآیند رزرو صندلی در نشست EPD\n\nلطفاً نام و نام خانوادگی خود را به زبان فارسی یا انگلیسی وارد کنید:",
+    { reply_markup: getUserCancelKeyboard() }
+  );
+});
+
+// 2.2 User Support Contact
+bot.hears("ارتباط با پشتیبانی", async (ctx) => {
+  const text =
+    "باشگاه گفتگوی انگلیسی EPD مشهد\n\n" +
+    "کانال تلگرام: @EPDCommunity\n" +
+    "پیج اینستاگرام: @epdcommunity\n" +
+    "ارتباط با مدیر رویداد:\n\u200E@say_alireza\n\n" +
+    "نشست‌های هفتگی گفتگوی آزاد در کافه‌های منتخب مشهد";
+
+  await ctx.reply(text, { reply_markup: getUserMainMenuKeyboard() });
 });
 
 // 3. Manage Slots & Capacity (Add, Delete, Toggle)
@@ -717,22 +854,318 @@ bot.callbackQuery("edit_session_poster", async (ctx) => {
 });
 
 // ----------------------------------------------------
+// USER REGISTRATION CALLBACKS
+// ----------------------------------------------------
+
+bot.callbackQuery(/^user_slot_(.+)$/, async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  const slotId = ctx.match[1];
+  const state = getBotState(userId);
+  if (!state || state.step !== "user_reg_slot") {
+    await ctx.answerCallbackQuery({ text: "مراحل ثبت‌نام منقضی شده است. لطفاً مجدداً شروع کنید." });
+    return;
+  }
+
+  const slots = await getSlots();
+  const slot = slots.find((s) => s.id === slotId);
+  if (!slot || slot.remainingSeats <= 0 || slot.isFull) {
+    await ctx.answerCallbackQuery({ text: "متأسفانه ظرفیت این سانس تکمیل شده است." });
+    return;
+  }
+
+  setBotState(userId, {
+    step: "user_reg_level",
+    data: {
+      ...state.data,
+      slotId: slot.id,
+      slotTitle: slot.title,
+    },
+  });
+
+  const levelKb = new InlineKeyboard()
+    .text("مبتدی (Beginner)", "user_lvl_beginner")
+    .row()
+    .text("متوسط (Intermediate)", "user_lvl_intermediate")
+    .row()
+    .text("پیشرفته (Advanced)", "user_lvl_advanced")
+    .row()
+    .text("لغو عملیات", "user_cancel_reg");
+
+  await ctx.answerCallbackQuery();
+  await ctx.editMessageText(
+    `سانس انتخابی: ${slot.title}\n\nلطفاً سطح تقریبی تسلط خود به مکالمه انگلیسی را انتخاب کنید:`,
+    { reply_markup: levelKb }
+  );
+});
+
+bot.callbackQuery(/^user_lvl_(.+)$/, async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  const level = ctx.match[1];
+  const state = getBotState(userId);
+  if (!state || state.step !== "user_reg_level") {
+    await ctx.answerCallbackQuery({ text: "مراحل ثبت‌نام منقضی شده است. لطفاً مجدداً شروع کنید." });
+    return;
+  }
+
+  const fullName = String(state.data.fullName || "");
+  const mobile = String(state.data.mobile || "");
+  const slotId = String(state.data.slotId || "");
+
+  const session = await getUpcomingSession();
+  const slots = await getSlots();
+  const slot = slots.find((s) => s.id === slotId);
+
+  if (!slot || slot.remainingSeats <= 0 || slot.isFull) {
+    setBotState(userId, null);
+    await ctx.answerCallbackQuery({ text: "متأسفانه ظرفیت این سانس تکمیل شده است." });
+    await ctx.editMessageText("متأسفانه ظرفیت این سانس به پایان رسیده است.");
+    return;
+  }
+
+  const feeTomans =
+    slot.feeTomans !== undefined ? slot.feeTomans : (session.feeTomans ?? 0);
+
+  const socialHandle = ctx.from?.username
+    ? `@${ctx.from.username}`
+    : `tg_${userId}`;
+
+  const levelFaMap: Record<string, string> = {
+    beginner: "مبتدی",
+    intermediate: "متوسط",
+    advanced: "پیشرفته",
+  };
+  const levelFa = levelFaMap[level] || level;
+
+  // FREE REGISTRATION (Fee = 0)
+  if (feeTomans <= 0) {
+    setBotState(userId, null);
+    try {
+      const reg = await addRegistration({
+        fullName,
+        mobile,
+        sessionId: slot.id,
+        languageLevel: level as "beginner" | "intermediate" | "advanced",
+        socialHandle,
+        paymentStatus: "free",
+        amountTomans: 0,
+      });
+
+      await ctx.answerCallbackQuery({ text: "ثبت‌نام شما با موفقیت تأیید شد!" });
+
+      const ticketText =
+        "ثبت‌نام شما با موفقیت قطعی شد!\n\n" +
+        `کد پیگیری: ${reg.id}\n` +
+        `نام و نام خانوادگی: ${fullName}\n` +
+        `شماره تماس: ${mobile}\n` +
+        `شناسه تلگرام:\n\u200E${socialHandle}\n` +
+        `نشست: جلسه ${session.number} (${session.topicEn || ""})\n` +
+        `سانس: ${slot.title}\n` +
+        `سطح زبان: ${levelFa}\n` +
+        `محل برگزاری: ${session.venueFa || "مشهد"}\n` +
+        `مبلغ ورودی: رایگان\n\n` +
+        "صندلی شما رزرو شد؛ منتظر دیدارتان در این رویداد هستیم!";
+
+      await ctx.editMessageText(ticketText);
+      await ctx.reply("برای مشاهده مشخصات نشست یا ارتباط با تیم، از منوی زیر استفاده کنید:", {
+        reply_markup: getUserMainMenuKeyboard(),
+      });
+
+      // Notify Admins
+      await notifyAdminsNewRegistration({
+        fullName,
+        mobile,
+        socialHandle,
+        sessionTitle: `جلسه ${session.number} — ${slot.title}`,
+        languageLevel: levelFa,
+        amountTomans: 0,
+        paymentStatus: "ثبت‌نام قطعی (رایگان از طریق ربات تلگرام)",
+      });
+    } catch (err) {
+      console.error("Bot free registration error:", err);
+      await ctx.answerCallbackQuery({ text: "خطایی رخ داد." });
+      await ctx.editMessageText("متأسفانه در ثبت اطلاعات خطایی رخ داد. لطفاً با پشتیبانی در ارتباط باشید.");
+    }
+    return;
+  }
+
+  // PAID REGISTRATION (Fee > 0)
+  try {
+    const callbackUrl = "https://epdcommunity.ir/api/payment/callback/";
+    const zarin = await requestZarinpalPayment({
+      amountTomans: feeTomans,
+      description: `ثبت‌نام نشست ${session.number} EPD - ${fullName}`,
+      callbackUrl,
+      mobile,
+    });
+
+    if (!zarin.success || !zarin.paymentUrl || !zarin.authority) {
+      setBotState(userId, null);
+      await ctx.answerCallbackQuery({ text: "خطا در اتصال به درگاه بانکی." });
+      await ctx.editMessageText(
+        `خطا در برقراری ارتباط با درگاه پرداخت شاپرک:\n${zarin.error || "خطای ناشناخته"}\n\nلطفاً دقایقی دیگر مجدداً تلاش کنید.`
+      );
+      await ctx.reply("منوی اصلی EPD:", { reply_markup: getUserMainMenuKeyboard() });
+      return;
+    }
+
+    // Save pending registration
+    await addRegistration({
+      fullName,
+      mobile,
+      sessionId: slot.id,
+      languageLevel: level as "beginner" | "intermediate" | "advanced",
+      socialHandle,
+      paymentStatus: "pending",
+      paymentAuthority: zarin.authority,
+      amountTomans: feeTomans,
+    });
+
+    setBotState(userId, null);
+    await ctx.answerCallbackQuery({ text: "لینک پرداخت شاپرک آماده شد." });
+
+    const payKb = new InlineKeyboard()
+      .url(`پرداخت درگاه شاپرک (${feeTomans.toLocaleString("fa-IR")} تومان)`, zarin.paymentUrl)
+      .row()
+      .text("لغو و بازگشت", "user_cancel_reg");
+
+    const payText =
+      "صندلی شما به مدت ۱۵ دقیقه رزرو موقت شد.\n\n" +
+      `نام: ${fullName}\n` +
+      `نشست: جلسه ${session.number} (${slot.title})\n` +
+      `مبلغ ورودی: ${feeTomans.toLocaleString("fa-IR")} تومان\n\n` +
+      "جهت قطعی شدن رزرو، روی دکمه زیر کلیک کرده و پرداخت خود را انجام دهید:";
+
+    await ctx.editMessageText(payText, { reply_markup: payKb });
+    await ctx.reply("پس از پرداخت موفقیت‌آمیز درگاه شاپرک، صندلی شما به صورت خودکار قطعی خواهد شد.", {
+      reply_markup: getUserMainMenuKeyboard(),
+    });
+  } catch (err) {
+    console.error("Bot payment registration error:", err);
+    await ctx.answerCallbackQuery({ text: "خطا در پرداخت." });
+    await ctx.editMessageText("متأسفانه در اتصال به درگاه پرداخت مشکلی پیش آمد.");
+  }
+});
+
+bot.callbackQuery("user_cancel_reg", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (userId) setBotState(userId, null);
+  await ctx.answerCallbackQuery({ text: "ثبت‌نام لغو شد." });
+  await ctx.editMessageText("فرآیند ثبت‌نام لغو شد.");
+  const kb = isAdmin(userId) ? getMainMenuKeyboard() : getUserMainMenuKeyboard();
+  await ctx.reply("منوی اصلی باشگاه EPD:", {
+    reply_markup: kb,
+  });
+});
+
+async function handleUserMobileSubmitted(
+  ctx: {
+    reply: (text: string, other?: Record<string, unknown>) => Promise<unknown>;
+  },
+  userId: number,
+  state: { step: string; data: Record<string, unknown> },
+  phone: string
+) {
+  if (!/^09\d{9}$/.test(phone)) {
+    await ctx.reply(
+      "شماره موبایل نامعتبر است. لطفاً یک شماره ۱۱ رقمی معتبر با پیش‌شماره ۰۹ (مثال: 09151234567) وارد کنید یا دکمه «ارسال شماره موبایل» را لمس کنید:"
+    );
+    return;
+  }
+
+  const slots = await getSlots();
+  const availableSlots = slots.filter((s) => s.remainingSeats > 0 && !s.isFull);
+  if (availableSlots.length === 0) {
+    setBotState(userId, null);
+    await ctx.reply("متأسفانه در این لحظه ظرفیت تمام سانس‌ها تکمیل شد.", {
+      reply_markup: getUserMainMenuKeyboard(),
+    });
+    return;
+  }
+
+  setBotState(userId, {
+    step: "user_reg_slot",
+    data: { ...state.data, mobile: phone },
+  });
+
+  const inline = new InlineKeyboard();
+  availableSlots.forEach((s) => {
+    const feeText =
+      s.feeTomans !== undefined
+        ? s.feeTomans === 0
+          ? "رایگان"
+          : `${s.feeTomans.toLocaleString("fa-IR")} ت`
+        : "";
+    const label = `${s.title} (${s.remainingSeats} صندلی ${feeText ? `• ${feeText}` : ""})`;
+    inline.text(label, `user_slot_${s.id}`).row();
+  });
+  inline.text("لغو عملیات", "user_cancel_reg");
+
+  await ctx.reply(
+    `شماره تماس تأیید شد: ${phone}\n\nلطفاً یکی از سانس‌های زیر را برای شرکت در رویداد انتخاب کنید:`,
+    {
+      reply_markup: inline,
+    }
+  );
+}
+
+// ----------------------------------------------------
 // MESSAGE & CONVERSATION HANDLER
 // ----------------------------------------------------
 
-bot.on("message:text", async (ctx) => {
+bot.on("message:contact", async (ctx) => {
   const userId = ctx.from?.id;
-  if (!isAdmin(userId) || !userId) return;
+  if (!userId) return;
 
   const state = getBotState(userId);
-  if (!state) return;
+  if (state?.step === "user_reg_mobile") {
+    const raw = ctx.message.contact.phone_number;
+    const phone = cleanPhoneNumber(raw);
+    await handleUserMobileSubmitted(ctx, userId, state, phone);
+  }
+});
 
+bot.on("message:text", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!userId) return;
+
+  const state = getBotState(userId);
   const text = ctx.message.text.trim();
   if (text === "لغو عملیات" || text === "/cancel") {
     setBotState(userId, null);
-    await ctx.reply("عملیات لغو شد.", { reply_markup: getMainMenuKeyboard() });
+    const kb = isAdmin(userId) ? getMainMenuKeyboard() : getUserMainMenuKeyboard();
+    await ctx.reply("عملیات لغو شد.", { reply_markup: kb });
     return;
   }
+
+  // Handle user registration text steps
+  if (state?.step === "user_reg_name") {
+    if (text.length < 3 || text.length > 70) {
+      await ctx.reply("لطفاً نام و نام خانوادگی معتبر (بین ۳ تا ۷۰ حرف) وارد کنید:");
+      return;
+    }
+    setBotState(userId, {
+      step: "user_reg_mobile",
+      data: { fullName: text },
+    });
+    await ctx.reply(
+      "لطفاً شماره موبایل خود را وارد کنید (یا دکمه «ارسال شماره موبایل» زیر را بزنید):",
+      { reply_markup: getUserPhoneKeyboard() }
+    );
+    return;
+  }
+
+  if (state?.step === "user_reg_mobile") {
+    const phone = cleanPhoneNumber(text);
+    await handleUserMobileSubmitted(ctx, userId, state, phone);
+    return;
+  }
+
+  if (!isAdmin(userId)) return;
+  if (!state) return;
 
   switch (state.step) {
     // Adding Slot
