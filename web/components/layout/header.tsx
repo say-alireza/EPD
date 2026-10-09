@@ -82,10 +82,11 @@ export function Header({ className = "" }: HeaderProps) {
     };
   }, [isOpen]);
 
-  // Close drawer on route change
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setIsOpen(false);
-  }, [pathname]);
+  }
 
   return (
     <>

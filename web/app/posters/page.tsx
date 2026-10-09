@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { EpdLogo } from "@/components/ui/logo";
 import { Header } from "@/components/layout/header";
 import { DeveloperBadge } from "@/components/ui/developer-badge";
 import { strings } from "@/lib/strings";
