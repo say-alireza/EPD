@@ -347,9 +347,10 @@ bot.hears("رزرو صندلی / ثبت‌نام", async (ctx) => {
 bot.hears("ارتباط با پشتیبانی", async (ctx) => {
   const text =
     "باشگاه گفتگوی انگلیسی EPD مشهد\n\n" +
-    "کانال تلگرام: @EPDCommunity\n" +
-    "پیج اینستاگرام: @epdcommunity\n" +
-    "ارتباط با مدیر رویداد:\n\u200E@say_alireza\n\n" +
+    "کانال تلگرام:\n" +
+    "\u200E@EPDCommunity\n\n" +
+    "آیدی پشتیبانی:\n" +
+    "\u200E@epdsupport\n\n" +
     "نشست‌های هفتگی گفتگوی آزاد در کافه‌های منتخب مشهد";
 
   await ctx.reply(text, { reply_markup: getUserMainMenuKeyboard() });

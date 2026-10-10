@@ -125,6 +125,8 @@ async function runRegistrationTests() {
   });
   const supportMsg = outgoingCalls.find((c) => c.method === "sendMessage");
   assert(supportMsg && supportMsg.payload.text.includes("@EPDCommunity"), "Must show support channel");
+  assert(supportMsg && supportMsg.payload.text.includes("@epdsupport"), "Must show support handle");
+  assert(!supportMsg.payload.text.includes("@say_alireza"), "Must not include personal handle");
   console.log("  ✓ Information buttons verified successfully.\n");
 
   // --------------------------------------------------------------------------
