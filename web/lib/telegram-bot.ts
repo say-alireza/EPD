@@ -81,6 +81,8 @@ function getCancelKeyboard() {
 
 function getUserMainMenuKeyboard() {
   return new Keyboard()
+    .webApp("رزرو صندلی (مینی‌اپ)", "https://epdcommunity.ir/miniapp")
+    .row()
     .text("رزرو صندلی / ثبت‌نام")
     .row()
     .text("مشخصات نشست جاری")

@@ -88,7 +88,11 @@ async function runRegistrationTests() {
   assert(startMsg, "Bot must send a reply to /start");
   assert(startMsg.payload.text.includes("باشگاه گفتگوی انگلیسی EPD"), "Welcome message must include club title");
   assert(startMsg.payload.reply_markup?.keyboard, "Must provide user reply keyboard");
-  const buttons = startMsg.payload.reply_markup.keyboard.flat().map((b: any) => b.text);
+  const rawButtons = startMsg.payload.reply_markup.keyboard.flat();
+  const buttons = rawButtons.map((b: any) => b.text);
+  assert(buttons.includes("رزرو صندلی (مینی‌اپ)"), "Must have Mini App button");
+  const miniAppBtn = rawButtons.find((b: any) => b.text === "رزرو صندلی (مینی‌اپ)");
+  assert(miniAppBtn?.web_app?.url === "https://epdcommunity.ir/miniapp", "Mini App button must link to /miniapp");
   assert(buttons.includes("رزرو صندلی / ثبت‌نام"), "Must have reservation button");
   assert(buttons.includes("مشخصات نشست جاری"), "Must have session details button");
   assert(buttons.includes("ارتباط با پشتیبانی"), "Must have support button");
