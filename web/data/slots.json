@@ -7,5 +7,14 @@
     "isFull": false,
     "feeTomans": 80000,
     "feeFa": "80,000 تومان"
+  },
+  {
+    "id": "slot-mv6q8wrl",
+    "title": "فری دیسکاشن : پنج شنبه ساعت 10 الی 12",
+    "capacity": 13,
+    "remainingSeats": 13,
+    "isFull": false,
+    "feeTomans": 80000,
+    "feeFa": "80,000 تومان"
   }
 ]
