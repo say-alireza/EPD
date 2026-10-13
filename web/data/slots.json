@@ -3,8 +3,8 @@
     "id": "session-1",
     "title": "سانس اول: پنجشنبه ساعت ۱۶ تا ۱۸",
     "capacity": 15,
-    "remainingSeats": 0,
-    "isFull": true,
+    "remainingSeats": 15,
+    "isFull": false,
     "feeTomans": 80000,
     "feeFa": "80,000 تومان"
   }
