@@ -7,14 +7,5 @@
     "isFull": false,
     "feeTomans": 50000,
     "feeFa": "۵۰,۰۰۰ تومان"
-  },
-  {
-    "id": "slot-mur8kulq",
-    "title": "تست",
-    "capacity": 3,
-    "remainingSeats": 1,
-    "isFull": false,
-    "feeTomans": 0,
-    "feeFa": "رایگان"
   }
 ]
