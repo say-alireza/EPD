@@ -1030,8 +1030,9 @@ bot.callbackQuery(/^user_lvl_(.+)$/, async (ctx) => {
     setBotState(userId, null);
     await ctx.answerCallbackQuery({ text: "لینک پرداخت شاپرک آماده شد." });
 
+    const bridgePayUrl = `https://epdcommunity.ir/pay/${zarin.authority}`;
     const payKb = new InlineKeyboard()
-      .url(`پرداخت درگاه شاپرک (${feeTomans.toLocaleString("fa-IR")} تومان)`, zarin.paymentUrl)
+      .url(`پرداخت درگاه شاپرک (${feeTomans.toLocaleString("fa-IR")} تومان)`, bridgePayUrl)
       .row()
       .text("لغو و بازگشت", "user_cancel_reg");
 
@@ -1040,6 +1041,7 @@ bot.callbackQuery(/^user_lvl_(.+)$/, async (ctx) => {
       `نام: ${fullName}\n` +
       `نشست: جلسه ${session.number} (${slot.title})\n` +
       `مبلغ ورودی: ${feeTomans.toLocaleString("fa-IR")} تومان\n\n` +
+      "⚠️ لطفاً هنگام پرداخت، فیلترشکن (VPN) خود را خاموش کنید.\n\n" +
       "جهت قطعی شدن رزرو، روی دکمه زیر کلیک کرده و پرداخت خود را انجام دهید:";
 
     await ctx.editMessageText(payText, { reply_markup: payKb });

@@ -84,12 +84,18 @@ function PaymentResultContent() {
               اطلاع‌رسانی می‌شود.
             </div>
 
-            <div className="pt-2">
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <a
+                href="https://t.me/EPDCommunityBot"
+                className="inline-flex items-center justify-center w-full sm:w-1/2 px-5 py-3 bg-brand-primary text-surface font-extrabold text-xs sm:text-sm rounded-xl hover:opacity-95 transition-opacity shadow-sm"
+              >
+                بازگشت به ربات تلگرام
+              </a>
               <Link
                 href="/"
-                className="inline-flex items-center justify-center w-full px-6 py-3 bg-brand-primary text-surface font-extrabold text-sm rounded-xl hover:opacity-95 transition-opacity shadow-sm"
+                className="inline-flex items-center justify-center w-full sm:w-1/2 px-5 py-3 bg-surface border border-border text-ink-muted font-bold text-xs sm:text-sm rounded-xl hover:text-ink hover:border-brand-primary transition-colors"
               >
-                بازگشت به صفحه اصلی EPD
+                صفحه اصلی وب‌سایت
               </Link>
             </div>
           </div>
