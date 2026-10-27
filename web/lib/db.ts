@@ -334,6 +334,71 @@ export async function getRegistrations(): Promise<RegistrationRecord[]> {
   return memoryRegistrations;
 }
 
+export async function getLatestRegistrationByUser(
+  username?: string,
+  userId?: number
+): Promise<RegistrationRecord | null> {
+  const handles: string[] = [];
+  if (username) {
+    const cleanUser = username.startsWith("@") ? username : `@${username}`;
+    handles.push(cleanUser);
+    handles.push(cleanUser.replace("@", ""));
+  }
+  if (userId) {
+    handles.push(`tg:${userId}`);
+    handles.push(`tg_${userId}`);
+    handles.push(String(userId));
+  }
+
+  const d1 = getD1();
+  if (d1 && handles.length > 0) {
+    try {
+      const placeholders = handles.map(() => "?").join(", ");
+      const res = await d1
+        .prepare(
+          `SELECT * FROM registrations 
+           WHERE social_handle IN (${placeholders}) 
+           ORDER BY created_at DESC LIMIT 1`
+        )
+        .bind(...handles)
+        .first();
+
+      if (res && res.id) {
+        return {
+          id: String(res.id),
+          fullName: String(res.full_name),
+          mobile: String(res.mobile),
+          email: res.email ? String(res.email) : undefined,
+          sessionId: String(res.session_id),
+          languageLevel: res.language_level as RegistrationRecord["languageLevel"],
+          firstTime: Boolean(res.first_time),
+          topicSuggestion: res.topic_suggestion ? String(res.topic_suggestion) : undefined,
+          referralCode: res.referral_code ? String(res.referral_code) : undefined,
+          heardFrom: res.heard_from as RegistrationRecord["heardFrom"],
+          socialHandle: res.social_handle ? String(res.social_handle) : undefined,
+          paymentStatus: res.payment_status as RegistrationRecord["paymentStatus"],
+          paymentAuthority: res.payment_authority ? String(res.payment_authority) : undefined,
+          paymentRefId: res.payment_ref_id ? String(res.payment_ref_id) : undefined,
+          amountTomans: typeof res.amount_tomans === "number" ? res.amount_tomans : undefined,
+          paidAt: res.paid_at ? String(res.paid_at) : undefined,
+          createdAt: String(res.created_at),
+        };
+      }
+    } catch (e) {
+      console.error("D1 getLatestRegistrationByUser error:", e);
+    }
+  }
+
+  if (handles.length > 0) {
+    const found = memoryRegistrations.find(
+      (r) => r.socialHandle && handles.includes(r.socialHandle)
+    );
+    if (found) return found;
+  }
+
+  return null;
+}
+
 export async function addRegistration(
   reg: Omit<RegistrationRecord, "id" | "createdAt">
 ): Promise<RegistrationRecord> {

@@ -7,6 +7,7 @@ import {
   addSlot,
   deleteSlot,
   getRegistrations,
+  getLatestRegistrationByUser,
   addRegistration,
   deleteRegistration,
   getPosters,
@@ -332,13 +333,74 @@ bot.hears("رزرو صندلی / ثبت‌نام", async (ctx) => {
 
   if (availableSlots.length === 0 || session.remainingSeats <= 0) {
     await ctx.reply(
-      "متأسفانه ظرفیت صندلی‌های نشست جاری به پایان رسیده است.\nاطلاعیه نشست‌های بعدی در کانال تلگرام @EPDCommunity اعلام خواهد شد.",
+      "ظرفیت صندلی‌های نشست جاری تکمیل شده است.\nاطلاعیه نشست‌های بعدی در کانال تلگرام @EPDCommunity اعلام خواهد شد.",
       { reply_markup: getUserMainMenuKeyboard() }
     );
     return;
   }
 
+  // Check if returning user
+  const prevReg = await getLatestRegistrationByUser(ctx.from?.username, userId);
+  if (prevReg && prevReg.fullName && prevReg.mobile) {
+    const levelFaMap: Record<string, string> = {
+      beginner: "مبتدی",
+      intermediate: "متوسط",
+      advanced: "پیشرفته",
+    };
+    const levelFa = prevReg.languageLevel ? levelFaMap[prevReg.languageLevel] || prevReg.languageLevel : "متوسط";
+
+    setBotState(userId, {
+      step: "user_fast_confirm",
+      data: {
+        fullName: prevReg.fullName,
+        mobile: prevReg.mobile,
+        languageLevel: prevReg.languageLevel || "intermediate",
+      },
+    });
+
+    const confirmKb = new InlineKeyboard()
+      .text("تأیید مشخصات و انتخاب سانس", "user_fast_confirm")
+      .row()
+      .text("ویرایش مشخصات", "user_fast_edit")
+      .row()
+      .text("لغو عملیات", "user_cancel_reg");
+
+    const msg =
+      "اطلاعات ثبت‌شده شما در سیستم EPD:\n\n" +
+      `نام و نام خانوادگی: ${prevReg.fullName}\n` +
+      `شماره تماس: ${prevReg.mobile}\n` +
+      `سطح تسلط: ${levelFa}\n\n` +
+      "جهت ثبت‌نام با همین اطلاعات، دکمه تأیید را لمس کنید:";
+
+    await ctx.reply(msg, { reply_markup: confirmKb });
+    return;
+  }
+
   setBotState(userId, { step: "user_reg_name", data: {} });
+  await ctx.reply(
+    "فرآیند رزرو صندلی در نشست EPD\n\nلطفاً نام و نام خانوادگی خود را به زبان فارسی یا انگلیسی وارد کنید:",
+    { reply_markup: getUserCancelKeyboard() }
+  );
+});
+
+bot.callbackQuery("user_fast_confirm", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!userId) return;
+  const state = getBotState(userId);
+  if (!state || state.step !== "user_fast_confirm") {
+    await ctx.answerCallbackQuery({ text: "مراحل منقضی شده است." });
+    return;
+  }
+  await ctx.answerCallbackQuery();
+  const phone = String(state.data.mobile);
+  await handleUserMobileSubmitted(ctx, userId, state, phone);
+});
+
+bot.callbackQuery("user_fast_edit", async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!userId) return;
+  setBotState(userId, { step: "user_reg_name", data: {} });
+  await ctx.answerCallbackQuery();
   await ctx.reply(
     "فرآیند رزرو صندلی در نشست EPD\n\nلطفاً نام و نام خانوادگی خود را به زبان فارسی یا انگلیسی وارد کنید:",
     { reply_markup: getUserCancelKeyboard() }
@@ -887,7 +949,19 @@ bot.callbackQuery(/^user_slot_(.+)$/, async (ctx) => {
     },
   });
 
-  const levelKb = new InlineKeyboard()
+  const levelFaMap: Record<string, string> = {
+    beginner: "مبتدی",
+    intermediate: "متوسط",
+    advanced: "پیشرفته",
+  };
+
+  const levelKb = new InlineKeyboard();
+  if (state.data.languageLevel) {
+    const prevLvl = String(state.data.languageLevel);
+    const lvlFa = levelFaMap[prevLvl] || prevLvl;
+    levelKb.text(`تأیید سطح قبلی (${lvlFa})`, `user_lvl_${prevLvl}`).row();
+  }
+  levelKb
     .text("مبتدی (Beginner)", "user_lvl_beginner")
     .row()
     .text("متوسط (Intermediate)", "user_lvl_intermediate")
