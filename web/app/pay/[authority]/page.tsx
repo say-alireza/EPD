@@ -4,6 +4,8 @@ import { EpdLogo } from "@/components/ui/logo";
 import { DeveloperBadge } from "@/components/ui/developer-badge";
 import { PayRedirectClient } from "./pay-redirect-client";
 
+export const runtime = "edge";
+
 interface PageProps {
   params: Promise<{ authority: string }>;
 }
