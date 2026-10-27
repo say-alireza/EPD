@@ -7,7 +7,7 @@ interface DeveloperBadgeProps {
 export function DeveloperBadge({ className = "" }: DeveloperBadgeProps) {
   return (
     <a
-      href="https://cv.alirezarp.ir/"
+      href="https://alirezarp.is-a.dev/"
       target="_blank"
       rel="noopener noreferrer"
       className={`group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ground/90 border border-border hover:border-brand-primary/60 text-ink-muted hover:text-ink font-mono text-xs transition-all duration-200 shadow-xs ${className}`}
