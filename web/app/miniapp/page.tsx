@@ -47,18 +47,22 @@ export default function TelegramMiniApp() {
       fetch("/api/sessions/").then((r) => r.json()).catch(() => []),
     ]).then(([upcomingData, slotsData]) => {
       if (upcomingData) setSession(upcomingData);
-      if (Array.isArray(slotsData)) {
+      if (Array.isArray(slotsData) && slotsData.length > 0) {
         setSlots(slotsData);
-        // Pre-select first available slot
+        // Pre-select first available slot or fallback to first
         const available = slotsData.find((s) => !s.isFull && s.remainingSeats > 0);
-        if (available) setSelectedSlotId(available.id);
+        setSelectedSlotId(available ? available.id : slotsData[0].id);
       }
       if (tg?.initDataUnsafe?.user) {
         const u = tg.initDataUnsafe.user;
         setTgUser(u);
         const detectedName = [u.first_name, u.last_name].filter(Boolean).join(" ").trim();
         if (detectedName) setFullName(detectedName);
-        if (u.username) setSocialHandle(`@${u.username}`);
+        if (u.username) {
+          setSocialHandle(`@${u.username}`);
+        } else if (u.id) {
+          setSocialHandle(`tg:${u.id}`);
+        }
       }
       setIsLoading(false);
     });
@@ -96,6 +100,10 @@ export default function TelegramMiniApp() {
     setIsSubmitting(true);
     triggerHaptic("medium");
 
+    const effectiveTgHandle =
+      socialHandle ||
+      (tgUser?.username ? `@${tgUser.username}` : (tgUser?.id ? `tg:${tgUser.id}` : `m:${cleanMobile}`));
+
     try {
       const res = await fetch("/api/register/", {
         method: "POST",
@@ -105,7 +113,7 @@ export default function TelegramMiniApp() {
           mobile: cleanMobile,
           sessionId: selectedSlotId,
           languageLevel,
-          socialHandle: socialHandle || (tgUser?.username ? `@${tgUser.username}` : undefined),
+          socialHandle: effectiveTgHandle,
           acceptTerms: true,
           heardFrom: "telegram",
         }),

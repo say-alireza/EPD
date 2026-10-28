@@ -24,9 +24,13 @@ export async function POST(request: Request) {
       socialHandle,
     } = body || {};
 
-    if (!fullName || !mobile || !sessionId || !socialHandle) {
+    const effectiveHandle =
+      socialHandle?.trim() ||
+      (body?.username ? `@${body.username}` : (mobile ? `m:${mobile.trim()}` : ""));
+
+    if (!fullName?.trim() || !mobile?.trim() || !sessionId) {
       return NextResponse.json(
-        { error: "لطفاً تمام فیلدهای الزامی (نام، شماره تماس، شناسه تلگرام و سانس) را پر کنید." },
+        { error: "لطفاً تمام فیلدهای الزامی (نام، شماره تماس و سانس) را پر کنید." },
         { status: 400 }
       );
     }
@@ -75,7 +79,7 @@ export async function POST(request: Request) {
         topicSuggestion,
         referralCode,
         heardFrom,
-        socialHandle,
+        socialHandle: effectiveHandle,
         paymentStatus: "pending",
         paymentAuthority: paymentRes.authority,
         amountTomans: feeTomans,
@@ -118,7 +122,7 @@ export async function POST(request: Request) {
       topicSuggestion,
       referralCode,
       heardFrom,
-      socialHandle,
+      socialHandle: effectiveHandle,
       paymentStatus: "free",
       amountTomans: 0,
     });

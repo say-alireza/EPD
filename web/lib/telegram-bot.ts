@@ -82,12 +82,10 @@ function getCancelKeyboard() {
 
 function getUserMainMenuKeyboard() {
   return new Keyboard()
-    .webApp("رزرو صندلی (مینی‌اپ)", "https://epdcommunity.ir/miniapp")
+    .text("رزرو صندلی")
     .row()
-    .text("رزرو صندلی / ثبت‌نام")
-    .row()
-    .text("مشخصات نشست جاری")
-    .text("ارتباط با پشتیبانی")
+    .text("مشخصات نشست")
+    .text("پشتیبانی")
     .resized()
     .persistent();
 }
@@ -284,7 +282,7 @@ bot.hears("لیست ثبت‌نام‌ها", async (ctx) => {
 });
 
 // 2. Current Session Details
-bot.hears("مشخصات نشست جاری", async (ctx) => {
+bot.hears(["مشخصات نشست", "مشخصات نشست جاری"], async (ctx) => {
   const userId = ctx.from?.id;
   if (!isAdmin(userId)) {
     const overview = await formatUserSessionOverview();
@@ -323,7 +321,7 @@ bot.hears("مشخصات نشست جاری", async (ctx) => {
 });
 
 // 2.1 User Registration Flow Initiation
-bot.hears("رزرو صندلی / ثبت‌نام", async (ctx) => {
+bot.hears(["رزرو صندلی", "رزرو صندلی / ثبت‌نام", "ثبت‌نام"], async (ctx) => {
   const userId = ctx.from?.id;
   if (!userId) return;
 
@@ -408,7 +406,7 @@ bot.callbackQuery("user_fast_edit", async (ctx) => {
 });
 
 // 2.2 User Support Contact
-bot.hears("ارتباط با پشتیبانی", async (ctx) => {
+bot.hears(["پشتیبانی", "ارتباط با پشتیبانی"], async (ctx) => {
   const text =
     "باشگاه گفتگوی انگلیسی EPD مشهد\n\n" +
     "کانال تلگرام:\n" +
