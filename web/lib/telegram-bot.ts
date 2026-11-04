@@ -27,6 +27,8 @@ import {
   syncSessionUpdateToGitHub,
   syncSlotsToGitHub,
 } from "./github-sync";
+import { parsePersianDateTime } from "./schema";
+import { UpcomingSession } from "./types";
 
 function getBotToken(): string {
   return process.env.TELEGRAM_BOT_TOKEN || "";
@@ -297,7 +299,23 @@ bot.hears(["مشخصات نشست", "مشخصات نشست جاری"], async (ct
   text += `موضوع انگلیسی: ${session.topicEn}\n`;
   text += `موضوع فارسی: ${session.topicFa}\n`;
   text += `توضیحات: ${session.descriptionFa || "تنظیم نشده"}\n`;
-  text += `زمان و ساعت: ${session.timeFa}\n`;
+
+  let dateFormatted = "تنظیم نشده";
+  if (session.dateIso) {
+    try {
+      const d = new Date(session.dateIso);
+      if (!isNaN(d.getTime())) {
+        dateFormatted = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }).format(d);
+      }
+    } catch {}
+  }
+  text += `تاریخ برگزاری: ${dateFormatted}\n`;
+  text += `ساعت: ${session.timeFa}\n`;
   text += `مکان: ${session.venueFa}\n`;
   text += `سطح: ${session.levelFa}\n`;
   text += `مبلغ ورودی: ${session.feeFa || (session.feeTomans ? session.feeTomans.toLocaleString() + " تومان" : "رایگان")}\n`;
@@ -309,7 +327,7 @@ bot.hears(["مشخصات نشست", "مشخصات نشست جاری"], async (ct
     .text("ویرایش موضوع", "edit_session_topic")
     .row()
     .text("ویرایش توضیحات", "edit_session_desc")
-    .text("ویرایش زمان و ساعت", "edit_session_time")
+    .text("ویرایش تاریخ و ساعت", "edit_session_time")
     .row()
     .text("ویرایش صندلی باقیمانده", "edit_session_seats")
     .text("ویرایش مبلغ ورودی", "edit_session_price")
@@ -855,9 +873,12 @@ bot.callbackQuery("edit_session_time", async (ctx) => {
   if (!userId) return;
 
   setBotState(userId, { step: "awaiting_session_time", data: {} });
-  await ctx.reply("زمان و ساعت برگزاری را ارسال کنید (مثال: ۱۰:۰۰ تا ۱۲:۰۰ یا پنج‌شنبه ساعت ۱۷ تا ۱۹):", {
-    reply_markup: getCancelKeyboard(),
-  });
+  await ctx.reply(
+    "تاریخ و ساعت برگزاری را ارسال کنید:\n(می‌توانید تاریخ و ساعت را با هم بفرستید مانند:\n«پنج‌شنبه ۱۴ آبان ساعت ۱۰:۰۰ الی ۱۲:۰۰» یا فقط ساعت مانند «۱۰:۰۰ الی ۱۲:۰۰»)",
+    {
+      reply_markup: getCancelKeyboard(),
+    }
+  );
 });
 
 bot.callbackQuery("edit_session_seats", async (ctx) => {
@@ -1414,18 +1435,37 @@ bot.on("message:text", async (ctx) => {
 
     case "awaiting_session_time": {
       setBotState(userId, null);
-      await updateUpcomingSession({ timeFa: text });
+      const parsed = parsePersianDateTime(text);
+      const updatePayload: Partial<UpcomingSession> = {
+        timeFa: parsed.timeFa,
+      };
+      if (parsed.dateIso) {
+        updatePayload.dateIso = parsed.dateIso;
+      }
+
+      await updateUpcomingSession(updatePayload);
+
+      let confirmationText = "";
+      if (parsed.hasDate) {
+        confirmationText = `مشخصات نشست با موفقیت تفکیک و ثبت شد:\n• تاریخ برگزاری: ${parsed.dateFa}\n• ساعت: ${parsed.timeFa}`;
+      } else {
+        confirmationText = `ساعت نشست با موفقیت به «${parsed.timeFa}» تغییر یافت.`;
+      }
+
       try {
-        const syncRes = await syncSessionUpdateToGitHub({ timeFa: text });
+        const syncRes = await syncSessionUpdateToGitHub(updatePayload);
         await ctx.reply(
-          `زمان نشست با موفقیت به «${text}» تغییر یافت و در گیت‌هاب ثبت شد.\nشناسه کامیت: ${syncRes.commitSha.slice(0, 7)}`,
+          `${confirmationText}\n\nتغییرات در گیت‌هاب ثبت شد (شناسه کامیت: ${syncRes.commitSha.slice(0, 7)}).`,
           { reply_markup: getMainMenuKeyboard() }
         );
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
-        await ctx.reply(`زمان نشست آپدیت شد ولی خطای همگام‌سازی رخ داد:\n${msg}`, {
-          reply_markup: getMainMenuKeyboard(),
-        });
+        await ctx.reply(
+          `${confirmationText}\n\n(تغییرات محلی و دیتابیس با موفقیت ثبت شد؛ همگام‌سازی گیت‌هاب: ${msg})`,
+          {
+            reply_markup: getMainMenuKeyboard(),
+          }
+        );
       }
       break;
     }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { UpcomingSession } from "@/lib/types";
 import { assetPath } from "@/lib/asset";
+import { parsePersianDateTime } from "@/lib/schema";
 
 function getFormattedJalaliDate(isoString: string): string {
   try {
@@ -76,7 +77,10 @@ export function UpcomingSessionCard({
       });
   }, []);
 
-  const formattedDate = getFormattedJalaliDate(data.dateIso);
+  const fallbackFormattedDate = getFormattedJalaliDate(data.dateIso);
+  const parsedTime = parsePersianDateTime(data.timeFa || "");
+  const displayDate = parsedTime.hasDate && parsedTime.dateFa ? parsedTime.dateFa : fallbackFormattedDate;
+  const displayTime = parsedTime.hasDate && parsedTime.timeFa ? parsedTime.timeFa : data.timeFa;
 
   return (
     <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8 flex flex-col gap-6 shadow-sm hover:border-brand-primary transition-colors">
@@ -152,12 +156,12 @@ export function UpcomingSessionCard({
       <div className="grid grid-cols-2 gap-3.5 border-t border-border pt-4 text-xs">
         <div>
           <span className="text-ink-muted block text-[11px]">{dateLabel}</span>
-          <span className="font-bold text-ink">{formattedDate}</span>
+          <span className="font-bold text-ink">{displayDate}</span>
         </div>
         <div>
           <span className="text-ink-muted block text-[11px]">{timeLabel}</span>
           <span className="font-bold text-ink" dir="rtl">
-            <bdi>{data.timeFa}</bdi>
+            <bdi>{displayTime}</bdi>
           </span>
         </div>
         <div>
