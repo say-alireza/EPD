@@ -1,6 +1,6 @@
 {
   "id": "session-upcoming",
-  "number": 218,
+  "number": 213,
   "dateIso": "2026-11-12T06:30:00.000Z",
   "timeFa": "10:00 الی 12:00",
   "timeEn": "18:00 – 20:00",
@@ -8,10 +8,10 @@
   "venueEn": "Mashhad · Dan Club",
   "levelFa": "متوسط و پیشرفته (B1+)",
   "remainingSeats": 12,
-  "topicEn": "EPD Quest for Victory",
+  "topicEn": "Adult life",
   "topicFa": "تاریخ",
   "descriptionFa": "نشست ویژه بازی‌های گروهی و تعاملی به زبان انگلیسی برای تقویت مکالمه و تفکر سریع در محیطی دوستانه.",
-  "posterImage": "/media/posters/poster-epd212.jpg",
+  "posterImage": "/media/posters/poster-epd213.jpg",
   "feeTomans": 80000,
   "feeFa": "80,000 تومان"
 }
