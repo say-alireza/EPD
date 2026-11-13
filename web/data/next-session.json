@@ -1,6 +1,6 @@
 {
   "id": "session-upcoming",
-  "number": 219,
+  "number": 214,
   "dateIso": "2026-11-19T06:30:00.000Z",
   "timeFa": "10:00 الی 12:00",
   "timeEn": "18:00 – 20:00",
@@ -8,10 +8,10 @@
   "venueEn": "Mashhad · Dan Club",
   "levelFa": "متوسط و پیشرفته (B1+)",
   "remainingSeats": 11,
-  "topicEn": "History",
+  "topicEn": "You are what you eat",
   "topicFa": "به زودی اعلام می شود",
   "descriptionFa": "محلی برای تعامل، بازی و صحبت به زبان انگلیسی به منظور افزایش مهارت مکالمه",
-  "posterImage": "/media/posters/poster-epd219.jpg",
+  "posterImage": "/media/posters/poster-epd214.jpg",
   "feeTomans": 80000,
   "feeFa": "80,000 تومان"
 }
