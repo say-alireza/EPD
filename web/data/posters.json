@@ -1,5 +1,12 @@
 [
   {
+    "id": "poster-220",
+    "sessionNumber": 220,
+    "topicEn": "Black Friday madness",
+    "dateFa": "10:00 الی 12:00",
+    "image": "/media/posters/poster-epd220.jpg"
+  },
+  {
     "id": "poster-219",
     "sessionNumber": 219,
     "topicEn": "Human nature",
